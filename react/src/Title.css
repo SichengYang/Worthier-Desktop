@@ -1,0 +1,25 @@
+.titlebar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    background-color: none;
+    height: 30px;
+}
+
+button {
+    background: none;
+    border: none;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+
+    hover {
+        color: lightgray;
+    }
+}
+
+h5, button {
+    padding: 5px;
+}
