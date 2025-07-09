@@ -1,10 +1,18 @@
 import './Content.css'
 
-function Content() {
+function Content({ page }) {
     return (
-        <div>
-            <p>11</p>
-        </div>
+        <>
+            {page === 0 ? (
+                <div className="content-frame">1</div>
+            ) : page === 1 ? (
+                <div className="content-frame">2</div>
+            ) : page === 2 ? (
+                <div className="content-frame">3</div>
+            ) : (
+                <div className="content-frame">4</div>
+            )}
+        </>
     )
 }
 

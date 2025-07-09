@@ -1,12 +1,12 @@
 import './Menu.css'
 
-function Menu() {
+function Menu({ setPage }) {
     return (
         <div className="menu">
-            <button className="btn btn-primary">Home</button>
-            <button className="btn btn-secondary">Summary</button>
-            <button className="btn btn-success">Devices</button>
-            <button className="btn btn-danger">Account</button>
+            <button className="btn btn-primary" onClick={() => setPage(0)}>Home</button>
+            <button className="btn btn-secondary" onClick={() => setPage(1)}>Summary</button>
+            <button className="btn btn-success" onClick={() => setPage(2)}>Devices</button>
+            <button className="btn btn-danger" onClick={() => setPage(3)}>Account</button>
         </div>
     )
 }

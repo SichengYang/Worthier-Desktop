@@ -5,7 +5,7 @@ import Menu from './Menu.jsx'
 import Content from './Content.jsx'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [page, setPage] = useState(0)
 
   return (
     <>
@@ -13,10 +13,10 @@ function App() {
         <Title />
       </div>
       <div id="content">
-        <Content />
+        <Content page={page}/>
       </div>
       <div id="menu">
-        <Menu />
+        <Menu setPage={setPage}/>
       </div>
     </>
   )
