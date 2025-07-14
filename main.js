@@ -52,8 +52,6 @@ const startNotification = () => {
     notification.setBounds({
         x: width - 310, // 300 width + 10px margin
         y: height - 90, // 80 height + 10px margin
-        width: 300,
-        height: 80
     });
 }
 
@@ -95,5 +93,14 @@ app.on('window-all-closed', () => {
 ipcMain.on('close-window', () => {
     if (mainWindow) {
         mainWindow.close();
+    }
+});
+
+ipcMain.on('custom-message', (event, arg) => {
+    switch (arg) {
+        case 'start':
+            notification.close();
+        default:
+            console.log(`Unknown message: ${arg}`);
     }
 });
