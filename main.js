@@ -1,9 +1,37 @@
-const { app, BrowserWindow, Tray, Menu, screen, ipcMain } = require('electron/main')
+const { app, BrowserWindow, Tray, Menu, Notification, ipcMain } = require('electron/main')
 const path = require('node:path')
 
 let mainWindow;
-let notification;
 let tray;
+
+function createNotification() {
+    // Create a notification
+    let notification = new Notification({
+        title: 'Worthier',
+        body: 'Ready to Work?',
+        actions: [
+            { type: 'button', text: 'Start' },
+            { type: 'button', text: 'Rest!' },
+        ],
+        closeButtonText: 'Close'
+    });
+
+    // Listen for button click
+    notification.on('action', (event, index) => {
+        if (index === 0) {
+            console.log('User clicked Accept');
+        } else if (index === 1) {
+            console.log('User clicked Decline');
+        }
+    });
+
+    // Listen for close
+    notification.on('close', () => {
+        console.log('Notification closed');
+    });
+
+    notification.show();
+}
 
 const createWindow = () => {
     mainWindow = new BrowserWindow({
@@ -28,36 +56,12 @@ const createWindow = () => {
     });
 }
 
-const startNotification = () => {
-    notification = new BrowserWindow({
-        width: 300,
-        height: 80,
-        frame: false,
-        transparent: true,
-        alwaysOnTop: true,
-        skipTaskbar: true,
-        resizable: false,
-        movable: false,
-        webPreferences: {
-            preload: path.join(__dirname, 'notificationPreload.js'),
-            webPreferences: {
-                contextIsolation: true,    // Prevent direct access to Electron APIs
-                nodeIntegration: false,    // Prevent using Node.js in renderer
-            }
-        }
-    });
-
-    notification.loadFile(path.join(__dirname, 'notification/dist/index.html'));
-    const { width, height } = screen.getPrimaryDisplay().workAreaSize;
-    notification.setBounds({
-        x: width - 310, // 300 width + 10px margin
-        y: height - 90, // 80 height + 10px margin
-    });
-}
-
 app.whenReady().then(() => {
+    app.setAppUserModelId('com.worthier.app');
+    app.setAsDefaultProtocolClient('worthier');
+    
     createWindow();
-    startNotification();
+    createNotification();
 
     tray = new Tray(path.join(__dirname, 'icon.png')); // icon path
     const contextMenu = Menu.buildFromTemplate([
@@ -71,7 +75,9 @@ app.whenReady().then(() => {
             label: 'Quit',
             click: () => {
                 tray.destroy();
-                app.quit();
+                // Destroy all windows
+                BrowserWindow.getAllWindows().forEach(win => win.destroy());
+                app.exit(0);
             },
         },
     ]);
@@ -99,7 +105,7 @@ ipcMain.on('close-window', () => {
 ipcMain.on('custom-message', (event, arg) => {
     switch (arg) {
         case 'start':
-            notification.close();
+
         default:
             console.log(`Unknown message: ${arg}`);
     }

@@ -7,7 +7,15 @@
     "start": "electron-forge start",
     "test": "echo \"Error: no test specified\" && exit 1",
     "package": "electron-forge package",
-    "make": "electron-forge make"
+    "make": "electron-forge make",
+    "build": "node build.js"
+  },
+  "build": {
+    "appId": "com.worthier.app",
+    "productName": "Worthier Desktop",
+    "win": {
+      "target": "nsis"
+    }
   },
   "repository": {
     "type": "git",
@@ -31,7 +39,10 @@
     "@electron-forge/plugin-auto-unpack-natives": "^7.8.1",
     "@electron-forge/plugin-fuses": "^7.8.1",
     "@electron/fuses": "^1.8.0",
-    "electron": "^37.2.0"
+    "cross-env": "^7.0.3",
+    "dotenv": "^17.2.0",
+    "electron": "^37.2.0",
+    "electron-builder": "^26.0.12"
   },
   "dependencies": {
     "bootstrap-icons": "^1.13.1",
