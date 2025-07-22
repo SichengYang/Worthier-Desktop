@@ -7,3 +7,10 @@
     padding: 20px;
     box-sizing: border-box;
 }
+
+.login-frame {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}

@@ -211,3 +211,9 @@ ipcMain.on("custom-message", (event, arg) => {
       console.log(`Unknown message: ${arg}`);
   }
 });
+
+// Listen for login-microsoft event
+ipcMain.on('login-microsoft', (event) => {
+  const { startMicrosoftLogin } = require('./microsoftLogin');
+  startMicrosoftLogin(mainWindow);
+});
