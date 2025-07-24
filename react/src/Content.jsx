@@ -18,7 +18,7 @@ function Content({ page }) {
 
         window.electronAPI?.onLoginSuccess((event, data) => {
             console.log(data);
-            setMessage(`Platform: ${data.platform}, Code: ${data.code}`);
+            setMessage(data.email ? `Logged in as ${data.email}` : "Login successful!");
             setLoggedIn(true);
         });
     }, []);
@@ -50,6 +50,13 @@ function Content({ page }) {
                         >
                             <i className="bi bi-microsoft" style={{ marginRight: 8 }}></i>
                             Login with Microsoft
+                        </button>
+                        <button
+                            className="google-login-btn"
+                            onClick={() => window.electronAPI?.loginWithGoogle?.()}
+                        >
+                            <i className="bi bi-google" style={{ marginRight: 8 }}></i>
+                            Login with Google
                         </button>
                     </div>
                 )

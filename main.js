@@ -212,8 +212,25 @@ ipcMain.on("custom-message", (event, arg) => {
   }
 });
 
-// Listen for login-microsoft event
+// Listen for login event
 ipcMain.on('login-microsoft', (event) => {
-  const { startMicrosoftLogin } = require('./microsoftLogin');
-  startMicrosoftLogin(mainWindow);
+  const { startLogin } = require('./login');
+  const windowUrl = 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize?' +
+  'client_id=a0772969-add5-4e73-80fe-a4015a43c0e8' +
+  '&response_type=code' +
+  '&redirect_uri=https://login.worthier.app/microsoft' +
+  '&scope=openid%20profile%20email';
+  const callbackUrl = 'https://login.worthier.app/success/microsoft';
+  startLogin(mainWindow, windowUrl, callbackUrl);
+});
+
+ipcMain.on('login-google', (event) => {
+  const { startLogin } = require('./login');
+  const windowUrl = 'https://accounts.google.com/o/oauth2/v2/auth' +
+    '?client_id=899665986783-tf93v1oi9tt140vrt0ib1lbplra4lka8.apps.googleusercontent.com' +
+    '&response_type=code' +
+    '&redirect_uri=https://login.worthier.app/google' +
+    '&scope=openid%20profile%20email';
+  const callbackUrl = 'https://login.worthier.app/success/google';
+  startLogin(mainWindow, windowUrl, callbackUrl);
 });
