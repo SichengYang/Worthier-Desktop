@@ -234,3 +234,15 @@ ipcMain.on('login-google', (event) => {
   const callbackUrl = 'https://login.worthier.app/success/google';
   startLogin(mainWindow, windowUrl, callbackUrl);
 });
+
+ipcMain.on('login-apple', (event) => {
+  const { startLogin } = require('./login');
+  const windowUrl = 'https://appleid.apple.com/auth/authorize' +
+  '?client_id=com.worthier.worthier' +
+  '&response_type=code' +
+  '&redirect_uri=https://login.worthier.app/apple' +
+  '&scope=name%20email' +
+  '&response_mode=form_post';
+  const callbackUrl = 'https://login.worthier.app/success/apple';
+  startLogin(mainWindow, windowUrl, callbackUrl);
+});

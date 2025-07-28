@@ -58,6 +58,13 @@ function Content({ page }) {
                             <i className="bi bi-google" style={{ marginRight: 8 }}></i>
                             Login with Google
                         </button>
+                        <button
+                            className="apple-login-btn"
+                            onClick={() => window.electronAPI?.loginWithApple?.()}
+                        >
+                            <i className="bi bi-apple" style={{ marginRight: 8 }}></i>
+                            Login with Google
+                        </button>
                     </div>
                 )
             )}
