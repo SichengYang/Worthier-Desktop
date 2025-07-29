@@ -1,8 +1,9 @@
 import './Content.css'
-import { useRef, useEffect, useState } from 'react'
+import { useRef, useEffect, useState, use } from 'react'
 
 function Content({ page }) {
     const timer = useRef(null);
+    const error = useRef(null);
     const [message, setMessage] = useState("");
     const [loggedIn, setLoggedIn] = useState(false);
 
@@ -17,9 +18,20 @@ function Content({ page }) {
         });
 
         window.electronAPI?.onLoginSuccess((event, data) => {
-            console.log(data);
-            setMessage(data.email ? `Logged in as ${data.email}` : "Login successful!");
-            setLoggedIn(true);
+            console.log('Full login data:', data);
+
+            let email = 'Unknown User';
+            if (data.info) {
+                // Check different possible email locations
+                email = data.info.user?.email || 'Unknown User';
+                console.log('Extracted email:', email);
+                setMessage("Login success! " + email);
+                setLoggedIn(true);
+            }
+            else if (data.error) {
+                console.error('Login failed:', data.error);
+                error.current.textContent = data.error;
+            }
         });
     }, []);
 
@@ -65,6 +77,7 @@ function Content({ page }) {
                             <i className="bi bi-apple" style={{ marginRight: 8 }}></i>
                             Login with Google
                         </button>
+                        <p ref={error} className="error-message"></p>
                     </div>
                 )
             )}

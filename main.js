@@ -8,6 +8,7 @@ const {
 } = require("electron/main");
 const path = require("node:path");
 const { fork } = require("child_process");
+const TokenManager = require('./tokenManager');
 
 let mainWindow;
 let tray;
@@ -15,6 +16,7 @@ let isQuitting = false;
 let working_time = 1; // Default working time in seconds
 let working = false;
 let timerProcess;
+let tokenManager;
 
 const gotTheLock = app.requestSingleInstanceLock();
 
@@ -57,6 +59,8 @@ function createNotification() {
 }
 
 const createWindow = () => {
+  tokenManager = new TokenManager();
+  
   mainWindow = new BrowserWindow({
     width: 1000,
     height: 750,
@@ -74,6 +78,11 @@ const createWindow = () => {
 
   mainWindow.loadFile(path.join(__dirname, "react/dist/index.html"));
 
+  // Check for auto-login after window loads
+  mainWindow.webContents.once('did-finish-load', () => {
+    checkAutoLogin();
+  });
+
   mainWindow.on("close", (event) => {
     if (!isQuitting) {
       event.preventDefault();
@@ -81,6 +90,48 @@ const createWindow = () => {
     }
   });
 };
+
+// Check for stored tokens and auto-login
+function checkAutoLogin() {
+  const validProviders = tokenManager.getValidProviders();
+  
+  if (validProviders.length > 0) {
+    console.log('Valid tokens found for:', validProviders);
+    
+    // Auto-login with the first valid provider (or implement user preference)
+    const provider = validProviders[0];
+    const tokenData = tokenManager.getTokens(provider);
+    
+    // Send auto-login success to renderer
+    mainWindow.webContents.send('login-success', {
+      info: {
+        user: tokenData.user,
+        message: `Auto-logged in with ${provider}`,
+        provider: provider,
+        isAutoLogin: true
+      }
+    });
+    
+    console.log(`Auto-logged in with ${provider}`);
+  } else {
+    console.log('No valid tokens found, user needs to login manually');
+  }
+}
+
+// Enhanced login handler that stores tokens
+function handleLoginSuccess(provider, loginData) {
+  // Store the tokens
+  tokenManager.storeTokens(provider, loginData);
+  
+  // Send success to renderer
+  mainWindow.webContents.send('login-success', {
+    info: {
+      ...loginData,
+      provider: provider,
+      isAutoLogin: false
+    }
+  });
+}
 
 function createMenu() {
   return Menu.buildFromTemplate([
@@ -220,7 +271,7 @@ ipcMain.on('login-microsoft', (event) => {
   '&response_type=code' +
   '&redirect_uri=https://login.worthier.app/microsoft' +
   '&scope=openid%20profile%20email';
-  const callbackUrl = 'https://login.worthier.app/success/microsoft';
+  const callbackUrl = 'https://login.worthier.app/microsoft';
   startLogin(mainWindow, windowUrl, callbackUrl);
 });
 
@@ -231,7 +282,7 @@ ipcMain.on('login-google', (event) => {
     '&response_type=code' +
     '&redirect_uri=https://login.worthier.app/google' +
     '&scope=openid%20profile%20email';
-  const callbackUrl = 'https://login.worthier.app/success/google';
+  const callbackUrl = 'https://login.worthier.app/google';
   startLogin(mainWindow, windowUrl, callbackUrl);
 });
 
@@ -243,6 +294,6 @@ ipcMain.on('login-apple', (event) => {
   '&redirect_uri=https://login.worthier.app/apple' +
   '&scope=name%20email' +
   '&response_mode=form_post';
-  const callbackUrl = 'https://login.worthier.app/success/apple';
+  const callbackUrl = 'https://login.worthier.app/apple';
   startLogin(mainWindow, windowUrl, callbackUrl);
 });
