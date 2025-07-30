@@ -22,7 +22,7 @@ class TokenManager {
 
   encrypt(text) {
     const iv = crypto.randomBytes(16);
-    const cipher = crypto.createCipher('aes-256-cbc', this.encryptionKey);
+    const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(this.encryptionKey, 'hex'), iv);
     let encrypted = cipher.update(text, 'utf8', 'hex');
     encrypted += cipher.final('hex');
     return iv.toString('hex') + ':' + encrypted;
@@ -32,7 +32,7 @@ class TokenManager {
     const parts = encryptedText.split(':');
     const iv = Buffer.from(parts[0], 'hex');
     const encrypted = parts[1];
-    const decipher = crypto.createDecipher('aes-256-cbc', this.encryptionKey);
+    const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(this.encryptionKey, 'hex'), iv);
     let decrypted = decipher.update(encrypted, 'hex', 'utf8');
     decrypted += decipher.final('utf8');
     return decrypted;
@@ -71,7 +71,14 @@ class TokenManager {
       const tokens = JSON.parse(this.decrypt(encryptedData));
 
       if (provider) {
-        return tokens[provider] || null;
+        // Check both capitalized and lowercase versions
+        const variations = [provider, provider.charAt(0).toUpperCase() + provider.slice(1).toLowerCase()];
+        for (const variation of variations) {
+          if (tokens[variation]) {
+            return tokens[variation];
+          }
+        }
+        return null;
       }
       return tokens;
     } catch (error) {
@@ -116,10 +123,27 @@ class TokenManager {
     const validProviders = [];
 
     if (allTokens) {
-      ['microsoft', 'google', 'apple'].forEach(provider => {
-        const tokens = allTokens[provider];
-        if (tokens && !this.isTokenExpired(tokens)) {
-          validProviders.push(provider);
+      // Check both capitalized and lowercase versions of provider names
+      const providerVariations = {
+        'microsoft': ['microsoft', 'Microsoft'],
+        'google': ['google', 'Google'], 
+        'apple': ['apple', 'Apple']
+      };
+
+      Object.keys(providerVariations).forEach(baseProvider => {
+        const variations = providerVariations[baseProvider];
+        let foundTokens = null;
+        
+        // Check all variations for this provider
+        for (const variation of variations) {
+          if (allTokens[variation]) {
+            foundTokens = allTokens[variation];
+            break;
+          }
+        }
+
+        if (foundTokens && !this.isTokenExpired(foundTokens)) {
+          validProviders.push(baseProvider); // Always return lowercase for consistency
         }
       });
     }

@@ -13,6 +13,9 @@
   "build": {
     "appId": "com.worthier.app",
     "productName": "Worthier Desktop",
+    "mac": {
+      "identity": null
+    },
     "win": {
       "target": "nsis"
     }

@@ -5,7 +5,7 @@ import Menu from './Menu.jsx'
 import Content from './Content.jsx'
 
 function App() {
-  const [page, setPage] = useState(0)
+  const [page, setPage] = useState(0);
 
   return (
     <>

@@ -15,6 +15,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
   onLoginFailed: (callback) => ipcRenderer.on('login-failed', callback),
   
   // logout functionality
-  logout: (provider) => ipcRenderer.send('logout', provider),
+  logout: () => ipcRenderer.send('logout'),
   onLogoutSuccess: (callback) => ipcRenderer.on('logout-success', callback),
+  
+  // login statistics (optional)
+  getLoginStats: () => ipcRenderer.send('get-login-stats'),
+  onLoginStats: (callback) => ipcRenderer.on('login-stats', callback),
 });

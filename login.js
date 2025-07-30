@@ -1,18 +1,18 @@
 const { BrowserWindow } = require('electron');
 const { randomUUID } = require('crypto');
 
-function startLogin(mainWindow, windowUrl, callbackUrl) {
+function startLogin(mainWindow, windowUrl, callbackUrl, provider = 'default') {
   let windowClosed = false;
-  
+
   // Generate a unique session ID for polling
   const sessionId = randomUUID();
   console.log('Generated sessionId:', sessionId);
-  
+
   // Add sessionId to the login URL as state parameter
-  const urlWithSession = windowUrl.includes('?') 
-    ? `${windowUrl}&state=${sessionId}` 
+  const urlWithSession = windowUrl.includes('?')
+    ? `${windowUrl}&state=${sessionId}`
     : `${windowUrl}?state=${sessionId}`;
-  
+
   const loginWindow = new BrowserWindow({
     width: 500,
     height: 700,
@@ -32,31 +32,6 @@ function startLogin(mainWindow, windowUrl, callbackUrl) {
   }
 
   loginWindow.loadURL(urlWithSession);
-
-  loginWindow.webContents.on('will-redirect', async (event, url) => {
-    console.log(`Redirecting to: ${url}`);
-    if (url.startsWith(callbackUrl)) {
-      event.preventDefault();
-      safeClose();
-
-      const urlObj = new URL(url);
-      const code = urlObj.searchParams.get('code');
-
-      if (code) {
-        try {
-          const response = await fetch(callbackUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ code, sessionId }),
-          });
-          const info = await response.json();
-          mainWindow.webContents.send('login-success', { info });
-        } catch (err) {
-          mainWindow.webContents.send('login-failed', { error: err.message });
-        }
-      }
-    }
-  });
 
   // In your did-finish-load handler:
   loginWindow.webContents.on('did-finish-load', async () => {
@@ -81,13 +56,29 @@ function startLogin(mainWindow, windowUrl, callbackUrl) {
             console.log('Poll failed with status:', res.status);
             break;
           }
-          await new Promise(r => setTimeout(r, 500));
+          await new Promise(r => setTimeout(r, 1000));
         }
 
         if (info && info.success) {
+          // Auto-login feature: Save tokens securely for quick login next time
+          try {
+            const TokenManager = require('./tokenManager');
+            const tokenManager = new TokenManager();
+
+            // Store the login data securely with encryption
+            tokenManager.storeTokens(provider, {
+              info: info,
+              provider: provider,
+            });
+
+            console.log(`Auto-login tokens stored securely for ${provider}`);
+          } catch (err) {
+            console.error('Error storing auto-login tokens:', err);
+          }
+          
           mainWindow.webContents.send('login-success', { info });
         } else {
-          mainWindow.webContents.send('login-failed', { error: 'Apple login timeout or failed.' });
+          mainWindow.webContents.send('login-failed', { error: 'Login timeout or failed.' });
         }
       } catch (err) {
         console.error('Polling error:', err);

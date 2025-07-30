@@ -5,6 +5,7 @@ function Content({ page }) {
     const timer = useRef(null);
     const error = useRef(null);
     const [message, setMessage] = useState("");
+    const [userMessage, setUserMessage] = useState("");
     const [loggedIn, setLoggedIn] = useState(false);
 
 
@@ -25,7 +26,7 @@ function Content({ page }) {
                 // Check different possible email locations
                 email = data.info.user?.email || 'Unknown User';
                 console.log('Extracted email:', email);
-                setMessage("Login success! " + email);
+                setUserMessage("Login success! " + email);
                 setLoggedIn(true);
             }
             else if (data.error) {
@@ -40,7 +41,7 @@ function Content({ page }) {
             {page === 0 ? (
                 <div className="content-frame">
                     <p ref={timer}>
-                        {message}
+                        {userMessage}
                     </p>
                 </div>
             ) : page === 1 ? (
@@ -53,6 +54,15 @@ function Content({ page }) {
                         <p>
                             {message}
                         </p>
+                        <button
+                            className="logout-btn"
+                            onClick={() => {
+                                window.electronAPI?.logout?.();
+                                setLoggedIn(false);
+                            }}
+                        >
+                            Logout
+                        </button>
                     </div>
                 ) : (
                     <div className="login-frame">
