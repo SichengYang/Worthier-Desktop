@@ -1,7 +1,7 @@
 const { BrowserWindow } = require('electron');
 const { randomUUID } = require('crypto');
 
-function startLogin(mainWindow, windowUrl, callbackUrl, provider = 'default') {
+function startLogin(mainWindow, windowUrl, callbackUrl) {
   let windowClosed = false;
 
   // Generate a unique session ID for polling
@@ -66,12 +66,12 @@ function startLogin(mainWindow, windowUrl, callbackUrl, provider = 'default') {
             const tokenManager = new TokenManager();
 
             // Store the login data securely with encryption
-            tokenManager.storeTokens(provider, {
-              info: info,
-              provider: provider,
+            tokenManager.storeTokens({
+              user: info.user,
+              access_token: info.access_token
             });
 
-            console.log(`Auto-login tokens stored securely for ${provider}`);
+            console.log(`Auto-login tokens stored securely:`, info.user.username || 'Unknown User', `access_token: ${info.access_token} `);
           } catch (err) {
             console.error('Error storing auto-login tokens:', err);
           }

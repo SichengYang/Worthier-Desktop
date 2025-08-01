@@ -7,33 +7,43 @@ class AutoLogin {
     }
 
     // Check for stored tokens and auto-login on app startup
-    checkAutoLogin() {
-        const validProviders = this.tokenManager.getValidProviders();
+    async checkAutoLogin() {
+        const tokenData = this.tokenManager.getTokens();
 
-        if (validProviders.length > 0) {
-            console.log('Valid tokens found for:', validProviders);
+        if (tokenData) {
+            // Send access_token, username, and email to server for validation
+            const axios = require('axios');
+            try {
+                const response = await axios.post('https://login.worthier.app/quickLogin', {
+                    token: tokenData.access_token,
+                    username: tokenData.user?.username,
+                    email: tokenData.user?.email
+                });
 
-            // Auto-login with the first valid provider (or implement user preference)
-            const provider = validProviders[0];
-            const tokenData = this.tokenManager.getTokens(provider);
-            console.log(`Auto-logging in with ${provider}:`, tokenData);
-
-            // Send auto-login success to renderer in the same format as manual login
-            this.mainWindow.webContents.send('login-success', {
-                info: tokenData.info
-            });
-            return true;
+                if (response.data && response.data.success) {
+                    // Server validated, proceed with auto-login
+                    this.mainWindow.webContents.send('login-success', {
+                        info: tokenData
+                    });
+                    return true;
+                } else {
+                    console.log('Server validation failed: ', response.data.error);
+                    return false;
+                }
+            } catch (error) {
+                console.error('Error validating with server:', error);
+                return false;
+            }
         } else {
-            console.log('No valid tokens found, user needs to login manually');
+            console.log('No valid profile found, user needs to login manually');
             return false;
         }
     }
 
     // Handle logout - clear tokens for specific provider or all
-    handleLogout() {
+    async handleLogout() {
         try {
             this.tokenManager.clearTokens(); // Clear all tokens
-            console.log('Logged out from all providers');
 
             this.mainWindow.webContents.send('logout-success');
         } catch (error) {
@@ -44,21 +54,16 @@ class AutoLogin {
         }
     }
 
-    // Get all valid providers (useful for UI)
-    getValidProviders() {
-        return this.tokenManager.getValidProviders();
+    // Check if there's a valid profile
+    hasValidTokens() {
+        const tokenData = this.tokenManager.getTokens();
+        return tokenData;
     }
 
-    // Check if a specific provider has valid tokens
-    hasValidTokens(provider) {
-        const tokenData = this.tokenManager.getTokens(provider);
-        return tokenData && !this.tokenManager.isTokenExpired(tokenData);
-    }
-
-    // Get user info for a specific provider (if valid)
-    getUserInfo(provider) {
-        if (this.hasValidTokens(provider)) {
-            const tokenData = this.tokenManager.getTokens(provider);
+    // Get user info (if valid)
+    getUserInfo() {
+        const tokenData = this.tokenManager.getTokens();
+        if (tokenData) {
             return tokenData.user;
         }
         return null;
@@ -66,57 +71,24 @@ class AutoLogin {
 
     // Force refresh - clear expired tokens
     refreshTokens() {
-        const allTokens = this.tokenManager.getTokens();
-        if (allTokens) {
-            ['microsoft', 'google', 'apple'].forEach(provider => {
-                const tokens = allTokens[provider];
-                if (tokens && this.tokenManager.isTokenExpired(tokens)) {
-                    this.tokenManager.clearTokens(provider);
-                    console.log(`Cleared expired tokens for ${provider}`);
-                }
-            });
+        const tokenData = this.tokenManager.getTokens();
+        if (tokenData) {
+            this.tokenManager.clearTokens();
+            console.log('Cleared expired profile');
         }
-    }
-
-    // Set custom token expiry time (in milliseconds)
-    setTokenExpiry(expiryTime) {
-        this.tokenExpiry = expiryTime;
     }
 
     // Get login statistics
     getLoginStats() {
-        const allTokens = this.tokenManager.getTokens();
+        const tokenData = this.tokenManager.getTokens();
         const stats = {
-            totalProviders: 0,
-            validProviders: 0,
-            expiredProviders: 0,
-            providers: {}
+            hasProfile: false,
+            user: null
         };
 
-        if (allTokens) {
-            ['microsoft', 'google', 'apple'].forEach(provider => {
-                const tokens = allTokens[provider];
-                if (tokens) {
-                    stats.totalProviders++;
-                    stats.providers[provider] = {
-                        hasTokens: true,
-                        isValid: !this.tokenManager.isTokenExpired(tokens),
-                        lastLogin: new Date(tokens.timestamp).toISOString(),
-                        user: tokens.user
-                    };
-
-                    if (this.tokenManager.isTokenExpired(tokens)) {
-                        stats.expiredProviders++;
-                    } else {
-                        stats.validProviders++;
-                    }
-                } else {
-                    stats.providers[provider] = {
-                        hasTokens: false,
-                        isValid: false
-                    };
-                }
-            });
+        if (tokenData) {
+            stats.hasProfile = true;
+            stats.user = tokenData.user;
         }
 
         return stats;

@@ -38,117 +38,45 @@ class TokenManager {
     return decrypted;
   }
 
-  // Store tokens after successful login
-  storeTokens(provider, tokenData) {
-    let tokens = {};
-    try {
-      if (fs.existsSync(this.tokenFile)) {
-        const encryptedData = fs.readFileSync(this.tokenFile, 'utf8');
-        tokens = JSON.parse(this.decrypt(encryptedData));
-      }
-    } catch (error) {
-      console.log('No existing tokens found or error reading tokens');
-    }
-
-    tokens[provider] = {
+  // Store tokens after successful login (single profile only)
+  storeTokens(tokenData) {
+    const profileData = {
       ...tokenData,
-      timestamp: Date.now()
     };
 
-    const encryptedTokens = this.encrypt(JSON.stringify(tokens));
+    const encryptedTokens = this.encrypt(JSON.stringify(profileData));
     fs.writeFileSync(this.tokenFile, encryptedTokens);
-    console.log(`Tokens stored for ${provider}`);
+    console.log('Profile stored');
   }
 
-  // Get stored tokens
-  getTokens(provider = null) {
+  // Get stored profile (single profile only)
+  getTokens() {
     try {
       if (!fs.existsSync(this.tokenFile)) {
         return null;
       }
 
       const encryptedData = fs.readFileSync(this.tokenFile, 'utf8');
-      const tokens = JSON.parse(this.decrypt(encryptedData));
+      const profileData = JSON.parse(this.decrypt(encryptedData));
 
-      if (provider) {
-        // Check both capitalized and lowercase versions
-        const variations = [provider, provider.charAt(0).toUpperCase() + provider.slice(1).toLowerCase()];
-        for (const variation of variations) {
-          if (tokens[variation]) {
-            return tokens[variation];
-          }
-        }
-        return null;
-      }
-      return tokens;
+      return profileData;
     } catch (error) {
-      console.error('Error reading tokens:', error);
+      console.error('Error reading profile:', error);
       return null;
     }
   }
 
-  // Check if tokens are expired (1 hour = 3600000ms)
-  isTokenExpired(tokenData, expiryTime = 3600000) {
-    if (!tokenData || !tokenData.timestamp) {
-      return true;
-    }
-    return (Date.now() - tokenData.timestamp) > expiryTime;
-  }
-
-  // Remove tokens for a provider
-  clearTokens(provider = null) {
+  // Remove tokens (clear profile)
+  clearTokens() {
     try {
-      if (provider) {
-        const tokens = this.getTokens();
-        if (tokens && tokens[provider]) {
-          delete tokens[provider];
-          const encryptedTokens = this.encrypt(JSON.stringify(tokens));
-          fs.writeFileSync(this.tokenFile, encryptedTokens);
-        }
-      } else {
-        // Clear all tokens
-        if (fs.existsSync(this.tokenFile)) {
-          fs.unlinkSync(this.tokenFile);
-        }
+      // Always clear the entire profile since we only store one
+      if (fs.existsSync(this.tokenFile)) {
+        fs.unlinkSync(this.tokenFile);
       }
-      console.log(`Tokens cleared for ${provider || 'all providers'}`);
+      console.log('Profile cleared');
     } catch (error) {
-      console.error('Error clearing tokens:', error);
+      console.error('Error clearing profile:', error);
     }
-  }
-
-  // Check which providers have valid tokens
-  getValidProviders() {
-    const allTokens = this.getTokens();
-    const validProviders = [];
-
-    if (allTokens) {
-      // Check both capitalized and lowercase versions of provider names
-      const providerVariations = {
-        'microsoft': ['microsoft', 'Microsoft'],
-        'google': ['google', 'Google'], 
-        'apple': ['apple', 'Apple']
-      };
-
-      Object.keys(providerVariations).forEach(baseProvider => {
-        const variations = providerVariations[baseProvider];
-        let foundTokens = null;
-        
-        // Check all variations for this provider
-        for (const variation of variations) {
-          if (allTokens[variation]) {
-            foundTokens = allTokens[variation];
-            break;
-          }
-        }
-
-        if (foundTokens && !this.isTokenExpired(foundTokens)) {
-          validProviders.push(baseProvider); // Always return lowercase for consistency
-        }
-      });
-    }
-
-    return validProviders;
   }
 }
 

@@ -61,6 +61,7 @@ const createWindow = () => {
     frame: false, // Removes window edges and title bar
     useContentSize: true,
     show: false, // Don't show the window on creation
+    icon: path.join(__dirname, "icon.png"), // Path to your app icon
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
       webPreferences: {
@@ -228,7 +229,7 @@ ipcMain.on('login-microsoft', (event) => {
   '&scope=openid%20profile%20email' +
   '&response_mode=form_post';
   const callbackUrl = 'https://login.worthier.app/microsoft';
-  startLogin(mainWindow, windowUrl, callbackUrl, "Microsoft");
+  startLogin(mainWindow, windowUrl, callbackUrl);
 });
 
 ipcMain.on('login-google', (event) => {
@@ -240,7 +241,7 @@ ipcMain.on('login-google', (event) => {
     '&scope=openid%20profile%20email' +
     '&response_mode=form_post';
   const callbackUrl = 'https://login.worthier.app/google';
-  startLogin(mainWindow, windowUrl, callbackUrl, "Google");
+  startLogin(mainWindow, windowUrl, callbackUrl);
 });
 
 ipcMain.on('login-apple', (event) => {
@@ -253,7 +254,7 @@ ipcMain.on('login-apple', (event) => {
   '&response_mode=form_post';
   const callbackUrl = 'https://login.worthier.app/apple';
 
-  startLogin(mainWindow, windowUrl, callbackUrl, "Apple");
+  startLogin(mainWindow, windowUrl, callbackUrl);
 });
 
 // Handle logout
