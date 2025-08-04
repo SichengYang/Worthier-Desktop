@@ -1,0 +1,162 @@
+.content-frame {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-height: 100vh;
+  overflow: hidden;
+}
+
+#setting-board {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  min-height: 0;
+  max-height: calc(100vh - 100px); /* Adjust based on header height */
+  overflow: hidden;
+}
+
+#left-board {
+  width: 100px;
+  min-width: 100px;
+  max-width: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  overflow-y: auto;
+}
+
+#right-board {
+  flex: 1;
+  padding: 16px;
+  min-width: 0;
+  max-width: calc(100% - 116px); /* 100px left board + 16px margin */
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.profile-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+.profile-menu li {
+  width: 100%;
+  padding: 16px 0;
+  text-align: center;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.profile-menu li:last-child {
+  border-bottom: none;
+}
+
+.profile-menu li:hover {
+  background: #f5f5f5;
+}
+
+/* Pink theme styles for Profile sidebar */
+.app-theme-pink .profile-menu li {
+  color: #ad1457;
+  border-bottom: 1px solid #f8bbd9;
+}
+
+.app-theme-pink .profile-menu li:hover {
+  background: #fce4ec;
+}
+
+.app-theme-pink .profile-menu li.active {
+  background: #f8bbd9;
+  color: #880e4f;
+  font-weight: 600;
+}
+
+/* Dark theme styles for Profile sidebar */
+.app-theme-dark .profile-menu li {
+  color: #dee2e6;
+  border-bottom: 1px solid #495057;
+}
+
+.app-theme-dark .profile-menu li:hover {
+  background: rgba(73, 80, 87, 0.8);
+}
+
+.app-theme-dark .profile-menu li.active {
+  background: #6c757d;
+  color: #f8f9fa;
+  font-weight: 600;
+}
+
+#setting-board {
+  display: flex;
+  flex-direction: row;
+  width: 80%;
+  min-height: 200px;
+  margin-bottom: 24px;
+}
+
+#left-board {
+  width: 100px;
+  min-width: 100px;
+  max-width: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+#right-board {
+  flex: 1;
+  padding: 16px;
+  min-width: 0;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 8px;
+  margin-left: 8px;
+}
+
+/* Theme-specific right board styling */
+.app-theme-light #right-board {
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.app-theme-dark #right-board {
+  background: rgba(33, 37, 41, 0.9);
+  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.05);
+}
+
+.app-theme-pink #right-board {
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 2px 8px rgba(136, 14, 79, 0.1);
+}
+
+#setting-board {
+    display: flex;
+    flex-direction: row;
+    width: 80%;
+    min-height: 200px;
+    margin-bottom: 24px;
+}
+
+#left-board,
+#right-board {
+    flex: 1;
+    padding: 16px;
+    min-width: 0;
+}
+
+.logout-btn {
+    border-radius: 8px;
+    border: 1px solid black;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+    margin: 10px;
+}

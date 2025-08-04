@@ -3,8 +3,14 @@
   padding: 0;
 }
 
-body, #root {
+html, body {
   height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+body, #root {
+  height: 100vh;
   width: 100%;
 }
 
@@ -30,4 +36,20 @@ body, #root {
   width: 100%;
   height: 100%;
   background-color: antiquewhite;
+}
+
+/* Theme-specific background colors */
+.app-theme-light {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  color: #212529;
+}
+
+.app-theme-dark {
+  background: linear-gradient(135deg, #212529 0%, #343a40 100%);
+  color: #f8f9fa;
+}
+
+.app-theme-pink {
+  background: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 50%, #f48fb1 100%);
+  color: #880e4f;
 }

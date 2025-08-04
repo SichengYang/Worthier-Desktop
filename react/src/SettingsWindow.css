@@ -1,0 +1,181 @@
+.theme-circles {
+    display: flex;
+    gap: 28px;
+    margin-left: 18px;
+    min-width: 120px;
+}
+
+.theme-circle {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 2px solid #ccc;
+    outline: none;
+    cursor: pointer;
+    transition: border 0.2s, box-shadow 0.2s;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    background: #fff;
+    position: relative;
+    padding: 0;
+    min-width: 36px;
+    min-height: 36px;
+    aspect-ratio: 1/1;
+}
+
+.theme-circle.selected {
+    border: 3px solid #2255aa;
+    box-shadow: 0 0 0 3px #e0eaff;
+    background-clip: padding-box;
+}
+
+.theme-circle.light-theme {
+    background: linear-gradient(135deg, #f8f8f8 60%, #e0eaff 100%);
+}
+.theme-circle.dark-theme {
+    background: linear-gradient(135deg, #222 60%, #555 100%);
+}
+.theme-circle.pink-theme {
+    background: linear-gradient(135deg, #ffb6c1 60%, #ff69b4 100%);
+}
+.settings-window {
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    height: 100%;
+    max-height: 100%;
+    position: relative;
+    padding: 32px;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.settings-window h2 {
+    text-align: center;
+    margin: 8px 0;
+    flex-shrink: 0;
+}
+
+.settings-details {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+.setting-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #fff;
+    border-radius: 6px;
+    padding: 16px 16px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+    min-height: 48px;
+    transition: background 0.2s, box-shadow 0.2s;
+}
+
+.setting-group label {
+    min-width: 120px;
+    font-size: 1em;
+    color: #444;
+}
+
+.setting-group input,
+.setting-group select {
+    font-size: 1em;
+    padding: 8px 14px;
+    border-radius: 4px;
+    border: 1.5px solid #b0b0b0;
+    background: #fff;
+    outline: none;
+    transition: border 0.2s, box-shadow 0.2s;
+    color: #222;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+
+.setting-group input:focus,
+.setting-group select:focus {
+    border: 2px solid #2255aa;
+    box-shadow: 0 0 0 2px #e0eaff;
+}
+
+/* Pink theme styles for SettingsWindow */
+.app-theme-pink .theme-circle.selected {
+    border: 3px solid #e91e63;
+    box-shadow: 0 0 0 3px #fce4ec;
+}
+
+.app-theme-pink .settings-window {
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 2px 8px rgba(136, 14, 79, 0.15);
+}
+
+.app-theme-pink .settings-window h2 {
+    color: #880e4f;
+}
+
+.app-theme-pink .setting-group {
+    background: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 1px 4px rgba(136, 14, 79, 0.08);
+}
+
+.app-theme-pink .setting-group label {
+    color: #ad1457;
+}
+
+.app-theme-pink .setting-group input,
+.app-theme-pink .setting-group select {
+    border: 1.5px solid #f48fb1;
+    background: rgba(255, 255, 255, 0.9);
+    color: #880e4f;
+}
+
+.app-theme-pink .setting-group input:focus,
+.app-theme-pink .setting-group select:focus {
+    border: 2px solid #e91e63;
+    box-shadow: 0 0 0 2px #fce4ec;
+}
+
+/* Dark theme styles for SettingsWindow */
+.app-theme-dark .theme-circle.selected {
+    border: 3px solid #6c757d;
+    box-shadow: 0 0 0 3px rgba(108, 117, 125, 0.3);
+}
+
+.app-theme-dark .settings-window {
+    background: rgba(52, 58, 64, 0.9);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.app-theme-dark .settings-window h2 {
+    color: #f8f9fa;
+}
+
+.app-theme-dark .setting-group {
+    background: rgba(73, 80, 87, 0.8);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+.app-theme-dark .setting-group label {
+    color: #dee2e6;
+}
+
+.app-theme-dark .setting-group input,
+.app-theme-dark .setting-group select {
+    border: 1.5px solid #6c757d;
+    background: rgba(73, 80, 87, 0.9);
+    color: #f8f9fa;
+}
+
+.app-theme-dark .setting-group input:focus,
+.app-theme-dark .setting-group select:focus {
+    border: 2px solid #adb5bd;
+    box-shadow: 0 0 0 2px rgba(173, 181, 189, 0.3);
+}

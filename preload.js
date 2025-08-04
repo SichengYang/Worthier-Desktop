@@ -21,4 +21,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // login statistics (optional)
   getLoginStats: () => ipcRenderer.send('get-login-stats'),
   onLoginStats: (callback) => ipcRenderer.on('login-stats', callback),
+
+  // theme setting
+  setTheme: (theme) => ipcRenderer.send('set-theme', theme),
+  onThemeChanged: (callback) => ipcRenderer.on('theme-changed', callback),
 });

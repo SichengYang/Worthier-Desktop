@@ -6,10 +6,10 @@ import Profile from './Profile';
 function Content({ page }) {
     const timer = useRef(null);
     const error = useRef(null);
-    const [message, setMessage] = useState(""); // username
-    const [userMessage, setUserMessage] = useState("");
     const [loggedIn, setLoggedIn] = useState(false);
-
+    const [userMessage, setUserMessage] = useState("");
+    const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
 
     useEffect(() => {
         window.electronAPI?.startTimer(() => {
@@ -25,9 +25,14 @@ function Content({ page }) {
 
             if (data.info) {
                 // Check different possible email locations
-                let username = data.info.user?.username || 'Unknown User';
+                let username = data.info.user?.username || 'Online User';
                 console.log('Extracted username:', username);
-                setMessage(username);
+                setUsername(username);
+
+                let email = data.info.user?.email || 'Error retrieving email';
+                console.log('Extracted email:', email);
+                setEmail(email);
+
                 setLoggedIn(true);
             }
             else if (data.error) {
@@ -42,7 +47,7 @@ function Content({ page }) {
             {page === 0 ? (
                 <div className="content-frame">
                     <h3 ref={timer}>
-                        {userMessage}
+                        {userMessage || "Welcome to Worthier!"}
                     </h3>
                 </div>
             ) : page === 1 ? (
@@ -52,7 +57,8 @@ function Content({ page }) {
             ) : (
                 loggedIn ? (
                     <Profile
-                        username={message}
+                        username={username}
+                        email={email}
                         onLogout={() => {
                             window.electronAPI?.logout?.();
                             setLoggedIn(false);

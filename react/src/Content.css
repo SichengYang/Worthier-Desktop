@@ -25,3 +25,16 @@
         flex-grow: 1;
     }
 }
+
+/* Theme-specific content styling */
+.app-theme-light .content-frame h3 {
+    color: #212529;
+}
+
+.app-theme-dark .content-frame h3 {
+    color: #f8f9fa;
+}
+
+.app-theme-pink .content-frame h3 {
+    color: #880e4f;
+}

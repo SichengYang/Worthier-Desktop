@@ -9,6 +9,7 @@ const {
 const path = require("node:path");
 const { fork } = require("child_process");
 const AutoLogin = require('./autologin');
+const { saveTheme, loadTheme, sendThemeToRenderer } = require('./theme');
 
 let mainWindow;
 let tray;
@@ -79,6 +80,8 @@ const createWindow = () => {
   // Check for auto-login after window loads
   mainWindow.webContents.once('did-finish-load', () => {
     autoLogin.checkAutoLogin();
+    // Send the current theme to the renderer when it's ready
+    sendThemeToRenderer(mainWindow);
   });
 
   mainWindow.on("close", (event) => {
@@ -266,4 +269,13 @@ ipcMain.on('logout', (event) => {
 ipcMain.on('get-login-stats', (event) => {
   const stats = autoLogin.getLoginStats();
   mainWindow.webContents.send('login-stats', stats);
+});
+
+ipcMain.on('set-theme', (event, theme) => {
+  if (['light', 'dark', 'pink'].includes(theme)) {
+    saveTheme(theme);
+    // Send the updated theme to all renderer processes
+    mainWindow.webContents.send('theme-changed', theme);
+    console.log(`Theme changed to: ${theme}`);
+  }
 });

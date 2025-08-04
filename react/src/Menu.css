@@ -6,3 +6,17 @@
     background-color: none;
     padding: 20px;
 }
+
+/* Pink theme styles for Menu */
+.app-theme-pink .menu {
+    border-top: 1px solid #f8bbd9;
+}
+
+.app-theme-pink .menu-item {
+    color: #ad1457;
+}
+
+.app-theme-pink .menu-item:hover {
+    color: #880e4f;
+    background: #fce4ec;
+}

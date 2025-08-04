@@ -1,0 +1,112 @@
+.profile-window {
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    height: 100%;
+    max-height: 100%;
+    position: relative;
+    padding: 32px;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.profile-window h2 {
+    text-align: center;
+    margin: 10px 0;
+    flex-shrink: 0;
+}
+
+.profile-details {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    margin-bottom: 60px; /* Space for logout button */
+}
+
+.profile-details p {
+    margin-top: 10px;
+    margin-left: 10px;
+    font-size: 1.1em;
+    color: #333;
+}
+
+.logout-btn {
+    position: absolute;
+    left: 50%;
+    bottom: 32px;
+    transform: translateX(-50%);
+    border-radius: 8px;
+    border: 1px solid #2255aa;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 120px;
+    height: 40px;
+    background: #f0f6ff;
+    color: #2255aa;
+    font-weight: 500;
+    box-shadow: 0 1px 4px rgba(34, 85, 170, 0.08);
+    transition: background 0.2s, color 0.2s;
+}
+
+.logout-btn:hover {
+    background: #2255aa;
+    color: #fff;
+}
+
+/* Pink theme styles for ProfileWindow */
+.app-theme-pink .profile-window {
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 2px 8px rgba(136, 14, 79, 0.15);
+}
+
+.app-theme-pink .profile-window h2 {
+    color: #880e4f;
+}
+
+.app-theme-pink .profile-details p {
+    color: #ad1457;
+}
+
+.app-theme-pink .logout-btn {
+    border: 1px solid #e91e63;
+    background: #fce4ec;
+    color: #e91e63;
+    box-shadow: 0 1px 4px rgba(233, 30, 99, 0.15);
+}
+
+.app-theme-pink .logout-btn:hover {
+    background: #e91e63;
+    color: #fff;
+}
+
+/* Dark theme styles for ProfileWindow */
+.app-theme-dark .profile-window {
+    background: rgba(52, 58, 64, 0.9);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.app-theme-dark .profile-window h2 {
+    color: #f8f9fa;
+}
+
+.app-theme-dark .profile-details p {
+    color: #dee2e6;
+}
+
+.app-theme-dark .logout-btn {
+    border: 1px solid #6c757d;
+    background: rgba(52, 58, 64, 0.8);
+    color: #f8f9fa;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+.app-theme-dark .logout-btn:hover {
+    background: #6c757d;
+    color: #fff;
+}
