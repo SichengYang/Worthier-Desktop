@@ -1,4 +1,4 @@
-.profile-window {
+.profile-frame {
     display: flex;
     flex-direction: column;
     background: #fff;
@@ -10,27 +10,47 @@
     padding: 32px;
     box-sizing: border-box;
     overflow: hidden;
+    width: 100%;
+    min-width: 400px;
 }
 
-.profile-window h2 {
+.profile-frame h3 {
     text-align: center;
-    margin: 10px 0;
+    margin: 0 0 20px 0;
     flex-shrink: 0;
 }
 
-.profile-details {
+.profile-info {
     flex: 1;
     display: flex;
     flex-direction: column;
     overflow-y: auto;
     margin-bottom: 60px; /* Space for logout button */
+    width: 100%;
+    max-width: 100%;
 }
 
-.profile-details p {
-    margin-top: 10px;
-    margin-left: 10px;
+.profile-field {
+    margin-bottom: 15px;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.02);
+    border-radius: 6px;
     font-size: 1.1em;
     color: #333;
+    word-wrap: break-word;
+    word-break: break-all;
+    min-width: 0;
+    width: 100%;
+    box-sizing: border-box;
+    display: block;
+}
+
+.profile-picture {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    margin-top: 10px;
+    border: 2px solid #e0e0e0;
 }
 
 .logout-btn {
@@ -60,17 +80,18 @@
 }
 
 /* Pink theme styles for ProfileWindow */
-.app-theme-pink .profile-window {
+.app-theme-pink .profile-frame {
     background: rgba(255, 255, 255, 0.9);
     box-shadow: 0 2px 8px rgba(136, 14, 79, 0.15);
 }
 
-.app-theme-pink .profile-window h2 {
+.app-theme-pink .profile-frame h3 {
     color: #880e4f;
 }
 
-.app-theme-pink .profile-details p {
+.app-theme-pink .profile-field {
     color: #ad1457;
+    background: rgba(233, 30, 99, 0.05);
 }
 
 .app-theme-pink .logout-btn {
@@ -86,17 +107,18 @@
 }
 
 /* Dark theme styles for ProfileWindow */
-.app-theme-dark .profile-window {
+.app-theme-dark .profile-frame {
     background: rgba(52, 58, 64, 0.9);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
-.app-theme-dark .profile-window h2 {
+.app-theme-dark .profile-frame h3 {
     color: #f8f9fa;
 }
 
-.app-theme-dark .profile-details p {
+.app-theme-dark .profile-field {
     color: #dee2e6;
+    background: rgba(255, 255, 255, 0.05);
 }
 
 .app-theme-dark .logout-btn {

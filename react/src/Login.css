@@ -1,11 +1,65 @@
+.login-frame {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+.login-frame h3 {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.login-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+    max-width: 300px;
+}
+
 .login-btn {
+    padding: 12px 20px;
     border-radius: 8px;
-    border: 1px solid black;
-    border-radius: 5px;
+    border: 1px solid transparent;
     font-size: 16px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 10px;
+    transition: all 0.2s ease;
+    min-height: 50px;
+}
+
+.login-btn.microsoft {
+    background-color: #0078d4;
+    color: white;
+}
+
+.login-btn.microsoft:hover {
+    background-color: #106ebe;
+}
+
+.login-btn.google {
+    background-color: #db4437;
+    color: white;
+}
+
+.login-btn.google:hover {
+    background-color: #c23321;
+}
+
+.login-btn.apple {
+    background-color: #000000;
+    color: white;
+}
+
+.login-btn.apple:hover {
+    background-color: #333333;
+}
+
+.error-message {
+    color: red;
+    text-align: center;
+    margin-top: 10px;
 }

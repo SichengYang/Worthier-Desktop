@@ -66,7 +66,7 @@ function startLogin(mainWindow, windowUrl, callbackUrl) {
             const tokenManager = new TokenManager();
 
             // Store the login data securely with encryption
-            tokenManager.storeTokens({
+            await tokenManager.storeTokens({
               user: info.user,
               access_token: info.access_token
             });

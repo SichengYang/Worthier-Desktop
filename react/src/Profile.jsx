@@ -5,12 +5,12 @@ import ProfileWindow from './ProfileWindow';
 import SettingsWindow from './SettingsWindow';
 import FeedbackWindow from './FeedbackWindow';
 
-function Profile({ username, email, onLogout }) {
+function Profile() {
     const [selected, setSelected] = useState('profile');
 
     let rightContent;
     if (selected === 'profile') {
-        rightContent = <ProfileWindow username={username} email={email} onLogout={onLogout} />;
+        rightContent = <ProfileWindow />;
     } else if (selected === 'settings') {
         rightContent = <SettingsWindow />;
     } else if (selected === 'feedback') {
@@ -19,7 +19,7 @@ function Profile({ username, email, onLogout }) {
 
     return (
         <div className="content-frame">
-            <h3>Welcome, {username}!</h3>
+            <h3>Profile & Settings</h3>
             <div id='setting-board'>
                 <div id='left-board'>
                     <ul className="profile-menu">

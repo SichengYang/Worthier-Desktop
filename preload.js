@@ -10,6 +10,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   loginWithMicrosoft: () => ipcRenderer.send('login-microsoft'),
   loginWithGoogle: () => ipcRenderer.send('login-google'),
   loginWithApple: () => ipcRenderer.send('login-apple'),
+  getCurrentUser: () => ipcRenderer.invoke('get-current-user'),
 
   onLoginSuccess: (callback) => ipcRenderer.on('login-success', callback),
   onLoginFailed: (callback) => ipcRenderer.on('login-failed', callback),

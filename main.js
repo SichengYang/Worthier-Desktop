@@ -78,8 +78,8 @@ const createWindow = () => {
   mainWindow.loadFile(path.join(__dirname, "react/dist/index.html"));
 
   // Check for auto-login after window loads
-  mainWindow.webContents.once('did-finish-load', () => {
-    autoLogin.checkAutoLogin();
+  mainWindow.webContents.once('did-finish-load', async () => {
+    await autoLogin.checkAutoLogin();
     // Send the current theme to the renderer when it's ready
     sendThemeToRenderer(mainWindow);
   });
@@ -265,9 +265,21 @@ ipcMain.on('logout', (event) => {
   autoLogin.handleLogout();
 });
 
+// Get current user information
+ipcMain.handle('get-current-user', async (event) => {
+  try {
+    const userInfo = await autoLogin.getUserInfo();
+    console.log('Get current user called, returning:', userInfo);
+    return userInfo;
+  } catch (error) {
+    console.error('Error getting current user:', error);
+    return null;
+  }
+});
+
 // Get login statistics (optional, for debugging)
-ipcMain.on('get-login-stats', (event) => {
-  const stats = autoLogin.getLoginStats();
+ipcMain.on('get-login-stats', async (event) => {
+  const stats = await autoLogin.getLoginStats();
   mainWindow.webContents.send('login-stats', stats);
 });
 

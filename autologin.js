@@ -8,16 +8,17 @@ class AutoLogin {
 
     // Check for stored tokens and auto-login on app startup
     async checkAutoLogin() {
-        const tokenData = this.tokenManager.getTokens();
+        try {
+            const tokenData = await this.tokenManager.getTokens();
 
-        if (tokenData) {
-            // Send access_token, username, and email to server for validation
-            const axios = require('axios');
-            try {
-                const response = await axios.post('https://login.worthier.app/quickLogin', {
-                    token: tokenData.access_token,
-                    username: tokenData.user?.username,
-                    email: tokenData.user?.email
+            if (tokenData) {
+                // Send access_token, username, and email to server for validation
+                const axios = require('axios');
+                try {
+                    const response = await axios.post('https://login.worthier.app/quickLogin', {
+                        token: tokenData.access_token,
+                        username: tokenData.user?.username,
+                        email: tokenData.user?.email
                 });
 
                 if (response.data && response.data.success) {
@@ -38,6 +39,10 @@ class AutoLogin {
             console.log('No valid profile found, user needs to login manually');
             return false;
         }
+        } catch (error) {
+            console.error('Error during auto-login check:', error);
+            return false;
+        }
     }
 
     // Handle logout - clear tokens for specific provider or all
@@ -55,14 +60,14 @@ class AutoLogin {
     }
 
     // Check if there's a valid profile
-    hasValidTokens() {
-        const tokenData = this.tokenManager.getTokens();
+    async hasValidTokens() {
+        const tokenData = await this.tokenManager.getTokens();
         return tokenData;
     }
 
     // Get user info (if valid)
-    getUserInfo() {
-        const tokenData = this.tokenManager.getTokens();
+    async getUserInfo() {
+        const tokenData = await this.tokenManager.getTokens();
         if (tokenData) {
             return tokenData.user;
         }
@@ -70,8 +75,8 @@ class AutoLogin {
     }
 
     // Force refresh - clear expired tokens
-    refreshTokens() {
-        const tokenData = this.tokenManager.getTokens();
+    async refreshTokens() {
+        const tokenData = await this.tokenManager.getTokens();
         if (tokenData) {
             this.tokenManager.clearTokens();
             console.log('Cleared expired profile');
@@ -79,8 +84,8 @@ class AutoLogin {
     }
 
     // Get login statistics
-    getLoginStats() {
-        const tokenData = this.tokenManager.getTokens();
+    async getLoginStats() {
+        const tokenData = await this.tokenManager.getTokens();
         const stats = {
             hasProfile: false,
             user: null
