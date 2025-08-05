@@ -10,14 +10,18 @@ const path = require("node:path");
 const { fork } = require("child_process");
 const AutoLogin = require('./autologin');
 const { saveTheme, loadTheme, sendThemeToRenderer } = require('./theme');
+const NotificationManager = require('./notificationManager');
+const SettingsManager = require('./settingsManager');
 
 let mainWindow;
 let tray;
 let isQuitting = false;
-let working_time = 1; // Default working time in seconds
+let working_time = 25; // Default working time in minutes (will be loaded from settings)
 let working = false;
 let timerProcess;
 let autoLogin;
+let notificationManager;
+let settingsManager;
 
 const gotTheLock = app.requestSingleInstanceLock();
 
@@ -35,11 +39,14 @@ if (!gotTheLock) {
   });
 }
 
-function createNotification() {
-  // Create a notification
+async function createNotification() {
+  // Startup notification - don't check advanced permissions that might trigger browser access
+  // Only show basic notification without checking fullscreen or meeting detection
+  
+  // Create a notification to indicate the timer app is ready
   let notification = new Notification({
-    title: "Worthier",
-    body: "Ready to Work? Click to start!",
+    title: "Worthier Timer Ready",
+    body: "Your productivity timer is running. Click to start working!",
   });
 
   // Listen for button click
@@ -49,7 +56,7 @@ function createNotification() {
 
   // Listen for close
   notification.on("close", () => {
-    console.log("Notification closed");
+    console.log("Startup notification closed");
   });
 
   notification.show();
@@ -144,20 +151,31 @@ function startTimerProcess(minutes = working_time) {
 
   timerProcess.on("message", (msg) => {
     if (msg.type === "break-time") {
-      const notification = new Notification({
-        title: "Break Time!",
-        body: `You've been working for ${minutes} minutes. Time to take a break.`,
-      });
+      // Check if notification should be shown before creating break notification
+      notificationManager.shouldShowNotification().then(shouldShow => {
+        if (shouldShow) {
+          const notification = new Notification({
+            title: "Break Time!",
+            body: `You've been working for ${minutes} minutes. Time to take a break.`,
+          });
 
-      // Listen for break notification click
-      notification.on("click", () => {
-        console.log("Break notification clicked");
-        mainWindow.webContents.send("break");
-        working = false; // Reset working state
-        tray.setContextMenu(createMenu());
-      });
+          // Listen for break notification click
+          notification.on("click", () => {
+            console.log("Break notification clicked");
+            mainWindow.webContents.send("break");
+            working = false; // Reset working state
+            tray.setContextMenu(createMenu());
+          });
 
-      notification.show();
+          notification.show();
+        } else {
+          console.log("Break notification blocked by settings");
+          // Still send break signal to UI even if notification is blocked
+          mainWindow.webContents.send("break");
+          working = false;
+          tray.setContextMenu(createMenu());
+        }
+      });
     }
   });
 }
@@ -165,6 +183,14 @@ function startTimerProcess(minutes = working_time) {
 app.whenReady().then(() => {
   app.setAppUserModelId("com.worthier.app");
   app.setAsDefaultProtocolClient("Worthier");
+
+  // Initialize managers
+  settingsManager = new SettingsManager();
+  notificationManager = new NotificationManager();
+  
+  // Load timer settings
+  const settings = settingsManager.loadSettings();
+  working_time = settingsManager.getFocusTimeInMinutes(settings);
 
   createWindow();
   createNotification();
@@ -268,11 +294,16 @@ ipcMain.on('logout', (event) => {
 // Get current user information
 ipcMain.handle('get-current-user', async (event) => {
   try {
+    console.log('📋 Main process: getCurrentUser called');
     const userInfo = await autoLogin.getUserInfo();
-    console.log('Get current user called, returning:', userInfo);
+    if (userInfo) {
+      console.log('✅ Main process: User info retrieved for:', userInfo.username || userInfo.email);
+    } else {
+      console.log('❌ Main process: No user info found');
+    }
     return userInfo;
   } catch (error) {
-    console.error('Error getting current user:', error);
+    console.error('❌ Main process: Error getting current user:', error);
     return null;
   }
 });
@@ -290,4 +321,110 @@ ipcMain.on('set-theme', (event, theme) => {
     mainWindow.webContents.send('theme-changed', theme);
     console.log(`Theme changed to: ${theme}`);
   }
+});
+
+// Notification settings handlers
+ipcMain.handle('get-notification-settings', async (event) => {
+  const settings = notificationManager.getSettings();
+  const permissionStatus = notificationManager.getPermissionStatus();
+  return { ...settings, permissionStatus };
+});
+
+// Check what permissions will be needed before updating settings
+ipcMain.handle('check-required-permissions', async (event, settings) => {
+  return notificationManager.willRequirePermissions(settings);
+});
+
+// New handler for immediate permission requests
+ipcMain.handle('request-permissions-immediately', async (event, settings) => {
+  try {
+    console.log('Requesting permissions immediately for settings:', settings);
+    const results = await notificationManager.requestPermissionsImmediately(settings);
+    console.log('Permission results:', results);
+    return results;
+  } catch (error) {
+    console.error('Error requesting permissions immediately:', error);
+    throw error;
+  }
+});
+
+ipcMain.on('update-notification-settings', async (event, settings) => {
+  try {
+    // Check if permissions will be required when notifications appear
+    const requiredPermissions = notificationManager.willRequirePermissions(settings);
+    
+    if (requiredPermissions) {
+      console.log('New permissions will be requested when first notification appears for:', requiredPermissions);
+      // Send info to user about when permissions will be requested
+      mainWindow.webContents.send('permission-request-info', {
+        permissions: requiredPermissions,
+        message: 'Permissions will be requested when the first notification appears (not now)'
+      });
+    }
+    
+    // Update settings and reset permission states as needed
+    const permissionResults = await notificationManager.requestPermissionsIfNeeded(settings);
+    
+    // Update settings
+    const updatedSettings = notificationManager.updateSettings(settings);
+    console.log('Notification settings updated:', updatedSettings);
+    
+    // Send confirmation back to renderer
+    mainWindow.webContents.send('notification-settings-updated', {
+      settings: updatedSettings,
+      permissions: permissionResults
+    });
+    
+  } catch (error) {
+    console.error('Error updating notification settings:', error);
+    mainWindow.webContents.send('notification-settings-error', error.message);
+  }
+});
+
+// Check if settings file exists (for first-time user detection)
+ipcMain.handle('check-settings-exist', async (event) => {
+  const fs = require('fs');
+  const settingsPath = settingsManager.settingsPath;
+  return fs.existsSync(settingsPath);
+});
+
+// Timer settings handlers
+ipcMain.handle('get-timer-settings', async (event) => {
+  const settings = settingsManager.loadSettings();
+  return {
+    focusTime: settings.focusTime,
+    focusUnit: settings.focusUnit,
+    restTime: settings.restTime,
+    restUnit: settings.restUnit
+  };
+});
+
+ipcMain.handle('update-timer-settings', async (event, timerSettings) => {
+  const currentSettings = settingsManager.loadSettings();
+  const updatedSettings = settingsManager.saveSettings({ 
+    ...currentSettings, 
+    ...timerSettings 
+  });
+  
+  // Update working_time for immediate use
+  working_time = settingsManager.getFocusTimeInMinutes(updatedSettings);
+  
+  console.log('Timer settings updated:', timerSettings);
+  console.log('New working time (minutes):', working_time);
+  
+  // Send confirmation back to renderer
+  mainWindow.webContents.send('timer-settings-updated', {
+    focusTime: updatedSettings.focusTime,
+    focusUnit: updatedSettings.focusUnit,
+    restTime: updatedSettings.restTime,
+    restUnit: updatedSettings.restUnit
+  });
+  
+  // Return the updated settings to confirm successful save
+  return {
+    focusTime: updatedSettings.focusTime,
+    focusUnit: updatedSettings.focusUnit,
+    restTime: updatedSettings.restTime,
+    restUnit: updatedSettings.restUnit
+  };
 });

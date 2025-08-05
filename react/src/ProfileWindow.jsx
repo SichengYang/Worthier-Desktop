@@ -1,72 +1,11 @@
-import { useRef, useEffect, useState } from 'react';
+import { useRef } from 'react';
+import { useUser } from './UserContext';
 import Login from './Login';
 import './ProfileWindow.css';
 
 function ProfileWindow() {
     const errorRef = useRef(null);
-    const [userInfo, setUserInfo] = useState(null);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-    useEffect(() => {
-        checkLoginStatus();
-
-        // Listen for login success events
-        const handleLoginSuccess = (event, data) => {
-            console.log('Login success event received:', data);
-            if (data.info && data.info.user) {
-                setUserInfo(data.info.user);
-                setIsLoggedIn(true);
-                // Clear any error messages
-                if (errorRef.current) {
-                    errorRef.current.textContent = '';
-                }
-            }
-        };
-
-        // Listen for login failure events
-        const handleLoginFailed = (event, data) => {
-            console.log('Login failed event received:', data);
-            if (errorRef.current) {
-                errorRef.current.textContent = data.error || 'Login failed';
-            }
-            setIsLoggedIn(false);
-        };
-
-        // Listen for logout success events
-        const handleLogoutSuccess = (event, data) => {
-            console.log('Logout success event received:', data);
-            setUserInfo(null);
-            setIsLoggedIn(false);
-            if (errorRef.current) {
-                errorRef.current.textContent = '';
-            }
-        };
-
-        window.electronAPI?.onLoginSuccess?.(handleLoginSuccess);
-        window.electronAPI?.onLoginFailed?.(handleLoginFailed);
-        window.electronAPI?.onLogoutSuccess?.(handleLogoutSuccess);
-
-        // Cleanup function to remove event listener if needed
-        return () => {
-            // Note: electron IPC doesn't provide a direct way to remove listeners
-            // but this is good practice for React cleanup
-        };
-    }, []);
-
-    const checkLoginStatus = async () => {
-        try {
-            const user = await window.electronAPI?.getCurrentUser?.();
-            if (user) {
-                setUserInfo(user);
-                setIsLoggedIn(true);
-            } else {
-                setIsLoggedIn(false);
-            }
-        } catch (error) {
-            console.error('Error checking login status:', error);
-            setIsLoggedIn(false);
-        }
-    };
+    const { userInfo, isLoggedIn, isLoading } = useUser();
 
     const handleLoginMicrosoft = async () => {
         try {
@@ -75,7 +14,7 @@ function ProfileWindow() {
                 errorRef.current.textContent = '';
             }
             await window.electronAPI?.loginWithMicrosoft?.();
-            // The onLoginSuccess event will handle the UI update
+            // UserContext will handle the UI update via events
         } catch (error) {
             if (errorRef.current) {
                 errorRef.current.textContent = error.message || 'Login failed';
@@ -90,7 +29,7 @@ function ProfileWindow() {
                 errorRef.current.textContent = '';
             }
             await window.electronAPI?.loginWithGoogle?.();
-            // The onLoginSuccess event will handle the UI update
+            // UserContext will handle the UI update via events
         } catch (error) {
             if (errorRef.current) {
                 errorRef.current.textContent = error.message || 'Login failed';
@@ -105,7 +44,7 @@ function ProfileWindow() {
                 errorRef.current.textContent = '';
             }
             await window.electronAPI?.loginWithApple?.();
-            // The onLoginSuccess event will handle the UI update
+            // UserContext will handle the UI update via events
         } catch (error) {
             if (errorRef.current) {
                 errorRef.current.textContent = error.message || 'Login failed';
@@ -116,12 +55,27 @@ function ProfileWindow() {
     const handleLogout = async () => {
         try {
             await window.electronAPI?.logout?.();
-            // The onLogoutSuccess event will handle the UI update
+            // UserContext will handle the UI update via events
         } catch (error) {
             console.error('Logout error:', error);
         }
     };
 
+    // Show loading state
+    if (isLoading) {
+        return (
+            <div className="content-frame profile-frame">
+                <h3>Loading...</h3>
+                <div className='main-content'>
+                    <div className="profile-field">
+                        Checking login status...
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    // Show login form if not logged in
     if (!isLoggedIn) {
         return (
             <Login
@@ -133,6 +87,7 @@ function ProfileWindow() {
         );
     }
 
+    // Show profile information if logged in
     return (
         <div className="content-frame profile-frame">
             <h3>Your Profile</h3>

@@ -1,11 +1,38 @@
 
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import './FeedbackWindow.css';
 
 function FeedbackWindow() {
     const editorRef = useRef(null);
     const [files, setFiles] = useState([]);
     const [color, setColor] = useState('#222');
+
+    useEffect(() => {
+        // Restore saved content when component mounts
+        const savedContent = localStorage.getItem('feedbackContent');
+        if (savedContent && editorRef.current) {
+            editorRef.current.innerHTML = savedContent;
+        }
+        
+        return () => {
+            // Save content when component unmounts
+            if (editorRef.current) {
+                localStorage.setItem('feedbackContent', editorRef.current.innerHTML);
+            }
+        };
+    }, []);
+
+    // Auto-save content periodically while typing
+    useEffect(() => {
+        const autoSaveInterval = setInterval(() => {
+            if (editorRef.current) {
+                const content = editorRef.current.innerHTML;
+                localStorage.setItem('feedbackContent', content);
+            }
+        }, 2000); // Auto-save every 2 seconds
+
+        return () => clearInterval(autoSaveInterval);
+    }, []);
 
     const handleFileChange = (e) => {
         setFiles(Array.from(e.target.files));
@@ -27,6 +54,23 @@ function FeedbackWindow() {
         const feedback = editorRef.current.innerHTML;
         // Handle feedback and files submission logic here
         alert('Feedback submitted!');
+        
+        // Clear saved content after submission
+        localStorage.removeItem('feedbackContent');
+        if (editorRef.current) {
+            editorRef.current.innerHTML = '';
+        }
+        setFiles([]);
+    };
+
+    const handleClearContent = () => {
+        if (confirm('Are you sure you want to clear all feedback content?')) {
+            localStorage.removeItem('feedbackContent');
+            if (editorRef.current) {
+                editorRef.current.innerHTML = '';
+            }
+            setFiles([]);
+        }
     };
 
     return (
@@ -67,7 +111,10 @@ function FeedbackWindow() {
                         )}
                     </div>
                 </div>
-                <button className="submit-btn" type="submit">Submit</button>
+                <div className="feedback-actions">
+                    <button className="submit-btn" type="submit">Submit</button>
+                    <button className="clear-btn" type="button" onClick={handleClearContent}>Clear All</button>
+                </div>
             </form>
         </div>
     );

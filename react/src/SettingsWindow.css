@@ -1,13 +1,15 @@
 .theme-circles {
     display: flex;
-    gap: 28px;
-    margin-left: 18px;
-    min-width: 120px;
+    flex-direction: row !important; /* Force row direction */
+    gap: 12px; /* Reduced gap */
+    margin-left: 8px; /* Reduced margin */
+    min-width: 80px;
+    flex-wrap: wrap; /* Allow wrapping */
 }
 
 .theme-circle {
-    width: 36px;
-    height: 36px;
+    width: 24px; /* Smaller circles */
+    height: 24px;
     border-radius: 50%;
     border: 2px solid #ccc;
     outline: none;
@@ -17,9 +19,10 @@
     background: #fff;
     position: relative;
     padding: 0;
-    min-width: 36px;
-    min-height: 36px;
+    min-width: 24px;
+    min-height: 24px;
     aspect-ratio: 1/1;
+    flex-shrink: 0;
 }
 
 .theme-circle.selected {
@@ -43,54 +46,94 @@
     background: #fff;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    height: 100%;
-    max-height: 100%;
+    height: 100%; /* Changed back to 100% to fill available space */
+    max-height: calc(100vh - 40px); /* Prevent overflow with viewport consideration */
     position: relative;
-    padding: 32px;
+    padding: 16px; /* Reduced padding */
     box-sizing: border-box;
-    overflow: hidden;
+    overflow: scroll; /* Changed to scroll to allow scrolling when content overflows */
+    width: 100%;
+    max-width: 100%; /* Ensure it doesn't exceed container */
 }
 
 .settings-window h2 {
     text-align: center;
-    margin: 8px 0;
+    margin: 0 0 12px 0; /* Reduced margin */
     flex-shrink: 0;
+    font-size: 1.3em; /* Slightly smaller */
 }
 
 .settings-details {
     width: 100%;
-    max-width: 400px;
-    margin: 0 auto;
+    max-width: 100%; /* Use full container width */
+    margin: 0;
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    flex: 1;
+    gap: 6px; /* Reduced gap */
+    flex: 1; /* Changed back to flex: 1 to fill remaining space */
     min-height: 0;
     overflow-y: auto;
+    padding-right: 4px; /* Small padding for scrollbar */
 }
 
 .setting-group {
     display: flex;
+    flex-direction: row !important; /* Force row direction with !important */
     align-items: center;
-    gap: 12px;
+    gap: 6px; /* Reduced gap */
     background: #fff;
     border-radius: 6px;
-    padding: 16px 16px;
+    padding: 10px 12px; /* More compact padding */
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
-    min-height: 48px;
+    min-height: 40px; /* Reduced height */
+    transition: background 0.2s, box-shadow 0.2s;
+    flex-wrap: nowrap; /* Changed from wrap to nowrap for consistent layout */
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Special layout for settings with checkboxes */
+.setting-with-checkbox {
+    display: flex;
+    flex-direction: row !important; /* Force row direction with !important */
+    align-items: center;
+    justify-content: flex-start; /* Changed from space-between to flex-start */
+    gap: 8px; /* Slightly increased gap */
+    position: relative;
+    padding: 12px;
+    width: 100%;
+    box-sizing: border-box;
+    background: #fff;
+    border-radius: 6px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+    min-height: 40px;
     transition: background 0.2s, box-shadow 0.2s;
 }
 
+.setting-with-checkbox .setting-label-with-help {
+    flex: 1 1 auto; /* Allow the label to take available space */
+    min-width: 0; /* Allow shrinking if needed */
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.setting-with-checkbox input[type="checkbox"] {
+    margin-top: 0; /* Remove margin for better alignment */
+    flex-shrink: 0;
+}
+
 .setting-group label {
-    min-width: 120px;
-    font-size: 1em;
+    min-width: 90px; /* Reduced width */
+    font-size: 0.85em; /* Smaller font */
     color: #444;
+    flex-shrink: 0;
 }
 
 .setting-group input,
 .setting-group select {
-    font-size: 1em;
-    padding: 8px 14px;
+    font-size: 0.85em; /* Smaller font */
+    padding: 4px 8px; /* More compact padding */
     border-radius: 4px;
     border: 1.5px solid #b0b0b0;
     background: #fff;
@@ -98,6 +141,60 @@
     transition: border 0.2s, box-shadow 0.2s;
     color: #222;
     box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    flex-shrink: 0;
+}
+
+.setting-group input[type="checkbox"] {
+    padding: 0;
+    width: 20px; /* Increased width */
+    height: 20px; /* Increased height */
+    min-width: 20px; /* Ensure minimum width */
+    min-height: 20px; /* Ensure minimum height */
+    cursor: pointer;
+    accent-color: #2255aa;
+    border-radius: 3px;
+    border: 2px solid #b0b0b0;
+    background: #fff;
+    transition: all 0.2s ease;
+    position: relative;
+    appearance: none; /* Remove default styling */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    flex-shrink: 0; /* Prevent shrinking */
+    box-sizing: border-box; /* Include border in size calculation */
+}
+
+.setting-group input[type="checkbox"]:hover {
+    border-color: #2255aa;
+    box-shadow: 0 0 0 2px rgba(34, 85, 170, 0.1);
+    transform: scale(1.05);
+}
+
+.setting-group input[type="checkbox"]:checked {
+    background: #2255aa;
+    border-color: #2255aa;
+    box-shadow: 0 0 0 2px rgba(34, 85, 170, 0.2);
+}
+
+.setting-group input[type="checkbox"]:checked::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 14px; /* Slightly larger checkmark */
+    font-weight: bold;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.setting-group input[type="checkbox"]:focus {
+    outline: none;
+    border-color: #2255aa;
+    box-shadow: 0 0 0 3px rgba(34, 85, 170, 0.2);
 }
 
 .setting-group input:focus,
@@ -126,6 +223,11 @@
     box-shadow: 0 1px 4px rgba(136, 14, 79, 0.08);
 }
 
+.app-theme-pink .setting-with-checkbox {
+    background: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 1px 4px rgba(136, 14, 79, 0.08);
+}
+
 .app-theme-pink .setting-group label {
     color: #ad1457;
 }
@@ -135,6 +237,27 @@
     border: 1.5px solid #f48fb1;
     background: rgba(255, 255, 255, 0.9);
     color: #880e4f;
+}
+
+.app-theme-pink .setting-group input[type="checkbox"] {
+    accent-color: #e91e63;
+    border-color: #f48fb1;
+}
+
+.app-theme-pink .setting-group input[type="checkbox"]:hover {
+    border-color: #e91e63;
+    box-shadow: 0 0 0 2px rgba(233, 30, 99, 0.1);
+}
+
+.app-theme-pink .setting-group input[type="checkbox"]:checked {
+    background: #e91e63;
+    border-color: #e91e63;
+    box-shadow: 0 0 0 2px rgba(233, 30, 99, 0.2);
+}
+
+.app-theme-pink .setting-group input[type="checkbox"]:focus {
+    border-color: #e91e63;
+    box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.2);
 }
 
 .app-theme-pink .setting-group input:focus,
@@ -163,6 +286,11 @@
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
 }
 
+.app-theme-dark .setting-with-checkbox {
+    background: rgba(73, 80, 87, 0.8);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
 .app-theme-dark .setting-group label {
     color: #dee2e6;
 }
@@ -174,8 +302,207 @@
     color: #f8f9fa;
 }
 
+.app-theme-dark .setting-group input[type="checkbox"] {
+    accent-color: #adb5bd;
+    border-color: #6c757d;
+    background: rgba(73, 80, 87, 0.9);
+}
+
+.app-theme-dark .setting-group input[type="checkbox"]:hover {
+    border-color: #adb5bd;
+    box-shadow: 0 0 0 2px rgba(173, 181, 189, 0.1);
+}
+
+.app-theme-dark .setting-group input[type="checkbox"]:checked {
+    background: #adb5bd;
+    border-color: #adb5bd;
+    box-shadow: 0 0 0 2px rgba(173, 181, 189, 0.2);
+}
+
+.app-theme-dark .setting-group input[type="checkbox"]:focus {
+    border-color: #adb5bd;
+    box-shadow: 0 0 0 3px rgba(173, 181, 189, 0.2);
+}
+
 .app-theme-dark .setting-group input:focus,
 .app-theme-dark .setting-group select:focus {
     border: 2px solid #adb5bd;
     box-shadow: 0 0 0 2px rgba(173, 181, 189, 0.3);
+}
+
+/* Help button and tooltip styles */
+.setting-label-with-help {
+    display: flex;
+    flex-direction: row !important; /* Force row direction */
+    align-items: center;
+    gap: 6px;
+    position: relative;
+    flex: 0 1 auto; /* Changed to not take remaining space */
+}
+
+/* Override for checkbox settings */
+.setting-with-checkbox .setting-label-with-help {
+    flex: 0 1 auto; /* Don't take remaining space to keep checkbox closer */
+    min-width: 0;
+}
+
+.help-button {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 1.5px solid #888;
+    background: #f8f9fa;
+    color: #555;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    padding: 0;
+    outline: none;
+    flex-shrink: 0;
+}
+
+.help-button:hover {
+    background: #e9ecef;
+    border-color: #666;
+    color: #333;
+    transform: scale(1.05);
+}
+
+.help-button:active {
+    transform: scale(0.95);
+}
+
+.tooltip {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    margin-top: 8px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.tooltip-content {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    font-size: 13px;
+    line-height: 1.4;
+    max-width: 100%;
+}
+
+.tooltip-content h4 {
+    margin: 0 0 8px 0;
+    color: #333;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.tooltip-content p {
+    margin: 6px 0;
+    color: #555;
+}
+
+.tooltip-content ul {
+    margin: 6px 0;
+    padding-left: 16px;
+    color: #555;
+}
+
+.tooltip-content li {
+    margin: 3px 0;
+}
+
+.tooltip-content strong {
+    color: #333;
+    font-weight: 600;
+}
+
+.tooltip-content small {
+    color: #777;
+    font-style: italic;
+    display: block;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid #eee;
+}
+
+/* Theme-specific help button styles */
+.app-theme-pink .help-button {
+    border-color: #e91e63;
+    background: rgba(255, 255, 255, 0.9);
+    color: #ad1457;
+}
+
+.app-theme-pink .help-button:hover {
+    background: #fce4ec;
+    border-color: #c2185b;
+    color: #880e4f;
+}
+
+.app-theme-pink .tooltip-content {
+    background: rgba(255, 255, 255, 0.95);
+    border-color: #f8bbd9;
+    box-shadow: 0 4px 12px rgba(136, 14, 79, 0.2);
+}
+
+.app-theme-pink .tooltip-content h4 {
+    color: #880e4f;
+}
+
+.app-theme-pink .tooltip-content p,
+.app-theme-pink .tooltip-content li {
+    color: #ad1457;
+}
+
+.app-theme-pink .tooltip-content strong {
+    color: #880e4f;
+}
+
+.app-theme-pink .tooltip-content small {
+    color: #c2185b;
+    border-top-color: #f8bbd9;
+}
+
+.app-theme-dark .help-button {
+    border-color: #adb5bd;
+    background: rgba(73, 80, 87, 0.9);
+    color: #dee2e6;
+}
+
+.app-theme-dark .help-button:hover {
+    background: rgba(108, 117, 125, 0.9);
+    border-color: #dee2e6;
+    color: #f8f9fa;
+}
+
+.app-theme-dark .tooltip-content {
+    background: rgba(52, 58, 64, 0.95);
+    border-color: #6c757d;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.app-theme-dark .tooltip-content h4 {
+    color: #f8f9fa;
+}
+
+.app-theme-dark .tooltip-content p,
+.app-theme-dark .tooltip-content li {
+    color: #dee2e6;
+}
+
+.app-theme-dark .tooltip-content strong {
+    color: #f8f9fa;
+}
+
+.app-theme-dark .tooltip-content small {
+    color: #adb5bd;
+    border-top-color: #6c757d;
 }

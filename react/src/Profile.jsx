@@ -1,24 +1,24 @@
 
 import './Profile.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import ProfileWindow from './ProfileWindow';
 import SettingsWindow from './SettingsWindow';
 import FeedbackWindow from './FeedbackWindow';
 
 function Profile() {
-    const [selected, setSelected] = useState('profile');
+    // Load the last selected tab from localStorage, default to 'profile'
+    const [selected, setSelected] = useState(() => {
+        const savedTab = localStorage.getItem('profileSelectedTab');
+        return savedTab || 'profile';
+    });
 
-    let rightContent;
-    if (selected === 'profile') {
-        rightContent = <ProfileWindow />;
-    } else if (selected === 'settings') {
-        rightContent = <SettingsWindow />;
-    } else if (selected === 'feedback') {
-        rightContent = <FeedbackWindow />;
-    }
+    // Save the selected tab to localStorage whenever it changes
+    useEffect(() => {
+        localStorage.setItem('profileSelectedTab', selected);
+    }, [selected]);
 
     return (
-        <div className="content-frame">
+        <div className="profile-content-frame">
             <h3>Profile & Settings</h3>
             <div id='setting-board'>
                 <div id='left-board'>
@@ -29,7 +29,9 @@ function Profile() {
                     </ul>
                 </div>
                 <div id='right-board'>
-                    {rightContent}
+                    {selected === 'profile' && <ProfileWindow />}
+                    {selected === 'settings' && <SettingsWindow />}
+                    {selected === 'feedback' && <FeedbackWindow />}
                 </div>
             </div>
         </div>

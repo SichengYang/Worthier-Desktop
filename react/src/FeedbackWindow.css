@@ -105,9 +105,14 @@
     color: #2255aa;
 }
 
-.submit-btn {
+.feedback-actions {
+    display: flex;
+    gap: 12px;
     margin-top: 8px;
     align-self: flex-end;
+}
+
+.submit-btn {
     padding: 8px 24px;
     border-radius: 6px;
     border: none;
@@ -122,7 +127,26 @@
 }
 
 .submit-btn:hover {
-    background: #ff69b4;
+    background: #1a4397;
+}
+
+.clear-btn {
+    padding: 8px 24px;
+    border-radius: 6px;
+    border: 1px solid #dc3545;
+    background: #fff;
+    color: #dc3545;
+    font-size: 1em;
+    font-weight: 500;
+    cursor: pointer;
+    box-shadow: 0 1px 4px rgba(220,53,69,0.08);
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+.clear-btn:hover {
+    background: #dc3545;
+    color: #fff;
 }
 
 .feedback-details p {

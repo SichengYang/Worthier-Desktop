@@ -7,13 +7,24 @@ function Content({ page }) {
     const [userMessage, setUserMessage] = useState("");
 
     useEffect(() => {
-        window.electronAPI?.startTimer(() => {
+        // Set up event listeners with cleanup functions
+        const startTimerCleanup = window.electronAPI?.startTimer(() => {
             setUserMessage("Work started!");
         });
 
-        window.electronAPI?.startBreak(() => {
+        const startBreakCleanup = window.electronAPI?.startBreak(() => {
             setUserMessage("Break started!");
         });
+
+        // Cleanup function to remove event listeners when component unmounts
+        return () => {
+            if (typeof startTimerCleanup === 'function') {
+                startTimerCleanup();
+            }
+            if (typeof startBreakCleanup === 'function') {
+                startBreakCleanup();
+            }
+        };
     }, []);
 
     return (

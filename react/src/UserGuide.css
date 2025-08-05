@@ -1,0 +1,1009 @@
+/* User Guide Overlay */
+.user-guide-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 20px;
+}
+
+.user-guide-container {
+    background: var(--background-color);
+    border-radius: 16px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    max-width: 600px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    color: var(--text-color);
+    transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Guide Header */
+.guide-header {
+    padding: 30px 30px 20px;
+    text-align: center;
+    border-bottom: 1px solid var(--border-color);
+    transition: border-color 0.3s ease;
+}
+
+.guide-header h1 {
+    color: var(--text-color);
+    font-size: 28px;
+    font-weight: 600;
+    margin: 0 0 8px;
+    transition: color 0.3s ease;
+}
+
+.guide-subtitle {
+    color: var(--text-color-secondary);
+    font-size: 16px;
+    margin: 0 0 20px;
+    line-height: 1.4;
+    transition: color 0.3s ease;
+}
+
+/* Progress Bar */
+.guide-progress {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 6px;
+    background: var(--border-color);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--primary-color);
+    border-radius: 3px;
+    transition: width 0.3s ease;
+}
+
+.progress-text {
+    color: var(--text-color-secondary);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Guide Content */
+.guide-content {
+    padding: 30px;
+    flex: 1;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* Welcome Step */
+.guide-welcome {
+    text-align: center;
+}
+
+.guide-icon {
+    font-size: 48px;
+    margin-bottom: 20px;
+}
+
+.guide-welcome p {
+    color: var(--text-color);
+    font-size: 16px;
+    line-height: 1.6;
+    margin: 0 0 16px;
+}
+
+/* Theme Settings Step */
+.guide-theme-settings {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.theme-options {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.theme-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: var(--secondary-background);
+    min-width: 120px;
+}
+
+.theme-option:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.theme-option.selected {
+    border-color: var(--primary-color);
+    background: var(--primary-color);
+    color: white;
+}
+
+.theme-preview {
+    width: 48px;
+    /* Larger than settings window for better visibility */
+    height: 48px;
+    border-radius: 50%;
+    border: 2px solid #ccc;
+    outline: none;
+    cursor: pointer;
+    transition: border 0.2s, box-shadow 0.2s;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+    background: #fff;
+    position: relative;
+    padding: 0;
+    min-width: 48px;
+    min-height: 48px;
+    aspect-ratio: 1/1;
+    flex-shrink: 0;
+}
+
+/* Match the exact theme circle styling from SettingsWindow.css */
+.theme-option.selected .theme-preview {
+    border: 3px solid #2255aa;
+    box-shadow: 0 0 0 3px #e0eaff;
+    background-clip: padding-box;
+}
+
+.theme-preview-light {
+    background: linear-gradient(135deg, #f8f8f8 60%, #e0eaff 100%);
+}
+
+.theme-preview-dark {
+    background: linear-gradient(135deg, #222 60%, #555 100%);
+}
+
+.theme-preview-pink {
+    background: linear-gradient(135deg, #ffb6c1 60%, #ff69b4 100%);
+}
+
+/* Theme-specific selection colors to match SettingsWindow.css */
+[data-theme="pink"] .theme-option.selected .theme-preview {
+    border: 3px solid #e91e63;
+    box-shadow: 0 0 0 3px #fce4ec;
+}
+
+[data-theme="dark"] .theme-option.selected .theme-preview {
+    border: 3px solid #6c757d;
+    box-shadow: 0 0 0 3px rgba(108, 117, 125, 0.3);
+}
+
+.theme-name {
+    font-weight: 600;
+    font-size: 14px;
+    color: inherit;
+}
+
+.theme-option.selected .theme-name {
+    color: white;
+}
+
+/* Timer Settings Steps */
+.guide-timer-settings {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.setting-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.setting-group label {
+    color: var(--text-color);
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.time-input-group {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: center;
+}
+
+.time-input {
+    padding: 12px 16px;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--input-background);
+    color: var(--text-color);
+    font-size: 18px;
+    font-weight: 600;
+    text-align: center;
+    width: 80px;
+    transition: border-color 0.2s ease;
+}
+
+.time-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.unit-select {
+    padding: 12px 16px;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--input-background);
+    color: var(--text-color);
+    font-size: 16px;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+}
+
+.unit-select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.setting-preview {
+    background: var(--secondary-background);
+    padding: 16px;
+    border-radius: 8px;
+    color: var(--text-color-secondary);
+    text-align: center;
+    font-style: italic;
+    border: 1px solid var(--border-color);
+}
+
+/* Notification Settings */
+.guide-notification-settings {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.setting-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    background: var(--secondary-background);
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    transition: background-color 0.2s ease;
+}
+
+.setting-item:hover {
+    background: var(--hover-background);
+}
+
+.setting-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex: 1;
+}
+
+.setting-emoji {
+    font-size: 24px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--primary-color);
+    border-radius: 8px;
+}
+
+.setting-info h4 {
+    color: var(--text-color);
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0 0 4px;
+}
+
+.setting-info p {
+    color: var(--text-color-secondary);
+    font-size: 14px;
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* Toggle Switch */
+.setting-toggle {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 26px;
+    cursor: pointer;
+}
+
+.setting-toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-slider {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--border-color);
+    transition: 0.3s;
+    border-radius: 26px;
+}
+
+.toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.3s;
+    border-radius: 50%;
+}
+
+.setting-toggle input:checked+.toggle-slider {
+    background-color: var(--primary-color);
+}
+
+.setting-toggle input:checked+.toggle-slider:before {
+    transform: translateX(24px);
+}
+
+.guide-note {
+    background: var(--info-background, rgba(59, 130, 246, 0.1));
+    border: 1px solid var(--info-border, rgba(59, 130, 246, 0.2));
+    border-radius: 8px;
+    padding: 16px;
+    margin-top: 12px;
+}
+
+.guide-note p {
+    color: var(--info-text, var(--text-color-secondary));
+    font-size: 14px;
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* Completion Step */
+.guide-completion {
+    text-align: center;
+}
+
+.settings-summary {
+    background: var(--secondary-background);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 24px;
+    border: 1px solid var(--border-color);
+}
+
+.settings-summary h4 {
+    color: var(--text-color);
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 0 16px;
+}
+
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.summary-item:last-child {
+    border-bottom: none;
+}
+
+.summary-label {
+    color: var(--text-color-secondary);
+    font-size: 14px;
+}
+
+.summary-value {
+    color: var(--text-color);
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.guide-completion-message p {
+    color: var(--text-color);
+    font-size: 16px;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* Guide Actions */
+.guide-actions {
+    padding: 20px 30px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--border-color);
+    gap: 16px;
+}
+
+.guide-actions .btn {
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.guide-actions .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.guide-actions .btn-secondary {
+    background: transparent;
+    color: var(--text-color-secondary);
+    border: 1px solid var(--border-color);
+}
+
+.guide-actions .btn-secondary:hover:not(:disabled) {
+    background: var(--hover-background);
+    color: var(--text-color);
+}
+
+.guide-actions .btn-primary {
+    background: var(--primary-color);
+    color: white;
+}
+
+.guide-actions .btn-primary:hover {
+    background: var(--primary-hover, var(--primary-color));
+    transform: translateY(-1px);
+}
+
+.guide-actions .btn-success {
+    background: var(--success-color, #10b981);
+    color: white;
+}
+
+.guide-actions .btn-success:hover {
+    background: var(--success-hover, #059669);
+    transform: translateY(-1px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .user-guide-overlay {
+        padding: 10px;
+    }
+
+    .user-guide-container {
+        max-height: 95vh;
+    }
+
+    .guide-header,
+    .guide-content,
+    .guide-actions {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    .guide-header h1 {
+        font-size: 24px;
+    }
+
+    .time-input-group {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .time-input,
+    .unit-select {
+        width: 100%;
+    }
+
+    .setting-item {
+        flex-direction: column;
+        gap: 16px;
+        text-align: center;
+    }
+
+    .setting-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 12px;
+    }
+}
+
+/* Dark theme specific adjustments */
+[data-theme="dark"] .user-guide-container {
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+}
+
+[data-theme="dark"] .toggle-slider:before {
+    background-color: #f1f5f9;
+}
+
+[data-theme="dark"] .theme-option:hover {
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
+}
+
+/* Pink theme specific adjustments */
+[data-theme="pink"] .guide-icon {
+    filter: hue-rotate(315deg);
+}
+
+[data-theme="pink"] .setting-emoji {
+    background: var(--primary-color);
+}
+
+[data-theme="pink"] .user-guide-container {
+    box-shadow: 0 20px 40px rgba(219, 39, 119, 0.3);
+}
+
+[data-theme="pink"] .theme-option:hover {
+    box-shadow: 0 4px 12px rgba(219, 39, 119, 0.2);
+}
+
+/* Light theme specific adjustments */
+[data-theme="light"] .theme-option:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .user-guide-container {
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+/* Light Theme Styles */
+.app-theme-light .user-guide-container {
+    background: #ffffff;
+    color: #212529;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+.app-theme-light .guide-header {
+    border-bottom-color: #e9ecef;
+}
+
+.app-theme-light .guide-header h1 {
+    color: #212529;
+}
+
+.app-theme-light .guide-subtitle {
+    color: #6c757d;
+}
+
+.app-theme-light .progress-bar {
+    background: #e9ecef;
+}
+
+.app-theme-light .progress-fill {
+    background: #007bff;
+}
+
+.app-theme-light .progress-text {
+    color: #6c757d;
+}
+
+.app-theme-light .step-number {
+    background: #007bff;
+    color: white;
+}
+
+.app-theme-light .step-title {
+    color: #212529;
+}
+
+.app-theme-light .step-description {
+    color: #6c757d;
+}
+
+.app-theme-light .guide-setting {
+    background: #f8f9fa;
+    border-color: #e9ecef;
+}
+
+.app-theme-light .setting-label {
+    color: #495057;
+}
+
+.app-theme-light .setting-input {
+    background: white;
+    border-color: #ced4da;
+    color: #495057;
+}
+
+.app-theme-light .setting-input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.app-theme-light .theme-preview {
+    border-color: #dee2e6;
+}
+
+.app-theme-light .theme-preview.selected {
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+}
+
+.app-theme-light .guide-nav {
+    border-top-color: #e9ecef;
+}
+
+.app-theme-light .guide-actions .btn-primary {
+    background: #007bff;
+    color: white;
+}
+
+.app-theme-light .guide-actions .btn-primary:hover {
+    background: #0056b3;
+}
+
+.app-theme-light .guide-actions .btn-secondary {
+    background: #6c757d;
+    color: white;
+    border: 2.5px solid #007bff;
+}
+
+.app-theme-light .guide-actions .btn-secondary:hover:not(:disabled) {
+    background: #545b62;
+    color: white;
+    border-color: #0056b3;
+}
+
+.app-theme-light .guide-actions .btn-success {
+    background: #28a745;
+    color: white;
+}
+
+.app-theme-light .guide-actions .btn-success:hover {
+    background: #218838;
+}
+
+.app-theme-light .toggle-slider {
+    background-color: #dee2e6;
+}
+
+.app-theme-light .toggle-slider:before {
+    background-color: white;
+}
+
+.app-theme-light .setting-toggle input:checked + .toggle-slider {
+    background-color: #007bff;
+}
+
+.app-theme-light .theme-option.selected {
+    border-color: #007bff;
+    background: #007bff;
+    color: white;
+}
+
+.app-theme-light .theme-option.selected .theme-name {
+    color: white;
+}
+
+.app-theme-light .summary-item {
+    background: #f8f9fa;
+    border-color: #e9ecef;
+}
+
+.app-theme-light .summary-label {
+    color: #6c757d;
+}
+
+.app-theme-light .summary-value {
+    color: #212529;
+}
+
+/* Pink Theme Styles */
+.app-theme-pink .user-guide-container {
+    background: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 50%, #f48fb1 100%);
+    color: #880e4f;
+    box-shadow: 0 20px 40px rgba(136, 14, 79, 0.2);
+}
+
+.app-theme-pink .guide-header {
+    border-bottom-color: #f8bbd9;
+}
+
+.app-theme-pink .guide-header h1 {
+    color: #880e4f;
+}
+
+.app-theme-pink .guide-subtitle {
+    color: #ad1457;
+}
+
+.app-theme-pink .progress-bar {
+    background: #f8bbd9;
+}
+
+.app-theme-pink .progress-fill {
+    background: #e91e63;
+}
+
+.app-theme-pink .progress-text {
+    color: #ad1457;
+}
+
+.app-theme-pink .step-number {
+    background: #e91e63;
+    color: white;
+}
+
+.app-theme-pink .step-title {
+    color: #880e4f;
+}
+
+.app-theme-pink .step-description {
+    color: #ad1457;
+}
+
+.app-theme-pink .guide-setting {
+    background: rgba(255, 255, 255, 0.8);
+    border-color: #f8bbd9;
+}
+
+.app-theme-pink .setting-label {
+    color: #ad1457;
+}
+
+.app-theme-pink .setting-input {
+    background: rgba(255, 255, 255, 0.9);
+    border-color: #f48fb1;
+    color: #880e4f;
+}
+
+.app-theme-pink .setting-input:focus {
+    border-color: #e91e63;
+    box-shadow: 0 0 0 2px rgba(233, 30, 99, 0.25);
+}
+
+.app-theme-pink .theme-preview {
+    border-color: #f48fb1;
+}
+
+.app-theme-pink .theme-preview.selected {
+    border-color: #e91e63;
+    box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.25);
+}
+
+.app-theme-pink .guide-nav {
+    border-top-color: #f8bbd9;
+}
+
+.app-theme-pink .guide-actions .btn-primary {
+    background: #e91e63;
+    color: white;
+}
+
+.app-theme-pink .guide-actions .btn-primary:hover {
+    background: #c2185b;
+}
+
+.app-theme-pink .guide-actions .btn-secondary {
+    background: #ad1457;
+    color: white;
+    border: 2.5px solid #e91e63;
+}
+
+.app-theme-pink .guide-actions .btn-secondary:hover:not(:disabled) {
+    background: #880e4f;
+    color: white;
+    border-color: #c2185b;
+}
+
+.app-theme-pink .guide-actions .btn-success {
+    background: #e91e63;
+    color: white;
+}
+
+.app-theme-pink .guide-actions .btn-success:hover {
+    background: #c2185b;
+}
+
+.app-theme-pink .toggle-slider {
+    background-color: #f8bbd9;
+}
+
+.app-theme-pink .toggle-slider:before {
+    background-color: white;
+}
+
+.app-theme-pink .setting-toggle input:checked + .toggle-slider {
+    background-color: #e91e63;
+}
+
+.app-theme-pink .theme-option.selected {
+    border-color: #e91e63;
+    background: #e91e63;
+    color: white;
+}
+
+.app-theme-pink .theme-option.selected .theme-name {
+    color: white;
+}
+
+.app-theme-pink .summary-item {
+    background: rgba(255, 255, 255, 0.8);
+    border-color: #f8bbd9;
+}
+
+.app-theme-pink .summary-label {
+    color: #ad1457;
+}
+
+.app-theme-pink .summary-value {
+    color: #880e4f;
+}
+
+/* Dark Theme Styles */
+.app-theme-dark .user-guide-container {
+    background: rgba(52, 58, 64, 0.95);
+    color: #f8f9fa;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+.app-theme-dark .guide-header {
+    border-bottom-color: #495057;
+}
+
+.app-theme-dark .guide-header h1 {
+    color: #f8f9fa;
+}
+
+.app-theme-dark .guide-subtitle {
+    color: #adb5bd;
+}
+
+.app-theme-dark .progress-bar {
+    background: #495057;
+}
+
+.app-theme-dark .progress-fill {
+    background: #6c757d;
+}
+
+.app-theme-dark .progress-text {
+    color: #adb5bd;
+}
+
+.app-theme-dark .step-number {
+    background: #6c757d;
+    color: white;
+}
+
+.app-theme-dark .step-title {
+    color: #f8f9fa;
+}
+
+.app-theme-dark .step-description {
+    color: #adb5bd;
+}
+
+.app-theme-dark .guide-setting {
+    background: rgba(73, 80, 87, 0.8);
+    border-color: #495057;
+}
+
+.app-theme-dark .setting-label {
+    color: #adb5bd;
+}
+
+.app-theme-dark .setting-input {
+    background: rgba(73, 80, 87, 0.9);
+    border-color: #6c757d;
+    color: #f8f9fa;
+}
+
+.app-theme-dark .setting-input:focus {
+    border-color: #adb5bd;
+    box-shadow: 0 0 0 2px rgba(173, 181, 189, 0.25);
+}
+
+.app-theme-dark .theme-preview {
+    border-color: #6c757d;
+}
+
+.app-theme-dark .theme-preview.selected {
+    border-color: #adb5bd;
+    box-shadow: 0 0 0 3px rgba(173, 181, 189, 0.25);
+}
+
+.app-theme-dark .guide-nav {
+    border-top-color: #495057;
+}
+
+.app-theme-dark .guide-actions .btn-primary {
+    background: #6c757d;
+    color: white;
+}
+
+.app-theme-dark .guide-actions .btn-primary:hover {
+    background: #5a6268;
+}
+
+.app-theme-dark .guide-actions .btn-secondary {
+    background: #495057;
+    color: #adb5bd;
+    border: 2.5px solid #6c757d;
+}
+
+.app-theme-dark .guide-actions .btn-secondary:hover:not(:disabled) {
+    background: #3d4347;
+    color: #f8f9fa;
+    border-color: #adb5bd;
+}
+
+.app-theme-dark .guide-actions .btn-success {
+    background: #6c757d;
+    color: white;
+}
+
+.app-theme-dark .guide-actions .btn-success:hover {
+    background: #5a6268;
+}
+
+.app-theme-dark .toggle-slider {
+    background-color: #495057;
+}
+
+.app-theme-dark .toggle-slider:before {
+    background-color: #f8f9fa;
+}
+
+.app-theme-dark .setting-toggle input:checked + .toggle-slider {
+    background-color: #6c757d;
+}
+
+.app-theme-dark .theme-option.selected {
+    border-color: #6c757d;
+    background: #6c757d;
+    color: white;
+}
+
+.app-theme-dark .theme-option.selected .theme-name {
+    color: white;
+}
+
+.app-theme-dark .summary-item {
+    background: rgba(73, 80, 87, 0.8);
+    border-color: #495057;
+}
+
+.app-theme-dark .summary-label {
+    color: #adb5bd;
+}
+
+.app-theme-dark .summary-value {
+    color: #f8f9fa;
+}
