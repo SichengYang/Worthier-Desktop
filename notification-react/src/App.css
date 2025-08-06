@@ -1,0 +1,160 @@
+.notification-container {
+  width: 100%;
+  height: 100vh;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  position: relative;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+  animation: slideInFromRight 0.3s ease-out;
+  overflow: hidden;
+  cursor: default;
+}
+
+/* Light theme */
+.notification-container.light {
+  background: rgba(255, 255, 255, 0.95);
+  color: #333333;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Dark theme */
+.notification-container.dark {
+  background: rgba(30, 30, 30, 0.95);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Pink theme */
+.notification-container.pink {
+  background: rgba(255, 192, 203, 0.95);
+  color: #8B0000;
+  border: 1px solid rgba(255, 105, 180, 0.3);
+}
+
+@keyframes slideInFromRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.close-button {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+  z-index: 10;
+}
+
+.light .close-button {
+  color: #666666;
+}
+
+.light .close-button:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.dark .close-button {
+  color: #ffffff;
+}
+
+.dark .close-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.pink .close-button {
+  color: #8B0000;
+}
+
+.pink .close-button:hover {
+  background-color: rgba(255, 105, 180, 0.2);
+}
+
+.notification-header {
+  margin-bottom: 8px;
+  padding-right: 30px;
+  flex-grow: 1;
+}
+
+.notification-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.notification-content {
+  font-size: 14px;
+  opacity: 0.8;
+  line-height: 1.4;
+}
+
+.notification-buttons {
+  display: flex;
+  gap: 8px;
+  margin-top: auto;
+}
+
+.notification-button {
+  flex: 1;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.notification-button.primary {
+  background-color: #007AFF;
+  color: white;
+}
+
+.notification-button.primary:hover {
+  background-color: #0056CC;
+}
+
+.light .notification-button.secondary {
+  background-color: rgba(0, 0, 0, 0.1);
+  color: #333333;
+}
+
+.light .notification-button.secondary:hover {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.dark .notification-button.secondary {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+.dark .notification-button.secondary:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.pink .notification-button.secondary {
+  background-color: rgba(255, 105, 180, 0.2);
+  color: #8B0000;
+}
+
+.pink .notification-button.secondary:hover {
+  background-color: rgba(255, 105, 180, 0.3);
+}

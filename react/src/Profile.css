@@ -38,6 +38,7 @@
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   padding: 12px 0;
+  overflow-x: hidden; /* Prevent horizontal overflow */
 }
 
 #right-board {
@@ -49,6 +50,7 @@
   background: rgba(255, 255, 255, 0.9);
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  scrollbar-width: none;
 }
 
 .profile-menu {

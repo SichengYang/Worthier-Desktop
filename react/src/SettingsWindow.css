@@ -51,7 +51,9 @@
     position: relative;
     padding: 16px; /* Reduced padding */
     box-sizing: border-box;
-    overflow: scroll; /* Changed to scroll to allow scrolling when content overflows */
+    overflow-y: scroll; /* Changed to scroll to allow scrolling when content overflows */
+    overflow-x: hidden; /* Prevent horizontal overflow */
+    scrollbar-width: none;
     width: 100%;
     max-width: 100%; /* Ensure it doesn't exceed container */
 }
