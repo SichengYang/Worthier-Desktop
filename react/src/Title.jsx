@@ -19,15 +19,16 @@ function Title() {
     
     return (
         <div className="titlebar">
-            <h5>{displayTitle}</h5>
-            <div className="buttons">
-                <button>
-                    <i className="bi bi-dash-lg" onClick={handleMinimize}></i>
+            <div className="window-controls">
+                <button className="window-control close" onClick={handleClose}>
+                    <span className="control-icon"></span>
                 </button>
-                <button>
-                    <i className="bi bi-x-lg" onClick={handleClose}></i>
+                <button className="window-control minimize" onClick={handleMinimize}>
+                    <span className="control-icon"></span>
                 </button>
             </div>
+            <h5 className="title-text">{displayTitle}</h5>
+            <div className="spacer"></div>
         </div>
     )
 }

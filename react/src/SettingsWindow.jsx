@@ -8,6 +8,8 @@ function SettingsWindow() {
     const [focusUnit, setFocusUnit] = useState('minutes');
     const [restTime, setRestTime] = useState(10);
     const [restUnit, setRestUnit] = useState('minutes');
+    const [extendTime, setExtendTime] = useState(15);
+    const [extendUnit, setExtendUnit] = useState('minutes');
     const [disableFullscreenNotifications, setDisableFullscreenNotifications] = useState(false);
     const [disableMeetingNotifications, setDisableMeetingNotifications] = useState(false);
     const [permissionWarnings, setPermissionWarnings] = useState([]);
@@ -30,6 +32,8 @@ function SettingsWindow() {
                 setFocusUnit(timerSettings.focusUnit || 'minutes');
                 setRestTime(timerSettings.restTime || 10);
                 setRestUnit(timerSettings.restUnit || 'minutes');
+                setExtendTime(timerSettings.extendTime || 15);
+                setExtendUnit(timerSettings.extendUnit || 'minutes');
             } catch (error) {
                 console.error('Failed to load settings:', error);
             }
@@ -60,6 +64,8 @@ function SettingsWindow() {
             setFocusUnit(settings.focusUnit || 'minutes');
             setRestTime(settings.restTime || 10);
             setRestUnit(settings.restUnit || 'minutes');
+            setExtendTime(settings.extendTime || 15);
+            setExtendUnit(settings.extendUnit || 'minutes');
         });
 
         return () => {
@@ -96,7 +102,9 @@ function SettingsWindow() {
             focusTime: time,
             focusUnit,
             restTime,
-            restUnit
+            restUnit,
+            extendTime,
+            extendUnit
         });
     };
 
@@ -106,7 +114,9 @@ function SettingsWindow() {
             focusTime,
             focusUnit: unit,
             restTime,
-            restUnit
+            restUnit,
+            extendTime,
+            extendUnit
         });
     };
 
@@ -116,7 +126,9 @@ function SettingsWindow() {
             focusTime,
             focusUnit,
             restTime: time,
-            restUnit
+            restUnit,
+            extendTime,
+            extendUnit
         });
     };
 
@@ -126,7 +138,33 @@ function SettingsWindow() {
             focusTime,
             focusUnit,
             restTime,
-            restUnit: unit
+            restUnit: unit,
+            extendTime,
+            extendUnit
+        });
+    };
+
+    const handleExtendTimeChange = async (time) => {
+        setExtendTime(time);
+        await updateTimerSettings({
+            focusTime,
+            focusUnit,
+            restTime,
+            restUnit,
+            extendTime: time,
+            extendUnit
+        });
+    };
+
+    const handleExtendUnitChange = async (unit) => {
+        setExtendUnit(unit);
+        await updateTimerSettings({
+            focusTime,
+            focusUnit,
+            restTime,
+            restUnit,
+            extendTime,
+            extendUnit: unit
         });
     };
 
@@ -229,6 +267,20 @@ function SettingsWindow() {
                         style={{ width: '50px', marginRight: '6px' }}
                     />
                     <select value={restUnit} onChange={e => handleRestUnitChange(e.target.value)}>
+                        <option value="minutes">Min</option>
+                        <option value="hours">Hrs</option>
+                    </select>
+                </div>
+                <div className="setting-group">
+                    <label>Extend Time:</label>
+                    <input
+                        type="number"
+                        min="1"
+                        value={extendTime}
+                        onChange={e => handleExtendTimeChange(e.target.value)}
+                        style={{ width: '50px', marginRight: '6px' }}
+                    />
+                    <select value={extendUnit} onChange={e => handleExtendUnitChange(e.target.value)}>
                         <option value="minutes">Min</option>
                         <option value="hours">Hrs</option>
                     </select>

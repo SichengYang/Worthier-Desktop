@@ -83,4 +83,41 @@ contextBridge.exposeInMainWorld('electronAPI', {
     ipcRenderer.on('timer-settings-updated', callback);
     return () => ipcRenderer.removeListener('timer-settings-updated', callback);
   },
+
+  // React notification window methods
+  showReactNotification: (options) => ipcRenderer.invoke('show-react-notification', options),
+  showTimerCompleteNotification: (onStartBreak, onContinueWorking) => 
+    ipcRenderer.invoke('show-timer-complete-notification', onStartBreak, onContinueWorking),
+  showStartupNotification: (onStartTimer, onLater) => 
+    ipcRenderer.invoke('show-startup-notification', onStartTimer, onLater),
+  showSettingsConfirmation: (message, onConfirm, onCancel) => 
+    ipcRenderer.invoke('show-settings-confirmation', message, onConfirm, onCancel),
+  showPermissionRequest: (permissionType, onGrant, onDeny) => 
+    ipcRenderer.invoke('show-permission-request', permissionType, onGrant, onDeny),
+  showErrorNotification: (title, message, onOk) => 
+    ipcRenderer.invoke('show-error-notification', title, message, onOk),
+  showSuccessNotification: (title, message, onOk) => 
+    ipcRenderer.invoke('show-success-notification', title, message, onOk),
+  showInfoNotification: (title, message, buttonText, onButtonClick) => 
+    ipcRenderer.invoke('show-info-notification', title, message, buttonText, onButtonClick),
+  closeNotification: (notificationId) => 
+    ipcRenderer.invoke('close-notification', notificationId),
+  closeAllNotifications: () => 
+    ipcRenderer.invoke('close-all-notifications'),
+  getNotificationCount: () => 
+    ipcRenderer.invoke('get-notification-count'),
+
+  // Tray menu functions
+  getWorkingState: () => ipcRenderer.invoke('get-working-state'),
+  startWorking: () => ipcRenderer.send('tray-start-working'),
+  takeBreak: () => ipcRenderer.send('tray-take-break'),
+  openMainWindow: () => ipcRenderer.send('tray-open-main'),
+  quitApp: () => ipcRenderer.send('tray-quit-app'),
+  onWorkingStateChange: (callback) => {
+    ipcRenderer.on('working-state-changed', callback);
+    return () => ipcRenderer.removeListener('working-state-changed', callback);
+  },
+  removeWorkingStateListener: (callback) => {
+    ipcRenderer.removeListener('working-state-changed', callback);
+  }
 });

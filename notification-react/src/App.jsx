@@ -26,7 +26,7 @@ function App() {
     const urlParams = new URLSearchParams(window.location.search)
     const themeParam = urlParams.get('theme')
     const dataParam = urlParams.get('data')
-    
+
     if (themeParam) {
       setTheme(themeParam)
     }

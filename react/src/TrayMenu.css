@@ -1,0 +1,238 @@
+/* TrayMenu.css */
+.tray-menu {
+  width: 200px;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  backdrop-filter: blur(20px);
+  border: 1px solid;
+}
+
+/* Light theme */
+.tray-menu.light {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(0, 0, 0, 0.1);
+  color: #333;
+}
+
+/* Dark theme */
+.tray-menu.dark {
+  background: rgba(40, 40, 40, 0.95);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+/* Pink theme */
+.tray-menu.pink {
+  background: rgba(255, 240, 245, 0.95);
+  border-color: rgba(255, 105, 180, 0.2);
+  color: #8b5a6b;
+}
+
+.tray-menu-header {
+  padding: 14px 16px;
+  border-bottom: 1px solid;
+  text-align: center;
+}
+
+.tray-menu.light .tray-menu-header {
+  background: rgba(248, 249, 250, 0.8);
+  border-bottom-color: rgba(0, 0, 0, 0.1);
+}
+
+.tray-menu.dark .tray-menu-header {
+  background: rgba(50, 50, 50, 0.8);
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+.tray-menu.pink .tray-menu-header {
+  background: rgba(255, 228, 239, 0.8);
+  border-bottom-color: rgba(255, 105, 180, 0.2);
+}
+
+.tray-menu-header h4 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.tray-menu-content {
+  padding: 12px 12px 16px 12px;
+}
+
+.menu-item {
+  width: 100%;
+  padding: 12px 14px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.15s ease;
+  margin-bottom: 4px;
+}
+
+.menu-item:last-child {
+  margin-bottom: 0;
+}
+
+.menu-item i {
+  font-size: 14px;
+  width: 16px;
+  text-align: center;
+}
+
+/* Light theme menu items */
+.tray-menu.light .menu-item {
+  color: #333;
+}
+
+.tray-menu.light .menu-item:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.tray-menu.light .menu-item.primary {
+  background: rgba(0, 123, 255, 0.1);
+  color: #007bff;
+}
+
+.tray-menu.light .menu-item.primary:hover {
+  background: rgba(0, 123, 255, 0.15);
+}
+
+.tray-menu.light .menu-item.primary.work {
+  background: rgba(40, 167, 69, 0.1);
+  color: #28a745;
+}
+
+.tray-menu.light .menu-item.primary.work:hover {
+  background: rgba(40, 167, 69, 0.15);
+}
+
+.tray-menu.light .menu-item.primary.break {
+  background: rgba(255, 193, 7, 0.1);
+  color: #ffc107;
+}
+
+.tray-menu.light .menu-item.primary.break:hover {
+  background: rgba(255, 193, 7, 0.15);
+}
+
+.tray-menu.light .menu-item.danger {
+  color: #dc3545;
+}
+
+.tray-menu.light .menu-item.danger:hover {
+  background: rgba(220, 53, 69, 0.1);
+}
+
+/* Dark theme menu items */
+.tray-menu.dark .menu-item {
+  color: #fff;
+}
+
+.tray-menu.dark .menu-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.tray-menu.dark .menu-item.primary {
+  background: rgba(0, 123, 255, 0.2);
+  color: #66b3ff;
+}
+
+.tray-menu.dark .menu-item.primary:hover {
+  background: rgba(0, 123, 255, 0.3);
+}
+
+.tray-menu.dark .menu-item.primary.work {
+  background: rgba(40, 167, 69, 0.2);
+  color: #5cbf72;
+}
+
+.tray-menu.dark .menu-item.primary.work:hover {
+  background: rgba(40, 167, 69, 0.3);
+}
+
+.tray-menu.dark .menu-item.primary.break {
+  background: rgba(255, 193, 7, 0.2);
+  color: #ffd93d;
+}
+
+.tray-menu.dark .menu-item.primary.break:hover {
+  background: rgba(255, 193, 7, 0.3);
+}
+
+.tray-menu.dark .menu-item.danger {
+  color: #ff6b6b;
+}
+
+.tray-menu.dark .menu-item.danger:hover {
+  background: rgba(220, 53, 69, 0.2);
+}
+
+/* Pink theme menu items */
+.tray-menu.pink .menu-item {
+  color: #8b5a6b;
+}
+
+.tray-menu.pink .menu-item:hover {
+  background: rgba(255, 105, 180, 0.1);
+}
+
+.tray-menu.pink .menu-item.primary {
+  background: rgba(255, 105, 180, 0.15);
+  color: #d63384;
+}
+
+.tray-menu.pink .menu-item.primary:hover {
+  background: rgba(255, 105, 180, 0.2);
+}
+
+.tray-menu.pink .menu-item.primary.work {
+  background: rgba(40, 167, 69, 0.15);
+  color: #198754;
+}
+
+.tray-menu.pink .menu-item.primary.work:hover {
+  background: rgba(40, 167, 69, 0.2);
+}
+
+.tray-menu.pink .menu-item.primary.break {
+  background: rgba(255, 193, 7, 0.15);
+  color: #fd7e14;
+}
+
+.tray-menu.pink .menu-item.primary.break:hover {
+  background: rgba(255, 193, 7, 0.2);
+}
+
+.tray-menu.pink .menu-item.danger {
+  color: #dc3545;
+}
+
+.tray-menu.pink .menu-item.danger:hover {
+  background: rgba(220, 53, 69, 0.15);
+}
+
+.menu-divider {
+  height: 1px;
+  margin: 8px 0;
+  border-bottom: 1px solid;
+}
+
+.tray-menu.light .menu-divider {
+  border-bottom-color: rgba(0, 0, 0, 0.1);
+}
+
+.tray-menu.dark .menu-divider {
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+.tray-menu.pink .menu-divider {
+  border-bottom-color: rgba(255, 105, 180, 0.2);
+}

@@ -9,6 +9,8 @@ function UserGuide({ onComplete }) {
         focusUnit: 'minutes',
         restTime: 10,
         restUnit: 'minutes',
+        extendTime: 15,
+        extendUnit: 'minutes',
         disableFullscreenNotifications: false,
         disableMeetingNotifications: false
     });
@@ -161,6 +163,41 @@ function UserGuide({ onComplete }) {
             )
         },
         {
+            title: "Set Your Extend Time",
+            subtitle: "How long would you like to extend work sessions when needed?",
+            content: (
+                <div className="guide-timer-settings">
+                    <div className="setting-group">
+                        <label>Extend Duration:</label>
+                        <div className="time-input-group">
+                            <input
+                                type="number"
+                                min="1"
+                                max="60"
+                                value={settings.extendTime}
+                                onChange={(e) => setSettings({...settings, extendTime: parseInt(e.target.value) || 15})}
+                                className="time-input"
+                            />
+                            <select
+                                value={settings.extendUnit}
+                                onChange={(e) => setSettings({...settings, extendUnit: e.target.value})}
+                                className="unit-select"
+                            >
+                                <option value="minutes">minutes</option>
+                                <option value="hours">hours</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div className="setting-preview">
+                        When you're in flow, you can extend your work session by {settings.extendTime} {settings.extendUnit}.
+                    </div>
+                    <div className="setting-info">
+                        <p>💡 This gives you flexibility to continue working when you're productive, without breaking your concentration.</p>
+                    </div>
+                </div>
+            )
+        },
+        {
             title: "App Permissions",
             subtitle: "Configure smart notification features",
             content: (
@@ -268,14 +305,18 @@ function UserGuide({ onComplete }) {
                 focusTime: settings.focusTime,
                 focusUnit: settings.focusUnit,
                 restTime: settings.restTime,
-                restUnit: settings.restUnit
+                restUnit: settings.restUnit,
+                extendTime: settings.extendTime,
+                extendUnit: settings.extendUnit
             });
             
             const savedTimerSettings = await window.electronAPI.updateTimerSettings({
                 focusTime: settings.focusTime,
                 focusUnit: settings.focusUnit,
                 restTime: settings.restTime,
-                restUnit: settings.restUnit
+                restUnit: settings.restUnit,
+                extendTime: settings.extendTime,
+                extendUnit: settings.extendUnit
             });
             console.log('Timer settings saved successfully:', savedTimerSettings);
 

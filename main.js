@@ -11,7 +11,9 @@ const { fork } = require("child_process");
 const AutoLogin = require('./autologin');
 const { saveTheme, loadTheme, sendThemeToRenderer } = require('./theme');
 const NotificationManager = require('./notificationManager');
+const NotificationWindow = require('./notificationWindow');
 const SettingsManager = require('./settingsManager');
+const TrayWindow = require('./trayWindow');
 
 let mainWindow;
 let tray;
@@ -21,7 +23,9 @@ let working = false;
 let timerProcess;
 let autoLogin;
 let notificationManager;
+let notificationWindow;
 let settingsManager;
+let trayWindow;
 
 const gotTheLock = app.requestSingleInstanceLock();
 
@@ -39,27 +43,37 @@ if (!gotTheLock) {
   });
 }
 
-async function createNotification() {
-  // Startup notification - don't check advanced permissions that might trigger browser access
-  // Only show basic notification without checking fullscreen or meeting detection
-  
-  // Create a notification to indicate the timer app is ready
-  let notification = new Notification({
-    title: "Worthier Timer Ready",
-    body: "Your productivity timer is running. Click to start working!",
-  });
+async function createStartUpNotification() {
+  // Startup notification using React notification window
+  try {
+    await notificationWindow.showStartupNotification(
+      () => {
+        console.log("Starting timer from startup notification...");
+        startTimerProcess(working_time);
+      },
+      () => {
+        console.log("User chose to start timer later...");
+      }
+    );
+  } catch (error) {
+    console.error('Error showing startup notification window:', error);
+    
+    // Fallback to native notification if React notification fails
+    let notification = new Notification({
+      title: "Worthier Timer Ready",
+      body: "Your productivity timer is running. Click to start working!",
+    });
 
-  // Listen for button click
-  notification.on("click", () => {
-    startTimerProcess(working_time);
-  });
+    notification.on("click", () => {
+      startTimerProcess(working_time);
+    });
 
-  // Listen for close
-  notification.on("close", () => {
-    console.log("Startup notification closed");
-  });
+    notification.on("close", () => {
+      console.log("Startup notification closed");
+    });
 
-  notification.show();
+    notification.show();
+  }
 }
 
 const createWindow = () => {
@@ -108,13 +122,19 @@ function createMenu() {
           startTimerProcess(working_time); // Start timer
 
           working = true;
-          tray.setContextMenu(createMenu());
+          // Update context menu for non-macOS platforms
+          if (process.platform !== "darwin") {
+            tray.setContextMenu(createMenu());
+          }
         } else {
           mainWindow.webContents.send("break");
           timerProcess.send("cancel");
 
           working = false; // Reset working state
-          tray.setContextMenu(createMenu());
+          // Update context menu for non-macOS platforms
+          if (process.platform !== "darwin") {
+            tray.setContextMenu(createMenu());
+          }
         }
       },
     },
@@ -147,33 +167,72 @@ function startTimerProcess(minutes = working_time) {
 
   //change menu content
   working = true; // Set working state
-  tray.setContextMenu(createMenu());
+  
+  // Notify all windows about working state change
+  BrowserWindow.getAllWindows().forEach((win) => {
+    if (!win.isDestroyed()) {
+      win.webContents.send('working-state-changed', working);
+    }
+  });
 
   timerProcess.on("message", (msg) => {
     if (msg.type === "break-time") {
       // Check if notification should be shown before creating break notification
-      notificationManager.shouldShowNotification().then(shouldShow => {
+      notificationManager.shouldShowNotification().then(async shouldShow => {
         if (shouldShow) {
-          const notification = new Notification({
-            title: "Break Time!",
-            body: `You've been working for ${minutes} minutes. Time to take a break.`,
-          });
+          try {
+            await notificationWindow.showTimerComplete(
+              () => {
+                console.log("Starting break from notification...");
+                mainWindow.webContents.send("break");
+                working = false;
+                // Notify all windows about working state change
+                BrowserWindow.getAllWindows().forEach((win) => {
+                  if (!win.isDestroyed()) {
+                    win.webContents.send('working-state-changed', working);
+                  }
+                });
+              },
+              () => {
+                console.log("Continuing work from notification...");
+                // Start another timer session
+                startTimerProcess(working_time);
+              }
+            );
+          } catch (error) {
+            console.error('Error showing break notification window:', error);
+            
+            // Fallback to native notification
+            const notification = new Notification({
+              title: "Break Time!",
+              body: `You've been working for ${minutes} minutes. Time to take a break.`,
+            });
 
-          // Listen for break notification click
-          notification.on("click", () => {
-            console.log("Break notification clicked");
-            mainWindow.webContents.send("break");
-            working = false; // Reset working state
-            tray.setContextMenu(createMenu());
-          });
+            notification.on("click", () => {
+              console.log("Break notification clicked");
+              mainWindow.webContents.send("break");
+              working = false;
+              // Notify all windows about working state change
+              BrowserWindow.getAllWindows().forEach((win) => {
+                if (!win.isDestroyed()) {
+                  win.webContents.send('working-state-changed', working);
+                }
+              });
+            });
 
-          notification.show();
+            notification.show();
+          }
         } else {
           console.log("Break notification blocked by settings");
           // Still send break signal to UI even if notification is blocked
           mainWindow.webContents.send("break");
           working = false;
-          tray.setContextMenu(createMenu());
+          // Notify all windows about working state change
+          BrowserWindow.getAllWindows().forEach((win) => {
+            if (!win.isDestroyed()) {
+              win.webContents.send('working-state-changed', working);
+            }
+          });
         }
       });
     }
@@ -187,25 +246,48 @@ app.whenReady().then(() => {
   // Initialize managers
   settingsManager = new SettingsManager();
   notificationManager = new NotificationManager();
+  notificationWindow = new NotificationWindow();
+  trayWindow = new TrayWindow();
   
   // Load timer settings
   const settings = settingsManager.loadSettings();
   working_time = settingsManager.getFocusTimeInMinutes(settings);
 
   createWindow();
-  createNotification();
+  createStartUpNotification();
 
   tray = new Tray(path.join(__dirname, "iconTemplate.png")); // icon path
   tray.setToolTip("Worthier App");
 
   tray.setToolTip("Worthier");
-  tray.setContextMenu(createMenu());
+  
+  // Set the tray reference in trayWindow for proper positioning
+  trayWindow.setTray(tray);
+  
+  // Set initial context menu for non-macOS platforms
+  if (process.platform !== "darwin") {
+    tray.setContextMenu(createMenu());
+  }
 
   tray.on("click", () => {
-    if (process.platform != "darwin") {
+    if (process.platform === "darwin") {
+      // On macOS, show React tray menu
+      trayWindow.toggle();
+    } else {
+      // On other platforms, show main window
       if (mainWindow.isMinimized()) mainWindow.restore();
       mainWindow.show();
       mainWindow.focus();
+    }
+  });
+
+  // On macOS, also show React menu on right-click
+  // On other platforms, show context menu as fallback
+  tray.on("right-click", () => {
+    if (process.platform === "darwin") {
+      trayWindow.toggle();
+    } else {
+      tray.popUpContextMenu(createMenu());
     }
   });
 
@@ -427,4 +509,152 @@ ipcMain.handle('update-timer-settings', async (event, timerSettings) => {
     restTime: updatedSettings.restTime,
     restUnit: updatedSettings.restUnit
   };
+});
+
+// React NotificationWindow IPC handlers
+ipcMain.handle('show-react-notification', async (event, options) => {
+  try {
+    const notificationId = await notificationWindow.create(options);
+    return notificationId;
+  } catch (error) {
+    console.error('Error creating React notification window:', error);
+    throw error;
+  }
+});
+
+ipcMain.handle('show-timer-complete-notification', async (event, onStartBreak, onContinueWorking) => {
+  try {
+    return await notificationWindow.showTimerComplete(onStartBreak, onContinueWorking);
+  } catch (error) {
+    console.error('Error showing timer complete notification:', error);
+    throw error;
+  }
+});
+
+ipcMain.handle('show-startup-notification', async (event, onStartTimer, onLater) => {
+  try {
+    return await notificationWindow.showStartupNotification(onStartTimer, onLater);
+  } catch (error) {
+    console.error('Error showing startup notification:', error);
+    throw error;
+  }
+});
+
+ipcMain.handle('show-settings-confirmation', async (event, message, onConfirm, onCancel) => {
+  try {
+    return await notificationWindow.showSettingsConfirmation(message, onConfirm, onCancel);
+  } catch (error) {
+    console.error('Error showing settings confirmation:', error);
+    throw error;
+  }
+});
+
+ipcMain.handle('show-permission-request', async (event, permissionType, onGrant, onDeny) => {
+  try {
+    return await notificationWindow.showPermissionRequest(permissionType, onGrant, onDeny);
+  } catch (error) {
+    console.error('Error showing permission request:', error);
+    throw error;
+  }
+});
+
+ipcMain.handle('show-error-notification', async (event, title, message, onOk) => {
+  try {
+    return await notificationWindow.showError(title, message, onOk);
+  } catch (error) {
+    console.error('Error showing error notification:', error);
+    throw error;
+  }
+});
+
+ipcMain.handle('show-success-notification', async (event, title, message, onOk) => {
+  try {
+    return await notificationWindow.showSuccess(title, message, onOk);
+  } catch (error) {
+    console.error('Error showing success notification:', error);
+    throw error;
+  }
+});
+
+ipcMain.handle('show-info-notification', async (event, title, message, buttonText, onButtonClick) => {
+  try {
+    return await notificationWindow.showInfo(title, message, buttonText, onButtonClick);
+  } catch (error) {
+    console.error('Error showing info notification:', error);
+    throw error;
+  }
+});
+
+ipcMain.handle('close-notification', async (event, notificationId) => {
+  try {
+    notificationWindow.closeNotification(notificationId);
+    return true;
+  } catch (error) {
+    console.error('Error closing notification:', error);
+    throw error;
+  }
+});
+
+ipcMain.handle('close-all-notifications', async (event) => {
+  try {
+    notificationWindow.closeAll();
+    return true;
+  } catch (error) {
+    console.error('Error closing all notifications:', error);
+    throw error;
+  }
+});
+
+ipcMain.handle('get-notification-count', async (event) => {
+  try {
+    return notificationWindow.getActiveCount();
+  } catch (error) {
+    console.error('Error getting notification count:', error);
+    return 0;
+  }
+});
+
+// Tray menu IPC handlers
+ipcMain.handle('get-working-state', async (event) => {
+  return working;
+});
+
+ipcMain.on('tray-start-working', (event) => {
+  if (!working) {
+    // Reuse the existing timer logic - same as startup notification and current tray menu
+    startTimerProcess(working_time);
+    trayWindow.hide();
+  }
+});
+
+ipcMain.on('tray-take-break', (event) => {
+  if (working) {
+    // Reuse the existing break logic - same as current tray menu
+    mainWindow.webContents.send("break");
+    if (timerProcess) {
+      timerProcess.send("cancel");
+    }
+    working = false;
+    // Notify all windows about working state change
+    BrowserWindow.getAllWindows().forEach((win) => {
+      if (!win.isDestroyed()) {
+        win.webContents.send('working-state-changed', working);
+      }
+    });
+    trayWindow.hide();
+  }
+});
+
+ipcMain.on('tray-open-main', (event) => {
+  mainWindow.show();
+  if (process.platform === "darwin") {
+    app.dock.show();
+  }
+  trayWindow.hide();
+});
+
+ipcMain.on('tray-quit-app', (event) => {
+  tray.destroy();
+  BrowserWindow.getAllWindows().forEach((win) => win.destroy());
+  app.quit();
 });
