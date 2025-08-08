@@ -4,7 +4,7 @@ A cross-platform productivity timer application built with Electron and React th
 
 ![Worthier Desktop](icon.png)
 
-**Worthier Desktop** - Focus better, work smarter, achieve more.
+**Worthier Desktop** - Work Healthier, Focus Better, Achieve More.
 
 ## Features
 
