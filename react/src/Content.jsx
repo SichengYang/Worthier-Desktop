@@ -1,40 +1,39 @@
 import './Content.css'
 import { useRef, useEffect, useState } from 'react'
 import Profile from './Profile';
+import Welcome from './Welcome';
 
 function Content({ page }) {
-    const timer = useRef(null);
-    const [userMessage, setUserMessage] = useState("");
+    const [working, setWorking] = useState(false);
+    const [workingData, setWorkingData] = useState([]);
 
     useEffect(() => {
         // Set up event listeners with cleanup functions
         const startTimerCleanup = window.electronAPI?.startTimer(() => {
-            setUserMessage("Work started!");
+            setWorking(true);
         });
 
         const startBreakCleanup = window.electronAPI?.startBreak(() => {
-            setUserMessage("Break started!");
+            setWorking(false);
         });
 
-        // Cleanup function to remove event listeners when component unmounts
+        // Listen for recent records from Electron
+        const listenRecord = window.electronAPI?.recentRecords((event, records) => {
+            console.log('Received recent records:', records);
+            setWorkingData(records);
+        });
+
         return () => {
-            if (typeof startTimerCleanup === 'function') {
-                startTimerCleanup();
-            }
-            if (typeof startBreakCleanup === 'function') {
-                startBreakCleanup();
-            }
+            startTimerCleanup?.();
+            startBreakCleanup?.();
+            listenRecord?.();
         };
     }, []);
 
     return (
         <>
             {page === 0 ? (
-                <div className="content-frame">
-                    <h3 ref={timer}>
-                        {userMessage || "Welcome to Worthier!"}
-                    </h3>
-                </div>
+                <Welcome working={working} workingData={workingData} />
             ) : page === 1 ? (
                 <div className="content-frame">1</div>
             ) : page === 2 ? (

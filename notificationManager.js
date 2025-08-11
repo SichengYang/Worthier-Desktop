@@ -49,14 +49,15 @@ class NotificationManager {
     async shouldShowNotification() {
         // Only check fullscreen if the user has ENABLED the "No notifications in fullscreen" feature
         if (this.settings.disableFullscreenNotifications === true) {
+            console.log('Checking fullscreen status...');
+            
             // If we haven't tested permissions yet, test them now (only when actually needed)
             if (this.permissionGranted.fullscreen === null) {
                 try {
-                    console.log('First-time fullscreen detection - requesting permission...');
-                    await this.isInFullscreen();
+                    const fullscreenResult = await this.isInFullscreen();
                     this.permissionGranted.fullscreen = true;
                 } catch (error) {
-                    console.log('Fullscreen detection permission denied, disabling feature');
+                    console.log('Fullscreen detection failed, disabling feature');
                     this.permissionGranted.fullscreen = false;
                     return true; // Allow notification since feature failed
                 }
@@ -65,8 +66,10 @@ class NotificationManager {
             // Only check if we have confirmed permissions
             if (this.permissionGranted.fullscreen === true) {
                 try {
-                    if (await this.isInFullscreen()) {
-                        console.log('Notification blocked: In fullscreen mode');
+                    const isFullscreen = await this.isInFullscreen();
+                    
+                    if (isFullscreen) {
+                        console.log('🚫 Notification blocked: In fullscreen mode');
                         return false;
                     }
                 } catch (error) {
@@ -81,7 +84,6 @@ class NotificationManager {
             // If we haven't tested permissions yet, test them now (only when actually needed)
             if (this.permissionGranted.meeting === null) {
                 try {
-                    console.log('First-time meeting detection - checking...');
                     await this.isMeetingSoftwareRunning();
                     this.permissionGranted.meeting = true;
                 } catch (error) {
@@ -95,7 +97,7 @@ class NotificationManager {
             if (this.permissionGranted.meeting === true) {
                 try {
                     if (await this.isMeetingSoftwareRunning()) {
-                        console.log('Notification blocked: Meeting software detected');
+                        console.log('🚫 Notification blocked: Meeting software detected');
                         return false;
                     }
                 } catch (error) {
@@ -214,28 +216,37 @@ class NotificationManager {
 
     async isInFullscreen() {
         try {
-            // More reliable fullscreen detection for macOS
+            console.log('🔍 Checking fullscreen status...');
+            
+            // Method 1: Standard AppleScript fullscreen detection
             const { stdout } = await execAsync(`osascript -e "
                 try
                     tell application \\"System Events\\"
                         set frontApp to first application process whose frontmost is true
                         set appName to name of frontApp
                         try
-                            set windowProps to properties of window 1 of frontApp
                             set isFullScreen to value of attribute \\"AXFullScreen\\" of window 1 of frontApp
-                            return isFullScreen as string
+                            return appName & \\"|\\" & isFullScreen as string
                         on error
-                            return \\"false\\"
+                            return appName & \\"|false\\"
                         end try
                     end tell
                 on error
-                    return \\"false\\"
+                    return \\"unknown|false\\"
                 end try
-            " || echo "false"`);
+            "`);
+
+            const [appName, isFullScreen] = stdout.trim().split('|');
+            console.log(`App: ${appName}, AXFullScreen: ${isFullScreen}`);
+
+            // If standard fullscreen detection works, use it
+            if (isFullScreen && isFullScreen.trim().toLowerCase() === 'true') {
+                console.log('✅ Fullscreen detected via AXFullScreen');
+                return true;
+            }
             
-            const isFullscreen = stdout.trim().toLowerCase() === 'true';
-            console.log('Fullscreen status:', isFullscreen);
-            return isFullscreen;
+            console.log('❌ No fullscreen detected');
+            return false;
         } catch (error) {
             console.error('Error checking fullscreen status:', error);
             return false;

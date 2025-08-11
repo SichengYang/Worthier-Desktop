@@ -34,6 +34,10 @@ const TrayMenu = () => {
     window.electronAPI.openMainWindow();
   };
 
+  const handleOpenRestTimer = () => {
+    window.electronAPI.toggleRestWindow();
+  };
+
   const handleQuit = () => {
     window.electronAPI.quitApp();
   };
@@ -43,23 +47,23 @@ const TrayMenu = () => {
       <div className="tray-menu-header">
         <h4>Worthier</h4>
       </div>
-      
+
       <div className="tray-menu-content">
-        <button 
+        <button
           className={`menu-item primary ${isWorking ? 'break' : 'work'}`}
           onClick={handleWorkToggle}
         >
           <i className={`bi ${isWorking ? 'bi-pause-circle' : 'bi-play-circle'}`}></i>
           {isWorking ? 'Take a Break' : 'Start Working'}
         </button>
-        
+
         <button className="menu-item" onClick={handleOpenApp}>
           <i className="bi bi-window"></i>
           Open App
         </button>
-        
+
         <div className="menu-divider"></div>
-        
+
         <button className="menu-item danger" onClick={handleQuit}>
           <i className="bi bi-x-circle"></i>
           Quit

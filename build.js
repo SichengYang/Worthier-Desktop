@@ -39,6 +39,15 @@ if (args[0] === 'react') {
     process.exit(1);
   }
 
+  try {
+    console.log('▶ Building rest-react app...');
+    runCommand('npm', ['run', 'build'], './rest-react');
+    console.log('✔ Rest-react app built successfully.');
+  } catch (error) {
+    console.error('✖ Rest-react build failed:', error);
+    process.exit(1);
+  }
+
   process.exit(0);
 }
 
@@ -50,6 +59,10 @@ try {
   // Build notification-react app
   console.log('▶ Building notification-react app...');
   runCommand('npm', ['run', 'build'], './notification-react');
+
+  // Build rest-react app
+  console.log('▶ Building rest-react app...');
+  runCommand('npm', ['run', 'build'], './rest-react');
 
   const builder = require('electron-builder');
   // Then run Electron build

@@ -12,6 +12,7 @@ function SettingsWindow() {
     const [extendUnit, setExtendUnit] = useState('minutes');
     const [disableFullscreenNotifications, setDisableFullscreenNotifications] = useState(false);
     const [disableMeetingNotifications, setDisableMeetingNotifications] = useState(false);
+    const [startAtLogin, setStartAtLogin] = useState(false);
     const [permissionWarnings, setPermissionWarnings] = useState([]);
     const [showFullscreenTooltip, setShowFullscreenTooltip] = useState(false);
     const [showMeetingTooltip, setShowMeetingTooltip] = useState(false);
@@ -32,8 +33,12 @@ function SettingsWindow() {
                 setFocusUnit(timerSettings.focusUnit || 'minutes');
                 setRestTime(timerSettings.restTime || 10);
                 setRestUnit(timerSettings.restUnit || 'minutes');
-                setExtendTime(timerSettings.extendTime || 15);
-                setExtendUnit(timerSettings.extendUnit || 'minutes');
+                setExtendTime(timerSettings.extendedFocusTime || 15);
+                setExtendUnit(timerSettings.extendedFocusUnit || 'minutes');
+
+                // Load start at login setting
+                const startAtLoginData = await window.electronAPI.getStartAtLogin();
+                setStartAtLogin(startAtLoginData.enabled || false);
             } catch (error) {
                 console.error('Failed to load settings:', error);
             }
@@ -64,8 +69,8 @@ function SettingsWindow() {
             setFocusUnit(settings.focusUnit || 'minutes');
             setRestTime(settings.restTime || 10);
             setRestUnit(settings.restUnit || 'minutes');
-            setExtendTime(settings.extendTime || 15);
-            setExtendUnit(settings.extendUnit || 'minutes');
+            setExtendTime(settings.extendedFocusTime || 15);
+            setExtendUnit(settings.extendedFocusUnit || 'minutes');
         });
 
         return () => {
@@ -103,8 +108,8 @@ function SettingsWindow() {
             focusUnit,
             restTime,
             restUnit,
-            extendTime,
-            extendUnit
+            extendedFocusTime: extendTime,
+            extendedFocusUnit: extendUnit
         });
     };
 
@@ -115,8 +120,8 @@ function SettingsWindow() {
             focusUnit: unit,
             restTime,
             restUnit,
-            extendTime,
-            extendUnit
+            extendedFocusTime: extendTime,
+            extendedFocusUnit: extendUnit
         });
     };
 
@@ -127,8 +132,8 @@ function SettingsWindow() {
             focusUnit,
             restTime: time,
             restUnit,
-            extendTime,
-            extendUnit
+            extendedFocusTime: extendTime,
+            extendedFocusUnit: extendUnit
         });
     };
 
@@ -139,8 +144,8 @@ function SettingsWindow() {
             focusUnit,
             restTime,
             restUnit: unit,
-            extendTime,
-            extendUnit
+            extendedFocusTime: extendTime,
+            extendedFocusUnit: extendUnit
         });
     };
 
@@ -151,8 +156,8 @@ function SettingsWindow() {
             focusUnit,
             restTime,
             restUnit,
-            extendTime: time,
-            extendUnit
+            extendedFocusTime: time,
+            extendedFocusUnit: extendUnit
         });
     };
 
@@ -163,8 +168,8 @@ function SettingsWindow() {
             focusUnit,
             restTime,
             restUnit,
-            extendTime,
-            extendUnit: unit
+            extendedFocusTime: extendTime,
+            extendedFocusUnit: unit
         });
     };
 
@@ -214,6 +219,25 @@ function SettingsWindow() {
         }
         
         updateNotificationSettings(newSettings);
+    };
+
+    const handleStartAtLoginChange = async (checked) => {
+        try {
+            console.log(`Setting start at login: ${checked}`);
+            const result = await window.electronAPI.setStartAtLogin(checked);
+            if (result.success) {
+                setStartAtLogin(result.enabled);
+                console.log(`Start at login ${result.enabled ? 'enabled' : 'disabled'} successfully`);
+            } else {
+                console.error('Failed to set start at login:', result.error);
+                // Revert the state if it failed
+                setStartAtLogin(!checked);
+            }
+        } catch (error) {
+            console.error('Error setting start at login:', error);
+            // Revert the state if there was an error
+            setStartAtLogin(!checked);
+        }
     };
 
     const toggleFullscreenTooltip = () => {
@@ -368,6 +392,14 @@ function SettingsWindow() {
                             </div>
                         </div>
                     )}
+                </div>
+                <div className="setting-group setting-with-checkbox">
+                    <label>Start at Login:</label>
+                    <input
+                        type="checkbox"
+                        checked={startAtLogin}
+                        onChange={(e) => handleStartAtLoginChange(e.target.checked)}
+                    />
                 </div>
                 <div className="setting-group">
                     <label>Theme:</label>

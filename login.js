@@ -45,16 +45,32 @@ function startLogin(mainWindow, windowUrl, callbackUrl) {
         let info = null;
         for (let i = 0; i < 10; i++) {
           console.log(`Polling attempt ${i + 1} for sessionId: ${sessionId}`);
-          const res = await fetch(`https://login.worthier.app/poll/${sessionId}`, {
-            method: 'POST',
-          });
-          if (res.ok) {
-            info = await res.json();
-            console.log('Poll result:', info);
-            if (info) break;
-          } else if (res.status !== 202) {
-            console.log('Poll failed with status:', res.status);
-            break;
+          try {
+            const res = await fetch(`https://login.worthier.app/poll/${sessionId}`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              // Add a timeout for individual poll requests
+              signal: AbortSignal.timeout(8000) // 8 second timeout per request
+            });
+            if (res.ok) {
+              info = await res.json();
+              console.log('Poll result:', info);
+              if (info) break;
+            } else if (res.status >= 500) {
+              console.warn(`Server error during polling (${res.status}). Will retry...`);
+              // Continue polling for server errors
+            } else if (res.status !== 202) {
+              console.log('Poll failed with status:', res.status);
+              break;
+            }
+          } catch (pollError) {
+            console.warn(`Polling error on attempt ${i + 1}:`, pollError.message);
+            if (pollError.name === 'TimeoutError') {
+              console.warn('Poll request timed out, retrying...');
+            }
+            // Continue to next iteration for network errors
           }
           await new Promise(r => setTimeout(r, 1000));
         }
@@ -68,10 +84,10 @@ function startLogin(mainWindow, windowUrl, callbackUrl) {
             // Store the login data securely with encryption
             await tokenManager.storeTokens({
               user: info.user,
-              access_token: info.access_token
+              accessToken: info.accessToken
             });
 
-            console.log(`Auto-login tokens stored securely:`, info.user.username || 'Unknown User', `access_token: ${info.access_token} `);
+            console.log(`Auto-login tokens stored securely:`, info.user.username || 'Unknown User', `accessToken: ${info.accessToken} `);
           } catch (err) {
             console.error('Error storing auto-login tokens:', err);
           }

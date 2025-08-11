@@ -105,7 +105,7 @@ class NotificationWindow {
         
         // Position notification in the top-right corner with some padding
         const x = style.x !== null ? style.x : (screenWidth - style.width - 20);
-        const y = style.y !== null ? style.y : 20;
+        const y = style.y !== null ? style.y : 60;
         
         notificationWindow.setPosition(x, y);
 
@@ -126,10 +126,23 @@ class NotificationWindow {
 
         this.activeNotifications.set(notificationId, notificationData);
 
-        // Load the React notification HTML with theme as query parameter
+        // Load the React notification HTML with theme and data as query parameters
         const notificationReactPath = path.join(__dirname, 'notification-react/dist/index.html');
         const theme = options.theme || 'light';
-        await notificationWindow.loadFile(notificationReactPath, { query: { theme: theme } });
+        const urlData = {
+            title: options.title,
+            content: options.content,
+            button1: options.button1 ? { text: options.button1.text } : null,
+            button2: options.button2 ? { text: options.button2.text } : null,
+            context: options.context || 'general'
+        };
+        
+        await notificationWindow.loadFile(notificationReactPath, { 
+            query: { 
+                theme: theme,
+                data: encodeURIComponent(JSON.stringify(urlData))
+            } 
+        });
 
         // Send notification data to the renderer
         notificationWindow.webContents.once('did-finish-load', () => {
@@ -143,7 +156,12 @@ class NotificationWindow {
                 context: options.context || 'general'
             };
             
-            notificationWindow.webContents.send('notification-data', dataToSend);
+            console.log('Sending notification data:', dataToSend);
+            
+            // Add a small delay to ensure the preload script is ready
+            setTimeout(() => {
+                notificationWindow.webContents.send('notification-data', dataToSend);
+            }, 100);
         });
 
         // Handle window close
@@ -253,21 +271,22 @@ class NotificationWindow {
     }
     
     // Timer completion notification
-    async showTimerComplete(onStartBreak, onContinueWorking) {
+    async showTimerComplete(onStartBreak, onContinueWorking, extendedWorkingTime = 15, onClose = null) {
         return this.create({
             title: "Break Time!",
             content: "You've completed your focus session. Time to take a break!",
             button1: { 
-                text: "Start Break", 
+                text: "Take Break", 
                 handler: onStartBreak || (() => console.log('Starting break...'))
             },
             button2: { 
-                text: "Keep Working", 
-                handler: onContinueWorking || (() => console.log('Continuing work...'))
+                text: `Extend ${extendedWorkingTime} min`, 
+                handler: onContinueWorking || (() => console.log('Extending work session...'))
             },
             theme: this.getCurrentTheme(),
             context: 'timer-complete',
-            autoClose: 30000 // Auto-close after 30 seconds
+            autoClose: 15000, // Auto-close after 15 seconds
+            onClose: onClose // Handle what happens when notification closes without user action
         });
     }
 

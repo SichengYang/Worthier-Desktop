@@ -36,21 +36,6 @@ async function resetApp() {
             console.log('   ❌ Failed to remove settings file:', error.message);
         }
 
-        // Remove theme settings file
-        console.log('\n3. Removing theme settings...');
-        const themeConfigPath = path.join(process.env.HOME, 'Library', 'Application Support', 'worthier-desktop', 'theme-config.json');
-        
-        try {
-            if (fs.existsSync(themeConfigPath)) {
-                fs.unlinkSync(themeConfigPath);
-                console.log('   ✅ Theme config file removed:', themeConfigPath);
-            } else {
-                console.log('   ℹ️  Theme config file doesn\'t exist (already clean)');
-            }
-        } catch (error) {
-            console.log('   ❌ Failed to remove theme config file:', error.message);
-        }
-
         console.log('\n🎉 App reset complete! The app will start with:');
         console.log('   • No saved permissions (will prompt when needed)');
         console.log('   • Default settings (timer, notifications, etc.)');

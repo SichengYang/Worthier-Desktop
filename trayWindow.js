@@ -22,7 +22,7 @@ class TrayWindow {
     
     // Calculate position near tray icon
     const windowWidth = 200;
-    const windowHeight = 220; // Increased height to ensure all content is visible
+    const windowHeight = 230; // Increased height to ensure all content is visible
     
     let x, y;
     

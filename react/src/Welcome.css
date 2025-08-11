@@ -1,0 +1,190 @@
+.welcome-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 2rem;
+    animation: fadeIn 0.8s ease-out;
+    transition: all 0.3s ease;
+    overflow-y: scroll;
+    scrollbar-width: none;
+}
+
+.welcome-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.welcome-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.welcome-status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+    padding: 1rem 2rem;
+    border-radius: 20px;
+    text-align: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.status-icon {
+    font-size: 1.5rem;
+    animation: pulse 2s infinite;
+}
+
+.welcome-status.working {
+    background: linear-gradient(135deg, var(--working-bg), var(--working-bg-light));
+    color: var(--working-text);
+    border: 2px solid var(--working-border);
+}
+
+.welcome-status.not-working {
+    background: linear-gradient(135deg, var(--relaxing-bg), var(--relaxing-bg-light));
+    color: var(--relaxing-text);
+    border: 2px solid var(--relaxing-border);
+}
+
+.welcome-chart-container {
+    width: 100%;
+    max-width: 800px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.chart-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: var(--text-color);
+}
+
+.welcome-chart {
+    flex: 1;
+    min-height: 300px;
+    position: relative;
+    background: var(--chart-background);
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--border-color);
+}
+
+/* Light Theme */
+.theme-light {
+    --primary-color: #4ade80;
+    --secondary-color: #10b981;
+    --text-color: #374151;
+    --border-color: #e5e7eb;
+    --chart-background: #ffffff;
+
+    --working-bg: rgba(34, 197, 94, 0.1);
+    --working-bg-light: rgba(34, 197, 94, 0.05);
+    --working-text: #059669;
+    --working-border: #34d399;
+
+    --relaxing-bg: rgba(59, 130, 246, 0.1);
+    --relaxing-bg-light: rgba(59, 130, 246, 0.05);
+    --relaxing-text: #2563eb;
+    --relaxing-border: #60a5fa;
+}
+
+/* Dark Theme */
+.theme-dark {
+    --primary-color: #3b82f6;
+    --secondary-color: #1d4ed8;
+    --text-color: #f3f4f6;
+    --border-color: #374151;
+    --chart-background: #1f2937;
+
+    --working-bg: rgba(34, 197, 94, 0.2);
+    --working-bg-light: rgba(34, 197, 94, 0.1);
+    --working-text: #4ade80;
+    --working-border: #10b981;
+
+    --relaxing-bg: rgba(168, 85, 247, 0.2);
+    --relaxing-bg-light: rgba(168, 85, 247, 0.1);
+    --relaxing-text: #a855f7;
+    --relaxing-border: #8b5cf6;
+}
+
+/* Pink Theme */
+.theme-pink {
+    --primary-color: #ec4899;
+    --secondary-color: #be185d;
+    --text-color: #831843;
+    --border-color: #fce7f3;
+    --chart-background: #fdf2f8;
+
+    --working-bg: rgba(236, 72, 153, 0.1);
+    --working-bg-light: rgba(236, 72, 153, 0.05);
+    --working-text: #be185d;
+    --working-border: #ec4899;
+
+    --relaxing-bg: rgba(168, 85, 247, 0.1);
+    --relaxing-bg-light: rgba(168, 85, 247, 0.05);
+    --relaxing-text: #7c3aed;
+    --relaxing-border: #a855f7;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .welcome-container {
+        padding: 1rem;
+    }
+
+    .welcome-title {
+        font-size: 2rem;
+    }
+
+    .welcome-status {
+        font-size: 1rem;
+        padding: 0.75rem 1.5rem;
+    }
+
+    .chart-title {
+        font-size: 1.25rem;
+    }
+
+    .welcome-chart {
+        min-height: 250px;
+        padding: 1rem;
+    }
+}

@@ -4,7 +4,7 @@ import './UserGuide.css';
 function UserGuide({ onComplete }) {
     const [currentStep, setCurrentStep] = useState(0);
     const [settings, setSettings] = useState({
-        theme: 'light',
+        theme: 'system',
         focusTime: 60,
         focusUnit: 'minutes',
         restTime: 10,
@@ -12,14 +12,18 @@ function UserGuide({ onComplete }) {
         extendTime: 15,
         extendUnit: 'minutes',
         disableFullscreenNotifications: false,
-        disableMeetingNotifications: false
+        disableMeetingNotifications: false,
+        startAtLogin: true
     });
 
-    // Apply theme immediately when user selects it
+    // Apply theme immediately for preview (temporarily saved, will be confirmed when user completes guide)
     const handleThemeChange = (newTheme) => {
         setSettings({...settings, theme: newTheme});
-        // Apply theme to the app immediately for preview
-        window.electronAPI.setTheme(newTheme);
+        // Apply theme for preview - this saves temporarily but will be overridden if user exits without completing
+        if (window.electronAPI?.setTheme) {
+            console.log(`Applying theme ${newTheme} for preview (temporarily saved)`);
+            window.electronAPI.setTheme(newTheme);
+        }
     };
 
     // Handle permission requests for notification features
@@ -61,6 +65,29 @@ function UserGuide({ onComplete }) {
         }
     };
 
+    const handleStartAtLoginToggle = async (checked) => {
+        // Only update local state, don't save to system until user completes the guide
+        setSettings({...settings, startAtLogin: checked});
+        console.log(`Start at login setting updated locally: ${checked} (will be saved when guide completes)`);
+    };
+
+    // Don't apply default start at login setting until user completes the guide
+    // useEffect(() => {
+    //     if (settings.startAtLogin) {
+    //         handleStartAtLoginToggle(true);
+    //     }
+    // }, []); // Commented out - don't auto-apply until completion
+
+    // Function to resolve system theme to actual theme
+    const getResolvedTheme = (theme) => {
+        if (theme === 'system') {
+            // Detect system theme preference
+            const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            return prefersDark ? 'dark' : 'light';
+        }
+        return theme;
+    };
+
     const steps = [
         {
             title: "Choose Your Theme",
@@ -68,6 +95,14 @@ function UserGuide({ onComplete }) {
             content: (
                 <div className="guide-theme-settings">
                     <div className="theme-options">
+                        <div 
+                            className={`theme-option ${settings.theme === 'system' ? 'selected' : ''}`}
+                            onClick={() => handleThemeChange('system')}
+                        >
+                            <div className="theme-preview theme-preview-system"></div>
+                            <span className="theme-name">System</span>
+                        </div>
+                        
                         <div 
                             className={`theme-option ${settings.theme === 'light' ? 'selected' : ''}`}
                             onClick={() => handleThemeChange('light')}
@@ -93,7 +128,7 @@ function UserGuide({ onComplete }) {
                         </div>
                     </div>
                     <div className="setting-preview">
-                        You've selected the {settings.theme} theme. You can change this anytime in settings.
+                        You've selected the {settings.theme} theme{settings.theme === 'system' ? ' (follows your system preference)' : ''}. You can change this anytime in settings.
                     </div>
                 </div>
             )
@@ -198,8 +233,8 @@ function UserGuide({ onComplete }) {
             )
         },
         {
-            title: "App Permissions",
-            subtitle: "Configure smart notification features",
+            title: "App Settings & Permissions",
+            subtitle: "Configure smart features and app behavior",
             content: (
                 <div className="guide-notification-settings">
                     <div className="setting-item">
@@ -207,7 +242,7 @@ function UserGuide({ onComplete }) {
                             <span className="setting-emoji">🖥️</span>
                             <div className="setting-info">
                                 <h4>Fullscreen Detection</h4>
-                                <p>Disable notifications when you're in fullscreen mode (presentations, videos, etc.)</p>
+                                <p>Disable notifications when you're in fullscreen (presentations, videos, games, etc.)</p>
                             </div>
                         </div>
                         <label className="setting-toggle">
@@ -238,8 +273,26 @@ function UserGuide({ onComplete }) {
                         </label>
                     </div>
                     
+                    <div className="setting-item">
+                        <div className="setting-header">
+                            <span className="setting-emoji">🚀</span>
+                            <div className="setting-info">
+                                <h4>Start at Login</h4>
+                                <p>Start Worthier when you log into your computer</p>
+                            </div>
+                        </div>
+                        <label className="setting-toggle">
+                            <input
+                                type="checkbox"
+                                checked={settings.startAtLogin}
+                                onChange={(e) => handleStartAtLoginToggle(e.target.checked)}
+                            />
+                            <span className="toggle-slider"></span>
+                        </label>
+                    </div>
+                    
                     <div className="guide-note">
-                        <p>💡 These features will request system permissions when first used. You can always change these settings later.</p>
+                        <p>💡 Fullscreen and meeting detection will request system permissions when first used. You can always change these settings later.</p>
                     </div>
                 </div>
             )
@@ -271,6 +324,10 @@ function UserGuide({ onComplete }) {
                             <span className="summary-label">Meeting Detection:</span>
                             <span className="summary-value">{settings.disableMeetingNotifications ? 'Enabled' : 'Disabled'}</span>
                         </div>
+                        <div className="summary-item">
+                            <span className="summary-label">Start at Login:</span>
+                            <span className="summary-value">{settings.startAtLogin ? 'Enabled' : 'Disabled'}</span>
+                        </div>
                     </div>
                     <div className="guide-completion-message">
                         <p>Click "Start Using Worthier" to save your settings and begin your first productive session!</p>
@@ -296,7 +353,7 @@ function UserGuide({ onComplete }) {
         try {
             console.log('Starting to save settings:', settings);
             
-            // Theme is already set when user selects it, but let's ensure it's saved
+            // Save theme setting
             await window.electronAPI.setTheme(settings.theme);
             console.log('Theme saved successfully');
 
@@ -332,6 +389,15 @@ function UserGuide({ onComplete }) {
             });
             console.log('Notification settings saved successfully');
 
+            // Save start at login setting
+            console.log('Saving start at login setting:', settings.startAtLogin);
+            const startAtLoginResult = await window.electronAPI.setStartAtLogin(settings.startAtLogin);
+            if (startAtLoginResult.success) {
+                console.log(`Start at login ${startAtLoginResult.enabled ? 'enabled' : 'disabled'} successfully`);
+            } else {
+                console.error('Failed to set start at login:', startAtLoginResult.error);
+            }
+
             console.log('All settings saved successfully. Completing user guide.');
             
             // Call the completion callback to hide the guide
@@ -344,10 +410,12 @@ function UserGuide({ onComplete }) {
     };
 
     const currentStepData = steps[currentStep];
-
+    const resolvedTheme = getResolvedTheme(settings.theme);
+    console.log('UserGuide - Current theme:', settings.theme, 'Resolved theme:', resolvedTheme);
+    
     return (
-        <div className="user-guide-overlay">
-            <div className="user-guide-container">
+        <div className={`user-guide-overlay app-theme-${resolvedTheme}`}>
+            <div className={`user-guide-container app-theme-${resolvedTheme}`}>
                 <div className="guide-header">
                     <h1>{currentStepData.title}</h1>
                     <p className="guide-subtitle">{currentStepData.subtitle}</p>

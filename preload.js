@@ -84,6 +84,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
     return () => ipcRenderer.removeListener('timer-settings-updated', callback);
   },
 
+  // start at login settings
+  getStartAtLogin: () => ipcRenderer.invoke('get-start-at-login'),
+  setStartAtLogin: (enable) => ipcRenderer.invoke('set-start-at-login', enable),
+
   // React notification window methods
   showReactNotification: (options) => ipcRenderer.invoke('show-react-notification', options),
   showTimerCompleteNotification: (onStartBreak, onContinueWorking) => 
@@ -113,11 +117,18 @@ contextBridge.exposeInMainWorld('electronAPI', {
   takeBreak: () => ipcRenderer.send('tray-take-break'),
   openMainWindow: () => ipcRenderer.send('tray-open-main'),
   quitApp: () => ipcRenderer.send('tray-quit-app'),
+  toggleRestWindow: () => ipcRenderer.invoke('toggle-rest-window'),
   onWorkingStateChange: (callback) => {
     ipcRenderer.on('working-state-changed', callback);
     return () => ipcRenderer.removeListener('working-state-changed', callback);
   },
   removeWorkingStateListener: (callback) => {
     ipcRenderer.removeListener('working-state-changed', callback);
-  }
+  },
+
+  // Update User Record
+  recentRecords: (callback) => {
+    ipcRenderer.on('recent-records', callback);
+    return () => ipcRenderer.removeListener('recent-records', callback);
+  },
 });

@@ -12,20 +12,29 @@ function App() {
   })
 
   useEffect(() => {
+    console.log('Notification React component mounted');
+    console.log('Initial notification data:', notificationData);
+    
     // Listen for notification data from the main process
     if (window.electronNotification) {
+      console.log('electronNotification API available');
       window.electronNotification.onData((data) => {
+        console.log('Received notification data:', data);
         setNotificationData(data)
         if (data.theme) {
           setTheme(data.theme)
         }
       })
+    } else {
+      console.warn('electronNotification API not available');
     }
 
     // Parse URL parameters for theme and data (fallback)
     const urlParams = new URLSearchParams(window.location.search)
     const themeParam = urlParams.get('theme')
     const dataParam = urlParams.get('data')
+
+    console.log('URL params - theme:', themeParam, 'data:', dataParam);
 
     if (themeParam) {
       setTheme(themeParam)
@@ -34,6 +43,7 @@ function App() {
     if (dataParam) {
       try {
         const data = JSON.parse(decodeURIComponent(dataParam))
+        console.log('Using URL param data:', data);
         setNotificationData(data)
       } catch (e) {
         console.error('Failed to parse notification data:', e)

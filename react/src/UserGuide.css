@@ -1,3 +1,41 @@
+/* Theme-specific CSS Variables */
+.app-theme-light {
+    --background-color: #ffffff;
+    --text-color: #212529;
+    --text-color-secondary: #6c757d;
+    --border-color: #e9ecef;
+    --primary-color: #007bff;
+    --secondary-background: #f8f9fa;
+    --hover-background: #e9ecef;
+    --input-background: #ffffff;
+    --overlay-background: rgba(248, 249, 250, 0.85);
+}
+
+.app-theme-dark {
+    --background-color: rgba(52, 58, 64, 0.95);
+    --text-color: #f8f9fa;
+    --text-color-secondary: #adb5bd;
+    --border-color: #495057;
+    --primary-color: #6c757d;
+    --secondary-background: rgba(73, 80, 87, 0.8);
+    --hover-background: rgba(73, 80, 87, 0.9);
+    --input-background: rgba(73, 80, 87, 0.9);
+    --overlay-background: rgba(33, 37, 41, 0.85);
+}
+
+.app-theme-pink {
+    --background-color: #fce4ec;
+    --background-image: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 50%, #f48fb1 100%);
+    --text-color: #880e4f;
+    --text-color-secondary: #ad1457;
+    --border-color: #f8bbd9;
+    --primary-color: #e91e63;
+    --secondary-background: rgba(255, 255, 255, 0.8);
+    --hover-background: rgba(255, 255, 255, 0.9);
+    --input-background: rgba(255, 255, 255, 0.9);
+    --overlay-background: rgba(252, 228, 236, 0.3);
+}
+
 /* User Guide Overlay */
 .user-guide-overlay {
     position: fixed;
@@ -5,23 +43,25 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.8);
+    background: var(--overlay-background, rgba(0, 0, 0, 0.8));
     backdrop-filter: blur(8px);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1000;
     padding: 20px;
+    transition: background-color 0.3s ease;
 }
 
 .user-guide-container {
-    background: var(--background-color);
+    background-color: var(--background-color);
+    background-image: var(--background-image, none);
     border-radius: 16px;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
     max-width: 600px;
     width: 100%;
+    height: 950px; /* Fixed height for consistency */
     max-height: 90vh;
-    overflow-y: auto;
     display: flex;
     flex-direction: column;
     color: var(--text-color);
@@ -30,7 +70,7 @@
 
 /* Guide Header */
 .guide-header {
-    padding: 30px 30px 20px;
+    padding: 10px;
     text-align: center;
     border-bottom: 1px solid var(--border-color);
     transition: border-color 0.3s ease;
@@ -83,12 +123,13 @@
 
 /* Guide Content */
 .guide-content {
-    padding: 30px;
+    padding: 20px;
     flex: 1;
     min-height: 200px;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    overflow-y: auto; /* Allow scrolling if content is too tall */
 }
 
 /* Welcome Step */
@@ -116,10 +157,12 @@
 }
 
 .theme-options {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 20px;
-    justify-content: center;
-    flex-wrap: wrap;
+    justify-items: center;
+    max-width: 400px;
+    margin: 0 auto;
 }
 
 .theme-option {
@@ -133,7 +176,7 @@
     cursor: pointer;
     transition: all 0.2s ease;
     background: var(--secondary-background);
-    min-width: 120px;
+    width: 120px;
 }
 
 .theme-option:hover {
@@ -171,6 +214,10 @@
     border: 3px solid #2255aa;
     box-shadow: 0 0 0 3px #e0eaff;
     background-clip: padding-box;
+}
+
+.theme-preview-system {
+    background: linear-gradient(45deg, #f8f8f8 50%, #222 50%);
 }
 
 .theme-preview-light {
@@ -280,14 +327,14 @@
 .guide-notification-settings {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 16px;
 }
 
 .setting-item {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 20px;
+    padding: 16px;
     background: var(--secondary-background);
     border-radius: 12px;
     border: 1px solid var(--border-color);
@@ -301,14 +348,14 @@
 .setting-header {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 12px;
     flex: 1;
 }
 
 .setting-emoji {
-    font-size: 24px;
-    width: 40px;
-    height: 40px;
+    font-size: 20px;
+    width: 36px;
+    height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -443,7 +490,7 @@
 
 /* Guide Actions */
 .guide-actions {
-    padding: 20px 30px 30px;
+    padding: 10px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -540,6 +587,15 @@
         flex-direction: column;
         text-align: center;
         gap: 12px;
+    }
+
+    .theme-options {
+        grid-template-columns: 1fr;
+        max-width: 200px;
+    }
+
+    .theme-option {
+        width: 100%;
     }
 }
 
@@ -724,11 +780,10 @@
     color: #212529;
 }
 
-/* Pink Theme Styles */
+/* Pink Theme Styles - Let overlay handle the background */
 .app-theme-pink .user-guide-container {
-    background: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 50%, #f48fb1 100%);
-    color: #880e4f;
-    box-shadow: 0 20px 40px rgba(136, 14, 79, 0.2);
+    color: #880e4f !important;
+    box-shadow: 0 10px 20px rgba(136, 14, 79, 0.1) !important;
 }
 
 .app-theme-pink .guide-header {
@@ -1006,4 +1061,17 @@
 
 .app-theme-dark .summary-value {
     color: #f8f9fa;
+}
+
+/* Theme-specific overlay backgrounds */
+.app-theme-light .user-guide-overlay {
+    background: rgba(248, 249, 250, 0.85);
+}
+
+.app-theme-dark .user-guide-overlay {
+    background: rgba(33, 37, 41, 0.85);
+}
+
+.app-theme-pink .user-guide-overlay {
+    background: linear-gradient(135deg, rgba(252, 228, 236, 0.8) 0%, rgba(248, 187, 217, 0.8) 50%, rgba(244, 143, 177, 0.8) 100%);
 }

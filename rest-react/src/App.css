@@ -1,0 +1,275 @@
+/* Base App Styles */
+.app {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  position: relative;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Light Theme (white) */
+.theme-light {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  color: #212529;
+}
+
+.theme-light h4 {
+  color: #212529;
+}
+
+.theme-light .text-muted {
+  color: #6c757d !important;
+}
+
+.theme-light .text-rest {
+  color: #0d6efd !important;
+}
+
+.theme-light .text-complete {
+  color: #198754 !important;
+}
+
+.theme-light .progress {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.theme-light .progress-active {
+  background-color: #0d6efd;
+}
+
+.theme-light .progress-complete {
+  background-color: #198754;
+}
+
+.theme-light .btn-start-work {
+  background-color: #198754;
+  color: white;
+  border: none;
+}
+
+.theme-light .btn-start-work:hover {
+  background-color: #157347;
+}
+
+.theme-light .btn-start-work.not-recommended {
+  background-color: #6c757d;
+  color: #adb5bd;
+  cursor: pointer;
+}
+
+.theme-light .btn-start-work.not-recommended:hover {
+  background-color: #5a6268;
+}
+
+.theme-light .close-button {
+  background-color: #dc3545;
+  color: white;
+}
+
+.theme-light .close-button:hover {
+  background-color: #bb2d3b;
+}
+
+/* Dark Theme (black) */
+.theme-dark {
+  background: linear-gradient(135deg, #212529 0%, #343a40 100%);
+  color: #f8f9fa;
+}
+
+.theme-dark h4 {
+  color: #f8f9fa;
+}
+
+.theme-dark .text-muted {
+  color: #adb5bd !important;
+}
+
+.theme-dark .text-rest {
+  color: #6ea8fe !important;
+}
+
+.theme-dark .text-complete {
+  color: #75b798 !important;
+}
+
+.theme-dark .progress {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.theme-dark .progress-active {
+  background-color: #6ea8fe;
+}
+
+.theme-dark .progress-complete {
+  background-color: #75b798;
+}
+
+.theme-dark .btn-start-work {
+  background-color: #198754;
+  color: white;
+  border: none;
+}
+
+.theme-dark .btn-start-work:hover {
+  background-color: #157347;
+}
+
+.theme-dark .btn-start-work.not-recommended {
+  background-color: #495057;
+  color: #6c757d;
+  cursor: pointer;
+}
+
+.theme-dark .btn-start-work.not-recommended:hover {
+  background-color: #3d4449;
+}
+
+.theme-dark .close-button {
+  background-color: #dc3545;
+  color: white;
+}
+
+.theme-dark .close-button:hover {
+  background-color: #bb2d3b;
+}
+
+/* Pink Theme */
+.theme-pink {
+  background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%);
+  color: #831843;
+}
+
+.theme-pink h4 {
+  color: #831843;
+}
+
+.theme-pink .text-muted {
+  color: #a21caf !important;
+}
+
+.theme-pink .text-rest {
+  color: #be185d !important;
+}
+
+.theme-pink .text-complete {
+  color: #059669 !important;
+}
+
+.theme-pink .progress {
+  background-color: rgba(190, 24, 93, 0.1);
+}
+
+.theme-pink .progress-active {
+  background-color: #be185d;
+}
+
+.theme-pink .progress-complete {
+  background-color: #059669;
+}
+
+.theme-pink .btn-start-work {
+  background-color: #be185d;
+  color: white;
+  border: none;
+}
+
+.theme-pink .btn-start-work:hover {
+  background-color: #9d174d;
+}
+
+.theme-pink .btn-start-work.not-recommended {
+  background-color: #9ca3af;
+  color: #d1d5db;
+  cursor: pointer;
+}
+
+.theme-pink .btn-start-work.not-recommended:hover {
+  background-color: #8b919d;
+}
+
+.theme-pink .close-button {
+  background-color: #dc2626;
+  color: white;
+}
+
+.theme-pink .close-button:hover {
+  background-color: #b91c1c;
+}
+
+/* Common Styles */
+.container-fluid {
+  max-width: 100%;
+}
+
+h4 {
+  font-weight: 600;
+  font-size: 1.25rem;
+  margin-bottom: 0.25rem;
+}
+
+.text-muted {
+  font-size: 0.75rem;
+}
+
+.fw-bold {
+  font-weight: 600 !important;
+}
+
+.progress {
+  border-radius: 4px;
+  height: 6px;
+}
+
+.progress-bar {
+  transition: width 0.3s ease;
+}
+
+.btn {
+  font-size: 0.875rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: 4px;
+  border: none;
+  font-weight: 500;
+}
+
+/* Close Button */
+.close-button-container {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 10;
+}
+
+.close-button {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.close-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Scrollbar and overflow */
+::-webkit-scrollbar {
+  display: none;
+}
+
+html, body {
+  overflow: hidden;
+  height: 100%;
+}
