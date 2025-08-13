@@ -11,7 +11,7 @@ function getSettingsManager() {
     return settingsManager;
 }
 
-function saveTheme(theme) {
+async function saveTheme(theme) {
     console.log(`Saving theme: ${theme}`);
     return getSettingsManager().saveTheme(theme);
 }
@@ -20,7 +20,7 @@ function loadTheme() {
     return getSettingsManager().loadTheme();
 }
 
-function sendThemeToRenderer(mainWindow) {
+async function sendThemeToRenderer(mainWindow) {
     return getSettingsManager().sendThemeToRenderer(mainWindow);
 }
 

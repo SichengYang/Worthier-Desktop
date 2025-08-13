@@ -58,6 +58,17 @@
     background-color: #333333;
 }
 
+.login-note {
+    margin-top: 15px;
+    text-align: center;
+    opacity: 0.7;
+}
+
+.login-note small {
+    color: var(--text-color-secondary, #666);
+    font-size: 12px;
+}
+
 .error-message {
     color: red;
     text-align: center;

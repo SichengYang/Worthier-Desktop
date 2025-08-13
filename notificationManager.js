@@ -35,7 +35,7 @@ class NotificationManager {
         };
     }
 
-    getSettings() {
+    async getSettings() {
         // Reload settings to ensure we have the latest
         this.settings = this.settingsManager.loadSettings();
         

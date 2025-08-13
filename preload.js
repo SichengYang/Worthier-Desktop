@@ -26,6 +26,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
     ipcRenderer.on('login-failed', callback);
     return () => ipcRenderer.removeListener('login-failed', callback);
   },
+  onLoginCancelled: (callback) => {
+    ipcRenderer.on('login-cancelled', callback);
+    return () => ipcRenderer.removeListener('login-cancelled', callback);
+  },
   
   // logout functionality
   logout: () => ipcRenderer.send('logout'),
@@ -43,6 +47,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
   // theme setting
   setTheme: (theme) => ipcRenderer.send('set-theme', theme),
+  applyTheme: (theme) => ipcRenderer.send('apply-theme', theme),
   onThemeChanged: (callback) => {
     ipcRenderer.on('theme-changed', callback);
     return () => ipcRenderer.removeListener('theme-changed', callback);
@@ -50,7 +55,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
   // notification settings
   getNotificationSettings: () => ipcRenderer.invoke('get-notification-settings'),
-  checkRequiredPermissions: (settings) => ipcRenderer.invoke('check-required-permissions', settings),
   requestPermissionsImmediately: (settings) => ipcRenderer.invoke('request-permissions-immediately', settings),
   // Backward compatibility functions for UserGuide
   requestFullscreenPermission: async () => {
@@ -70,10 +74,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
     ipcRenderer.on('notification-permission-warnings', callback);
     return () => ipcRenderer.removeListener('notification-permission-warnings', callback);
   },
-  onPermissionRequestInfo: (callback) => {
-    ipcRenderer.on('permission-request-info', callback);
-    return () => ipcRenderer.removeListener('permission-request-info', callback);
-  },
 
   // timer settings
   checkSettingsExist: () => ipcRenderer.invoke('check-settings-exist'),
@@ -89,27 +89,14 @@ contextBridge.exposeInMainWorld('electronAPI', {
   setStartAtLogin: (enable) => ipcRenderer.invoke('set-start-at-login', enable),
 
   // React notification window methods
-  showReactNotification: (options) => ipcRenderer.invoke('show-react-notification', options),
-  showTimerCompleteNotification: (onStartBreak, onContinueWorking) => 
-    ipcRenderer.invoke('show-timer-complete-notification', onStartBreak, onContinueWorking),
   showStartupNotification: (onStartTimer, onLater) => 
     ipcRenderer.invoke('show-startup-notification', onStartTimer, onLater),
   showSettingsConfirmation: (message, onConfirm, onCancel) => 
     ipcRenderer.invoke('show-settings-confirmation', message, onConfirm, onCancel),
   showPermissionRequest: (permissionType, onGrant, onDeny) => 
     ipcRenderer.invoke('show-permission-request', permissionType, onGrant, onDeny),
-  showErrorNotification: (title, message, onOk) => 
-    ipcRenderer.invoke('show-error-notification', title, message, onOk),
-  showSuccessNotification: (title, message, onOk) => 
-    ipcRenderer.invoke('show-success-notification', title, message, onOk),
-  showInfoNotification: (title, message, buttonText, onButtonClick) => 
-    ipcRenderer.invoke('show-info-notification', title, message, buttonText, onButtonClick),
   closeNotification: (notificationId) => 
     ipcRenderer.invoke('close-notification', notificationId),
-  closeAllNotifications: () => 
-    ipcRenderer.invoke('close-all-notifications'),
-  getNotificationCount: () => 
-    ipcRenderer.invoke('get-notification-count'),
 
   // Tray menu functions
   getWorkingState: () => ipcRenderer.invoke('get-working-state'),
@@ -131,4 +118,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
     ipcRenderer.on('recent-records', callback);
     return () => ipcRenderer.removeListener('recent-records', callback);
   },
+
+  // Get recent records
+  getRecentRecords: () => ipcRenderer.invoke('get-recent-records'),
 });

@@ -72,7 +72,7 @@ function App() {
           <Content page={page}/>
         </div>
         <div id="menu">
-          <Menu setPage={setPage}/>
+          <Menu setPage={setPage} currentPage={page}/>
         </div>
       </UserProvider>
     </ThemeProvider>

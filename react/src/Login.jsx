@@ -28,6 +28,9 @@ function Login({ onLoginMicrosoft, onLoginGoogle, onLoginApple, errorRef }) {
                         Login with Apple
                     </button>
                 </div>
+                <div className="login-note">
+                    <small>💡 Tip: You can close the login window if you want to choose a different platform</small>
+                </div>
                 {errorRef && <p ref={errorRef} className="error-message"></p>}
             </div>
         </div>

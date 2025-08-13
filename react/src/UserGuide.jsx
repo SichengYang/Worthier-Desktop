@@ -16,13 +16,12 @@ function UserGuide({ onComplete }) {
         startAtLogin: true
     });
 
-    // Apply theme immediately for preview (temporarily saved, will be confirmed when user completes guide)
+    // Apply theme immediately for preview
     const handleThemeChange = (newTheme) => {
         setSettings({...settings, theme: newTheme});
-        // Apply theme for preview - this saves temporarily but will be overridden if user exits without completing
-        if (window.electronAPI?.setTheme) {
-            console.log(`Applying theme ${newTheme} for preview (temporarily saved)`);
-            window.electronAPI.setTheme(newTheme);
+        if (window.electronAPI?.applyTheme) {
+            console.log(`Applying theme ${newTheme} for preview`);
+            window.electronAPI.applyTheme(newTheme);
         }
     };
 

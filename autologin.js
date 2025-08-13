@@ -15,15 +15,14 @@ class AutoLogin {
                 console.log('Retrieved token data:', JSON.stringify({
                     user: tokenData.user,
                     hasAccessToken: !!tokenData.accessToken,
-                    hasOldAccessToken: !!tokenData.access_token,
-                    accessTokenValue: tokenData.accessToken || tokenData.access_token
+                    accessTokenValue: tokenData.accessToken
                 }, null, 2));
 
                 // Send accessToken, username, and email to server for validation
                 const axios = require('axios');
                 try {
                     const response = await axios.post('https://login.worthier.app/quickLogin', {
-                        token: tokenData.accessToken || tokenData.access_token, // Handle both formats for backward compatibility
+                        token: tokenData.accessToken,
                         username: tokenData.user?.username,
                         email: tokenData.user?.email
                     }, {
@@ -58,7 +57,7 @@ class AutoLogin {
                             // Retry validation with new token
                             try {
                                 const response = await axios.post('https://login.worthier.app/quickLogin', {
-                                    token: refreshResult.accessToken || refreshResult.access_token,
+                                    token: refreshResult.accessToken,
                                     username: refreshResult.user?.username,
                                     email: refreshResult.user?.email
                                 }, {

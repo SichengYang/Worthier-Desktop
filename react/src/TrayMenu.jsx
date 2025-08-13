@@ -34,10 +34,6 @@ const TrayMenu = () => {
     window.electronAPI.openMainWindow();
   };
 
-  const handleOpenRestTimer = () => {
-    window.electronAPI.toggleRestWindow();
-  };
-
   const handleQuit = () => {
     window.electronAPI.quitApp();
   };

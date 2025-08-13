@@ -1,12 +1,32 @@
 import './Menu.css'
 
-function Menu({ setPage }) {
+function Menu({ setPage, currentPage }) {
     return (
         <div className="menu">
-            <button className="btn btn-primary" onClick={() => setPage(0)}>Home</button>
-            <button className="btn btn-secondary" onClick={() => setPage(1)}>Summary</button>
-            <button className="btn btn-success" onClick={() => setPage(2)}>Devices</button>
-            <button className="btn btn-danger" onClick={() => setPage(3)}>Profile</button>
+            <button 
+                className={`btn btn-primary ${currentPage === 0 ? 'active' : ''}`} 
+                onClick={() => setPage(0)}
+            >
+                Home
+            </button>
+            <button 
+                className={`btn btn-secondary ${currentPage === 1 ? 'active' : ''}`} 
+                onClick={() => setPage(1)}
+            >
+                Summary
+            </button>
+            <button 
+                className={`btn btn-success ${currentPage === 2 ? 'active' : ''}`} 
+                onClick={() => setPage(2)}
+            >
+                Devices
+            </button>
+            <button 
+                className={`btn btn-danger ${currentPage === 3 ? 'active' : ''}`} 
+                onClick={() => setPage(3)}
+            >
+                Profile
+            </button>
         </div>
     )
 }

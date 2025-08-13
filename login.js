@@ -1,7 +1,7 @@
 const { BrowserWindow } = require('electron');
 const { randomUUID } = require('crypto');
 
-function startLogin(mainWindow, windowUrl, callbackUrl) {
+async function startLogin(mainWindow, windowUrl, callbackUrl) {
   let windowClosed = false;
 
   // Generate a unique session ID for polling
@@ -22,6 +22,12 @@ function startLogin(mainWindow, windowUrl, callbackUrl) {
       nodeIntegration: false,
       contextIsolation: true,
     },
+    // Add window controls so user can close the window
+    titleBarStyle: 'default',
+    minimizable: false,
+    maximizable: false,
+    resizable: false,
+    title: 'Login - Worthier',
   });
 
   function safeClose() {
@@ -32,6 +38,16 @@ function startLogin(mainWindow, windowUrl, callbackUrl) {
   }
 
   loginWindow.loadURL(urlWithSession);
+
+  // Handle manual window close by user
+  loginWindow.on('closed', () => {
+    if (!windowClosed) {
+      windowClosed = true;
+      console.log('Login window closed by user');
+      // Send a cancellation message to the main window
+      mainWindow.webContents.send('login-cancelled', { message: 'Login cancelled by user' });
+    }
+  });
 
   // In your did-finish-load handler:
   loginWindow.webContents.on('did-finish-load', async () => {

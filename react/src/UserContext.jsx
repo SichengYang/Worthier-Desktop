@@ -68,6 +68,14 @@ export const UserProvider = ({ children }) => {
             setIsLoading(false);
         };
 
+        // Listen for login cancelled events
+        const handleLoginCancelled = (event, data) => {
+            console.log('❌ Login cancelled event received:', data.message || 'Login cancelled');
+            setIsLoggedIn(false);
+            setUserInfo(null);
+            setIsLoading(false);
+        };
+
         // Listen for logout success events
         const handleLogoutSuccess = (event, data) => {
             console.log('👋 Logout success event received');
@@ -77,6 +85,7 @@ export const UserProvider = ({ children }) => {
         // Set up event listeners
         const loginSuccessCleanup = window.electronAPI?.onLoginSuccess?.(handleLoginSuccess);
         const loginFailedCleanup = window.electronAPI?.onLoginFailed?.(handleLoginFailed);
+        const loginCancelledCleanup = window.electronAPI?.onLoginCancelled?.(handleLoginCancelled);
         const logoutSuccessCleanup = window.electronAPI?.onLogoutSuccess?.(handleLogoutSuccess);
 
         // Fetch user info on initial load (for existing sessions)
@@ -89,6 +98,9 @@ export const UserProvider = ({ children }) => {
             }
             if (typeof loginFailedCleanup === 'function') {
                 loginFailedCleanup();
+            }
+            if (typeof loginCancelledCleanup === 'function') {
+                loginCancelledCleanup();
             }
             if (typeof logoutSuccessCleanup === 'function') {
                 logoutSuccessCleanup();

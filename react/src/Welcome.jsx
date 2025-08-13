@@ -45,6 +45,7 @@ function Welcome({ working, workingData }) {
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    backgroundColor: 'transparent',
                     plugins: {
                         legend: {
                             display: true,
@@ -104,21 +105,21 @@ function Welcome({ working, workingData }) {
                 primary: '#4ade80',
                 secondary: '#10b981',
                 text: '#374151',
-                grid: '#e5e7eb',
+                grid: '#d1d5db',
                 background: '#ffffff'
             },
             dark: {
                 primary: '#3b82f6',
                 secondary: '#1d4ed8',
                 text: '#f3f4f6',
-                grid: '#374151',
+                grid: '#4b5563',
                 background: '#1f2937'
             },
             pink: {
                 primary: '#ec4899',
                 secondary: '#be185d',
                 text: '#831843',
-                grid: '#fce7f3',
+                grid: '#f3e8ff',
                 background: '#fdf2f8'
             }
         };
