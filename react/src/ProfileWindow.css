@@ -12,12 +12,16 @@
     overflow: hidden;
     width: 100%;
     min-width: 400px;
+    opacity: 1;
+    transform: translateY(0);
 }
 
 .profile-frame h3 {
     text-align: center;
     margin: 0 0 20px 0;
     flex-shrink: 0;
+    opacity: 1;
+    transform: translateY(0);
 }
 
 .profile-info {
@@ -28,6 +32,7 @@
     margin-bottom: 60px; /* Space for logout button */
     width: 100%;
     max-width: 100%;
+    opacity: 1;
 }
 
 .profile-field {
@@ -43,6 +48,8 @@
     width: 100%;
     box-sizing: border-box;
     display: block;
+    opacity: 1;
+    transform: translateX(0);
 }
 
 .profile-picture {

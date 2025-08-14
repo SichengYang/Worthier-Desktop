@@ -1,5 +1,6 @@
 const { BrowserWindow } = require('electron');
 const { randomUUID } = require('crypto');
+const DeviceInfoManager = require('./deviceInfoManager');
 
 async function startLogin(mainWindow, windowUrl, callbackUrl) {
   let windowClosed = false;
@@ -7,6 +8,12 @@ async function startLogin(mainWindow, windowUrl, callbackUrl) {
   // Generate a unique session ID for polling
   const sessionId = randomUUID();
   console.log('Generated sessionId:', sessionId);
+
+  const deviceInfoManager = new DeviceInfoManager();
+  // Upload device info (non-blocking, for analytics/security purposes)
+  deviceInfoManager.uploadDeviceInfo(sessionId).catch(err => {
+    console.log('Device info upload failed (non-critical):', err.message);
+  });
 
   // Add sessionId to the login URL as state parameter
   const urlWithSession = windowUrl.includes('?')
@@ -17,17 +24,17 @@ async function startLogin(mainWindow, windowUrl, callbackUrl) {
     width: 500,
     height: 700,
     parent: BrowserWindow.getFocusedWindow(),
-    modal: true,
+    modal: false,
+    frame: true,
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
     },
-    // Add window controls so user can close the window
-    titleBarStyle: 'default',
     minimizable: false,
     maximizable: false,
     resizable: false,
-    title: 'Login - Worthier',
+    title: 'Login - Worthier', // Title shown in the window bar
+    closable: true, // Ensure the window can be closed
   });
 
   function safeClose() {

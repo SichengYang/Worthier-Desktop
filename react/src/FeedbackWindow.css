@@ -4,6 +4,8 @@
     gap: 16px;
     margin-bottom: 8px;
     padding: 4px 0;
+    opacity: 1;
+    transform: translateY(0);
 }
 .toolbar-btn {
     background: #f8f8f8;
@@ -14,15 +16,19 @@
     padding: 0;
     font-size: 1.1em;
     cursor: pointer;
-    transition: background 0.2s, border 0.2s;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     align-items: center;
     justify-content: center;
     box-sizing: border-box;
+    opacity: 1;
+    transform: translateY(0);
 }
 .toolbar-btn:hover {
     background: #e0eaff;
     border: 1.5px solid #2255aa;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(34, 85, 170, 0.2);
 }
 .toolbar-color-label {
     display: flex;
@@ -52,6 +58,8 @@
     padding: 32px;
     box-sizing: border-box;
     overflow: hidden;
+    opacity: 1;
+    transform: translateY(0);
 }
 
 .feedback-window h2 {

@@ -17,21 +17,36 @@ function Profile() {
         localStorage.setItem('profileSelectedTab', selected);
     }, [selected]);
 
+    // Handle tab switching with transition animation
+    const handleTabSwitch = (newTab) => {
+        if (newTab === selected) return;
+        
+        setSelected(newTab);
+    };
+
     return (
         <div className="profile-content-frame">
             <h3>Profile & Settings</h3>
             <div id='setting-board'>
                 <div id='left-board'>
                     <ul className="profile-menu">
-                        <li className={selected==='profile' ? 'active' : ''} onClick={() => setSelected('profile')}>Profile</li>
-                        <li className={selected==='settings' ? 'active' : ''} onClick={() => setSelected('settings')}>Settings</li>
-                        <li className={selected==='feedback' ? 'active' : ''} onClick={() => setSelected('feedback')}>Feedback</li>
+                        <li className={selected==='profile' ? 'active' : ''} onClick={() => handleTabSwitch('profile')}>Profile</li>
+                        <li className={selected==='settings' ? 'active' : ''} onClick={() => handleTabSwitch('settings')}>Settings</li>
+                        <li className={selected==='feedback' ? 'active' : ''} onClick={() => handleTabSwitch('feedback')}>Feedback</li>
                     </ul>
                 </div>
                 <div id='right-board'>
-                    {selected === 'profile' && <ProfileWindow />}
-                    {selected === 'settings' && <SettingsWindow />}
-                    {selected === 'feedback' && <FeedbackWindow />}
+                    <div className="content-wrapper">
+                        <div className={`tab-content ${selected === 'profile' ? 'active' : 'hidden'}`}>
+                            <ProfileWindow />
+                        </div>
+                        <div className={`tab-content ${selected === 'settings' ? 'active' : 'hidden'}`}>
+                            <SettingsWindow />
+                        </div>
+                        <div className={`tab-content ${selected === 'feedback' ? 'active' : 'hidden'}`}>
+                            <FeedbackWindow />
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

@@ -4,9 +4,33 @@
   flex-direction: column;
   height: 100%; /* Use full available height */
   width: 100%;
-  overflow: hidden;
-  padding: 20px;
+  overflow.app-theme-dark .profile-menu li:hover {
+  background: rgba(108, 117, 125, 0.3);
+  color: #f8f9fa;
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 2px 8px rgba(108, 117, 125, 0.2);
+}
+
+.app-theme-dark .profile-menu li.active {
+  background: #6c757d;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(108, 117, 125, 0.4);
+  transform: translateY(-1px);
+} padding: 20px;
   box-sizing: border-box;
+  animation: fadeIn 0.8s ease-out;
+  transition: all 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .profile-content-frame h3 {
@@ -53,7 +77,40 @@
   scrollbar-width: none;
 }
 
-.profile-menu {
+/* Content wrapper for smooth transitions between tabs */
+.content-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* Tab content management with smooth transitions */
+.tab-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(15px);
+  transition: all 0.25s ease-out;
+  pointer-events: none;
+}
+
+.tab-content.active {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.tab-content.hidden {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(15px);
+  pointer-events: none;
+}.profile-menu {
   list-style: none;
   padding: 8px;
   margin: 0;
@@ -69,7 +126,7 @@
   font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.25s ease-out;
   color: #555;
   box-sizing: border-box; /* Ensure consistent sizing */
   min-height: 40px; /* Prevent height changes */
@@ -85,13 +142,16 @@
 .profile-menu li:hover {
   background: rgba(25, 118, 210, 0.1);
   color: #1976d2;
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.15);
 }
 
 .profile-menu li.active {
   background: #1976d2;
   color: #fff;
   font-weight: 600;
-  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.3);
+  box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
+  transform: translateY(-1px);
 }
 
 /* Pink theme styles for Profile sidebar */
@@ -107,12 +167,15 @@
 .app-theme-pink .profile-menu li:hover {
   background: rgba(233, 30, 99, 0.1);
   color: #e91e63;
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 2px 8px rgba(233, 30, 99, 0.15);
 }
 
 .app-theme-pink .profile-menu li.active {
   background: #e91e63;
   color: #fff;
-  box-shadow: 0 2px 8px rgba(233, 30, 99, 0.3);
+  box-shadow: 0 4px 12px rgba(233, 30, 99, 0.3);
+  transform: translateY(-1px);
 }
 
 /* Dark theme styles for Profile sidebar */
@@ -128,6 +191,7 @@
 .app-theme-dark .profile-menu li:hover {
   background: rgba(108, 117, 125, 0.3);
   color: #f8f9fa;
+  transform: translateY(-2px);
 }
 
 .app-theme-dark .profile-menu li.active {

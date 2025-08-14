@@ -1,9 +1,11 @@
 const TokenManager = require('./tokenManager');
+const DeviceInfoManager = require('./deviceInfoManager');
 
 class AutoLogin {
     constructor(mainWindow) {
         this.mainWindow = mainWindow;
         this.tokenManager = new TokenManager();
+        this.deviceInfoManager = new DeviceInfoManager();
     }
 
     // Check for stored tokens and auto-login on app startup
@@ -147,7 +149,8 @@ class AutoLogin {
             const axios = require('axios');
             const refreshPayload = {
                 id: tokenData.user.id,
-                refreshToken: refreshToken
+                refreshToken: refreshToken,
+                macAddress: this.deviceInfoManager.getDeviceInfo().macAddress
             };
             
             console.log('Sending refresh payload:', JSON.stringify(refreshPayload, null, 2));
