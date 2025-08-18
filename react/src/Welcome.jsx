@@ -92,10 +92,12 @@ function Welcome({ working, workingData }) {
     }, [workingData, theme]);
 
     const formatDate = (dateStr) => {
-        const date = new Date(dateStr);
-        return date.toLocaleDateString('en-US', { 
-            month: 'short', 
-            day: 'numeric' 
+        // Parse YYYY-MM-DD as local date to avoid timezone issues
+        const [year, month, day] = dateStr.split('-').map(Number);
+        const date = new Date(year, month - 1, day);
+        return date.toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric'
         });
     };
 

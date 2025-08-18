@@ -34,99 +34,98 @@ class AutoLogin {
                         }
                     });
 
-                if (response.data && response.data.success) {
-                    // Server validated, proceed with auto-login
-                    this.mainWindow.webContents.send('login-success', {
-                        info: tokenData
-                    });
-                    return true;
-                } else {
-                    console.log('Server validation failed: ', response.data.error);
-                    return false;
-                }
-            } catch (error) {
-                console.error('Error validating with server:', error);
-                
-                // Handle different types of errors
-                if (error.response) {
-                    const status = error.response.status;
-                    
-                    if (status === 401) {
-                        // Token expired, try to refresh
-                        console.log('Token expired, attempting to refresh...');
-                        const refreshResult = await this.refreshToken(tokenData);
-                        if (refreshResult) {
-                            // Retry validation with new token
-                            try {
-                                const response = await axios.post('https://login.worthier.app/quickLogin', {
-                                    token: refreshResult.accessToken,
-                                    username: refreshResult.user?.username,
-                                    email: refreshResult.user?.email
-                                }, {
-                                    timeout: 10000, // 10 second timeout
-                                    headers: {
-                                        'Content-Type': 'application/json'
-                                    }
-                                });
+                    if (response.data && response.data.success) {
+                        // Server validated, proceed with auto-login
+                        this.mainWindow.webContents.send('login-success', {
+                            info: tokenData
+                        });
+                        return true;
+                    } else {
+                        console.log('Server validation failed: ', response.data.error);
+                        return false;
+                    }
+                } catch (error) {
+                    console.error('Error validating with server:', error);
 
-                                if (response.data && response.data.success) {
-                                    this.mainWindow.webContents.send('login-success', {
-                                        info: refreshResult
+                    // Handle different types of errors
+                    if (error.response) {
+                        const status = error.response.status;
+
+                        if (status === 401) {
+                            // Token expired, try to refresh
+                            const refreshResult = await this.refreshToken(tokenData);
+                            if (refreshResult) {
+                                // Retry validation with new token
+                                try {
+                                    const response = await axios.post('https://login.worthier.app/quickLogin', {
+                                        token: refreshResult.accessToken,
+                                        username: refreshResult.user?.username,
+                                        email: refreshResult.user?.email
+                                    }, {
+                                        timeout: 10000, // 10 second timeout
+                                        headers: {
+                                            'Content-Type': 'application/json'
+                                        }
                                     });
-                                    return true;
+
+                                    if (response.data && response.data.success) {
+                                        this.mainWindow.webContents.send('login-success', {
+                                            info: refreshResult
+                                        });
+                                        return true;
+                                    }
+                                } catch (retryError) {
+                                    console.error('Retry validation failed after refresh:', retryError);
                                 }
-                            } catch (retryError) {
-                                console.error('Retry validation failed after refresh:', retryError);
                             }
+                        } else if (status >= 500) {
+                            // Server errors (500, 502, 503, etc.) - proceed with offline mode
+                            console.warn(`Server error (${status}): ${error.response.statusText}. Proceeding with offline mode using cached credentials.`);
+
+                            // Use cached token data for offline mode
+                            this.mainWindow.webContents.send('login-success', {
+                                info: tokenData,
+                                offline: true,
+                                serverError: `Server temporarily unavailable (${status})`
+                            });
+                            return true;
+                        } else {
+                            // Other client errors (400, 403, etc.)
+                            console.error(`Client error (${status}): ${error.response.statusText}`);
                         }
-                    } else if (status >= 500) {
-                        // Server errors (500, 502, 503, etc.) - proceed with offline mode
-                        console.warn(`Server error (${status}): ${error.response.statusText}. Proceeding with offline mode using cached credentials.`);
-                        
+                    } else if (error.code === 'ENOTFOUND' || error.code === 'ECONNREFUSED' || error.code === 'ETIMEDOUT' || error.code === 'ECONNRESET') {
+                        // Network connectivity issues
+                        console.warn(`Network error (${error.code}): Unable to reach server. Proceeding with offline mode using cached credentials.`);
+
                         // Use cached token data for offline mode
                         this.mainWindow.webContents.send('login-success', {
                             info: tokenData,
                             offline: true,
-                            serverError: `Server temporarily unavailable (${status})`
+                            serverError: 'Unable to connect to server'
+                        });
+                        return true;
+                    } else if (error.code === 'EABORTED' || error.message?.includes('timeout')) {
+                        // Request timeout
+                        console.warn('Request timeout: Server response too slow. Proceeding with offline mode using cached credentials.');
+
+                        // Use cached token data for offline mode
+                        this.mainWindow.webContents.send('login-success', {
+                            info: tokenData,
+                            offline: true,
+                            serverError: 'Server response timeout'
                         });
                         return true;
                     } else {
-                        // Other client errors (400, 403, etc.)
-                        console.error(`Client error (${status}): ${error.response.statusText}`);
+                        // Other errors
+                        console.error('Unexpected error during validation:', error.message);
                     }
-                } else if (error.code === 'ENOTFOUND' || error.code === 'ECONNREFUSED' || error.code === 'ETIMEDOUT' || error.code === 'ECONNRESET') {
-                    // Network connectivity issues
-                    console.warn(`Network error (${error.code}): Unable to reach server. Proceeding with offline mode using cached credentials.`);
-                    
-                    // Use cached token data for offline mode
-                    this.mainWindow.webContents.send('login-success', {
-                        info: tokenData,
-                        offline: true,
-                        serverError: 'Unable to connect to server'
-                    });
-                    return true;
-                } else if (error.code === 'EABORTED' || error.message?.includes('timeout')) {
-                    // Request timeout
-                    console.warn('Request timeout: Server response too slow. Proceeding with offline mode using cached credentials.');
-                    
-                    // Use cached token data for offline mode
-                    this.mainWindow.webContents.send('login-success', {
-                        info: tokenData,
-                        offline: true,
-                        serverError: 'Server response timeout'
-                    });
-                    return true;
-                } else {
-                    // Other errors
-                    console.error('Unexpected error during validation:', error.message);
+
+                    return false;
                 }
-                
+            } else {
+                console.log('No valid profile found, user needs to login manually');
                 return false;
             }
-        } else {
-            console.log('No valid profile found, user needs to login manually');
-            return false;
-        }
         } catch (error) {
             console.error('Error during auto-login check:', error);
             return false;
@@ -258,4 +257,11 @@ class AutoLogin {
     }
 }
 
-module.exports = AutoLogin;
+let autoLoginInstance = null;
+function getAutoLogin(mainWindow = null) {
+    if (!autoLoginInstance) {
+        autoLoginInstance = new AutoLogin(mainWindow);
+    }
+    return autoLoginInstance;
+}
+module.exports = getAutoLogin;

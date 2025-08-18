@@ -6,7 +6,7 @@ const {
 const fs = require('fs');
 const path = require("node:path");
 
-const AutoLogin = require('./autologin');
+const getAutoLogin = require('./autologin');
 const NotificationHandlers = require('./notificationHandlers');
 const SettingsManager = require('./settingsManager');
 const TrayWindow = require('./trayWindow');
@@ -14,6 +14,8 @@ const RestWindow = require('./restWindow');
 const { setupIpcHandlers } = require('./ipcHandlers');
 const SingleInstanceManager = require('./singleInstance');
 const getTimeRecorder = require('./recordTime');
+const uploadWorkLog = require('./uploadWorkingLog');
+const getDeviceList = require('./getDeviceList');
 
 let timeRecorder;
 let mainWindow;
@@ -50,8 +52,9 @@ const createWindow = () => {
   mainWindow.loadFile(path.join(__dirname, "react/dist/index.html"));
 
   // Check for auto-login and theme settings after window loads
-  mainWindow.webContents.once('did-finish-load', () => {
-    autoLogin.checkAutoLogin();
+  mainWindow.webContents.once('did-finish-load', async () => {
+    await autoLogin.checkAutoLogin();
+    uploadWorkLog();
     settingsManager.sendThemeToRenderer(mainWindow);
   });
 
@@ -86,7 +89,7 @@ app.whenReady().then(async () => {
   timeRecorder = getTimeRecorder();
 
   // create instances that requires mainWindow
-  autoLogin = new AutoLogin(mainWindow);
+  autoLogin = getAutoLogin(mainWindow);
   notificationHandlers = new NotificationHandlers({
     mainWindow,
     restWindow,
@@ -136,7 +139,8 @@ app.whenReady().then(async () => {
     getExtendedWorkingTime,
     updateTimerSettings,
     startTimerProcess: (minutes) => notificationHandlers.startTimerProcess(minutes),
-    cancelTimerProcess: () => notificationHandlers.cancelTimerProcess()
+    cancelTimerProcess: () => notificationHandlers.cancelTimerProcess(),
+    getDeviceList
   });
 });
 

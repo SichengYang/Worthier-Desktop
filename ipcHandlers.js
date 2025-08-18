@@ -19,7 +19,8 @@ function setupIpcHandlers({
   getExtendedWorkingTime,
   updateTimerSettings,
   startTimerProcess,
-  cancelTimerProcess
+  cancelTimerProcess,
+  getDeviceList
 }) {
 
   // Window control handlers
@@ -552,6 +553,16 @@ function setupIpcHandlers({
     tray.destroy();
     BrowserWindow.getAllWindows().forEach((win) => win.destroy());
     app.quit();
+  });
+
+  ipcMain.handle('get-device-list', async (event) => {
+    try {
+      const devices = await getDeviceList();
+      return devices;
+    } catch (error) {
+      console.error('Error getting device list:', error);
+      return [];
+    }
   });
 }
 

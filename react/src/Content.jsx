@@ -2,6 +2,7 @@ import './Content.css'
 import { useRef, useEffect, useState } from 'react'
 import Profile from './Profile';
 import Welcome from './Welcome';
+import Devices from './Devices';
 
 function Content({ page }) {
     const [working, setWorking] = useState(false);
@@ -71,7 +72,7 @@ function Content({ page }) {
             ) : page === 1 ? (
                 <div className="content-frame">1</div>
             ) : page === 2 ? (
-                <div className="content-frame">2</div>
+                <Devices />
             ) : (
                 <Profile />
             )}

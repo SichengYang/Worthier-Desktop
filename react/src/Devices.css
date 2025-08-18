@@ -1,0 +1,94 @@
+
+.devices-container {
+  max-width: 500px;
+  margin: 40px auto;
+  padding: 24px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.devices-title {
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 24px;
+  color: #2d3748;
+  text-align: center;
+}
+
+.devices-loading {
+  color: #718096;
+  text-align: center;
+}
+
+.devices-error {
+  color: #e53e3e;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.devices-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex: 1 1 auto;
+  overflow-y: auto;
+  min-height: 0;
+  max-height: 100%;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 #f7fafc;
+}
+
+.devices-list::-webkit-scrollbar {
+  width: 8px;
+}
+.devices-list::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+.devices-list::-webkit-scrollbar-track {
+  background: #f7fafc;
+}
+
+
+.device-item {
+  background: #f7fafc;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.device-details-area {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 0.4s cubic-bezier(0.4,0,0.2,1), opacity 0.3s ease;
+}
+.device-details-area.expanded {
+  max-height: 500px;
+  opacity: 1;
+  transition: max-height 0.5s cubic-bezier(0.4,0,0.2,1), opacity 0.3s ease;
+}
+
+.device-name {
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: #2b6cb0;
+}
+
+.device-type {
+  font-size: 1rem;
+  color: #4a5568;
+}
+
+.device-status {
+  font-size: 0.95rem;
+  color: #38a169;
+}

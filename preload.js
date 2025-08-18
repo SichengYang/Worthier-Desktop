@@ -118,7 +118,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
     ipcRenderer.on('recent-records', callback);
     return () => ipcRenderer.removeListener('recent-records', callback);
   },
-
-  // Get recent records
   getRecentRecords: () => ipcRenderer.invoke('get-recent-records'),
+
+  // Get device information
+  getDeviceList: () => ipcRenderer.invoke('get-device-list'),
 });
