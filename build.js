@@ -2,6 +2,7 @@
 const { spawnSync } = require('child_process');
 
 const args = process.argv.slice(2);
+const npmCmd = process.platform === 'win32' ? 'npm.cmd' : 'npm';
 
 function runCommand(command, args, cwd) {
   const result = spawnSync(command, args, { 
@@ -23,7 +24,7 @@ if (args[0] === 'react') {
   // Only build React
   try {
     console.log('▶ Building React app...');
-    runCommand('npm', ['run', 'build'], './react');
+    runCommand(npmCmd, ['run', 'build'], './react');
     console.log('✔ React app built successfully.');
   } catch (error) {
     console.error('✖ React build failed:', error);
@@ -32,7 +33,7 @@ if (args[0] === 'react') {
 
   try {
     console.log('▶ Building notification-react app...');
-    runCommand('npm', ['run', 'build'], './notification-react');
+    runCommand(npmCmd, ['run', 'build'], './notification-react');
     console.log('✔ Notification-react app built successfully.');
   } catch (error) {
     console.error('✖ Notification-react build failed:', error);
@@ -41,7 +42,7 @@ if (args[0] === 'react') {
 
   try {
     console.log('▶ Building rest-react app...');
-    runCommand('npm', ['run', 'build'], './rest-react');
+    runCommand(npmCmd, ['run', 'build'], './rest-react');
     console.log('✔ Rest-react app built successfully.');
   } catch (error) {
     console.error('✖ Rest-react build failed:', error);
@@ -54,15 +55,15 @@ if (args[0] === 'react') {
 try {
   // Run React build first
   console.log('▶ Building React app...');
-  runCommand('npm', ['run', 'build'], './react');
+  runCommand(npmCmd, ['run', 'build'], './react');
 
   // Build notification-react app
   console.log('▶ Building notification-react app...');
-  runCommand('npm', ['run', 'build'], './notification-react');
+  runCommand(npmCmd, ['run', 'build'], './notification-react');
 
   // Build rest-react app
   console.log('▶ Building rest-react app...');
-  runCommand('npm', ['run', 'build'], './rest-react');
+  runCommand(npmCmd, ['run', 'build'], './rest-react');
 
   const builder = require('electron-builder');
   // Then run Electron build
