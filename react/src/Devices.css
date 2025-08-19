@@ -11,6 +11,19 @@
   min-height: 0;
 }
 
+/* Improve icon rendering quality */
+.device-menu-btn i {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-style: normal;
+}
+
+/* Ensure Bootstrap Icons display properly */
+.bi::before {
+  vertical-align: -.125em;
+}
+
 .devices-title {
   font-size: 2rem;
   font-weight: 600;

@@ -48,6 +48,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // theme setting
   setTheme: (theme) => ipcRenderer.send('set-theme', theme),
   applyTheme: (theme) => ipcRenderer.send('apply-theme', theme),
+  getThemeSettings: () => ipcRenderer.invoke('get-theme-settings'),
   onThemeChanged: (callback) => {
     ipcRenderer.on('theme-changed', callback);
     return () => ipcRenderer.removeListener('theme-changed', callback);

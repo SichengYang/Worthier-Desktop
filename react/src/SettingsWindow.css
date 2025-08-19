@@ -40,6 +40,10 @@
 .theme-circle.pink-theme {
     background: linear-gradient(135deg, #ffb6c1 60%, #ff69b4 100%);
 }
+.theme-circle.system-theme {
+    background: linear-gradient(45deg, #f8f8f8 50%, #222 50%);
+    position: relative;
+}
 .settings-window {
     display: flex;
     flex-direction: column;

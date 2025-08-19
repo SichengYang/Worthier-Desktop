@@ -1,7 +1,8 @@
 const {
   app,
   BrowserWindow,
-  Tray
+  Tray,
+  nativeTheme
 } = require("electron/main");
 const fs = require('fs');
 const path = require("node:path");
@@ -83,6 +84,18 @@ app.whenReady().then(async () => {
   const settings = settingsManager.loadSettings();
   workingTime = settingsManager.getFocusTimeInMinutes(settings);
   extendedWorkingTime = settingsManager.getExtendedFocusTimeInMinutes(settings);
+
+  // Set up system theme change listener
+  nativeTheme.on('updated', () => {
+    const currentThemeSettings = settingsManager.getThemeSettings();
+    if (currentThemeSettings.theme === 'system') {
+      const resolvedTheme = settingsManager.loadTheme();
+      console.log('System theme changed, resolved theme:', resolvedTheme);
+      if (mainWindow && mainWindow.webContents) {
+        mainWindow.webContents.send('theme-changed', resolvedTheme);
+      }
+    }
+  });
 
   trayWindow = new TrayWindow();
   restWindow = new RestWindow(settingsManager);

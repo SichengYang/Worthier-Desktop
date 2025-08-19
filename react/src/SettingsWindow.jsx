@@ -422,6 +422,12 @@ function SettingsWindow() {
                             onClick={() => changeTheme('pink')}
                             aria-label="Pink Theme"
                         />
+                        <button
+                            type="button"
+                            className={`theme-circle${theme==='system' ? ' selected' : ''} system-theme`}
+                            onClick={() => changeTheme('system')}
+                            aria-label="System Theme"
+                        />
                     </div>
                 </div>
             </div>

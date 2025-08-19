@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './Devices.css';
 import WorkingLogChart from './WorkingLogChart';
-import { AppleIcon, MicrosoftIcon } from './DeviceIcons';
+import { AppleIcon, MicrosoftIcon, LinuxIcon } from './DeviceIcons';
 
 export default function Devices() {
 	const [devices, setDevices] = useState([]);
@@ -44,10 +44,16 @@ export default function Devices() {
 								 <button
 									 className="device-menu-btn"
 									 onClick={() => setExpandedIdx(isExpanded ? null : idx)}
-									 style={{ width: '100%', textAlign: 'left', background: 'none', border: 'none', padding: '8px', cursor: 'pointer', fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '8px' }}
+									 style={{ width: '100%', textAlign: 'left', background: 'none', border: 'none', padding: '8px', cursor: 'pointer', fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '12px' }}
 								 >
-									 {device.platform === 'darwin' ? <AppleIcon size={24} /> : device.platform === 'win32' ? <MicrosoftIcon size={24} /> : null}
-									 <span>{device.deviceName || `Device ${idx + 1}`}</span>
+									 {device.platform === 'darwin' ? (
+										 <AppleIcon size={20} />
+									 ) : device.platform === 'win32' ? (
+										 <MicrosoftIcon size={20} />
+									 ) : (
+										 <LinuxIcon size={20} />
+									 )}
+									 <span style={{ fontWeight: '500' }}>{device.deviceName || `Device ${idx + 1}`}</span>
 								 </button>
 								 <div className={`device-details-area${isExpanded ? ' expanded' : ''}`}>
 									 {isExpanded && (

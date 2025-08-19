@@ -1,20 +1,52 @@
-// Apple logo SVG React component
-export function AppleIcon({ size = 24 }) {
+// High-quality device icons using Bootstrap Icons
+
+// Apple/macOS icon using Bootstrap's Apple icon
+export function AppleIcon({ size = 24, className = "" }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M16.365 1.43c0 1.14-.93 2.07-2.07 2.07-.03-1.17.96-2.07 2.07-2.07zm1.77 4.41c-.57-.68-1.18-1.36-2.01-1.36-.81 0-1.32.44-2.01.44-.7 0-1.25-.43-2.02-.43-.81 0-1.67.5-2.35 1.36-1.01 1.29-1.78 3.67-1.46 5.81.36 2.41 1.65 5.09 3.01 5.09.59 0 .84-.38 1.62-.38.77 0 1 .38 1.62.38 1.37 0 2.61-2.53 2.97-4.94.21-1.44-.06-2.97-.37-3.97zm-3.13 10.13c-.41 0-.81-.12-1.13-.36-.32-.24-.59-.36-.91-.36-.32 0-.59.12-.91.36-.32.24-.72.36-1.13.36-.89 0-1.74-.7-2.41-1.98-.66-1.27-1.01-2.8-.99-4.36.01-1.13.23-2.23.65-3.13.42-.9 1.01-1.64 1.74-2.09.73-.45 1.54-.68 2.41-.68.87 0 1.68.23 2.41.68.73.45 1.32 1.19 1.74 2.09.42.9.64 2 .65 3.13.02 1.56-.33 3.09-.99 4.36-.67 1.28-1.52 1.98-2.41 1.98z" fill="#000"/>
-    </svg>
+    <i 
+      className={`bi bi-apple ${className}`} 
+      style={{ 
+        fontSize: `${size}px`, 
+        lineHeight: '1',
+        color: '#000',
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}
+    ></i>
   );
 }
 
-// Microsoft logo SVG React component
-export function MicrosoftIcon({ size = 24 }) {
+// Windows icon using Bootstrap's Windows icon
+export function MicrosoftIcon({ size = 24, className = "" }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="2" y="2" width="9" height="9" fill="#F25022"/>
-      <rect x="13" y="2" width="9" height="9" fill="#7FBA00"/>
-      <rect x="2" y="13" width="9" height="9" fill="#00A4EF"/>
-      <rect x="13" y="13" width="9" height="9" fill="#FFB900"/>
-    </svg>
+    <i 
+      className={`bi bi-windows ${className}`} 
+      style={{ 
+        fontSize: `${size}px`, 
+        lineHeight: '1',
+        color: '#0078d4',
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}
+    ></i>
+  );
+}
+
+// Alternative: Linux icon for other platforms
+export function LinuxIcon({ size = 24, className = "" }) {
+  return (
+    <i 
+      className={`bi bi-ubuntu ${className}`} 
+      style={{ 
+        fontSize: `${size}px`, 
+        lineHeight: '1',
+        color: '#e95420',
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}
+    ></i>
   );
 }
