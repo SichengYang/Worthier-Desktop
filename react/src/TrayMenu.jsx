@@ -39,7 +39,7 @@ const TrayMenu = () => {
   };
 
   return (
-    <div className={`tray-menu ${theme}`}>
+    <div className="tray-menu">
       <div className="tray-menu-header">
         <h4>Worthier</h4>
       </div>

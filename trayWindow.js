@@ -2,9 +2,10 @@ const { BrowserWindow, screen } = require('electron');
 const path = require('path');
 
 class TrayWindow {
-  constructor(tray = null) {
+  constructor(tray = null, settingsManager = null) {
     this.window = null;
     this.tray = tray;
+    this.settingsManager = settingsManager;
   }
 
   setTray(tray) {
@@ -87,6 +88,15 @@ class TrayWindow {
 
     // Load the tray menu React app
     this.window.loadFile(path.join(__dirname, 'react/dist/tray.html'));
+
+    // Send initial theme to tray window when it loads
+    this.window.webContents.once('did-finish-load', () => {
+      if (this.settingsManager) {
+        const currentTheme = this.settingsManager.loadTheme();
+        console.log(`Sending initial theme to tray: ${currentTheme}`);
+        this.window.webContents.send('theme-changed', currentTheme);
+      }
+    });
 
     // Hide when clicking outside
     this.window.on('blur', () => {

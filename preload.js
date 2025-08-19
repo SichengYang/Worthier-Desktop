@@ -120,7 +120,18 @@ contextBridge.exposeInMainWorld('electronAPI', {
     return () => ipcRenderer.removeListener('recent-records', callback);
   },
   getRecentRecords: () => ipcRenderer.invoke('get-recent-records'),
+  getAllRecords: () => ipcRenderer.invoke('get-all-records'),
 
   // Get device information
   getDeviceList: () => ipcRenderer.invoke('get-device-list'),
+  
+  // Listen for device refresh events
+  onDeviceRefresh: (callback) => {
+    ipcRenderer.on('device-refresh', callback);
+    return () => ipcRenderer.removeListener('device-refresh', callback);
+  },
+
+  // File dialog methods
+  showSaveDialog: (options) => ipcRenderer.invoke('show-save-dialog', options),
+  writeFile: (filePath, buffer) => ipcRenderer.invoke('write-file', filePath, buffer),
 });

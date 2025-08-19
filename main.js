@@ -94,12 +94,16 @@ app.whenReady().then(async () => {
       if (mainWindow && mainWindow.webContents) {
         mainWindow.webContents.send('theme-changed', resolvedTheme);
       }
+      // Also send to tray window if it exists
+      if (trayWindow && trayWindow.window && !trayWindow.window.isDestroyed()) {
+        trayWindow.window.webContents.send('theme-changed', resolvedTheme);
+      }
     }
   });
 
-  trayWindow = new TrayWindow();
+  trayWindow = new TrayWindow(null, settingsManager);
   restWindow = new RestWindow(settingsManager);
-  timeRecorder = getTimeRecorder();
+  timeRecorder = getTimeRecorder(); // Remove mainWindow parameter, let TimeRecorder use app.getPath('userData')
 
   // create instances that requires mainWindow
   autoLogin = getAutoLogin(mainWindow);

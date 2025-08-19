@@ -2,20 +2,26 @@ const fs = require('fs');
 const path = require('path');
 
 class TimeRecorder {
-    constructor() {
-        try {
-            const { app } = require('electron');
-            if (!app || typeof app.isReady !== 'function') {
-                throw new Error('Electron app is not properly initialized. Ensure the app module is correctly imported and initialized.');
-            }
+    constructor(userDataPath = null) {
+        // If userDataPath is provided, use it directly
+        if (userDataPath) {
+            this.recordsPath = path.join(userDataPath, 'records.json');
+        } else {
+            // Try to get userData path from Electron app
+            try {
+                const { app } = require('electron');
+                if (!app || typeof app.isReady !== 'function') {
+                    throw new Error('Electron app is not properly initialized. Ensure the app module is correctly imported and initialized.');
+                }
 
-            if (!app.isReady()) {
-                throw new Error('Electron app is not ready. Ensure app.whenReady() is awaited before initializing TimeRecorder.');
-            }
+                if (!app.isReady()) {
+                    throw new Error('Electron app is not ready. Ensure app.whenReady() is awaited before initializing TimeRecorder.');
+                }
 
-            this.recordsPath = path.join(app.getPath('userData'), 'records.json');
-        } catch (error) {
-            throw new Error('No userData path provided and Electron app is not available. Please provide userData path.');
+                this.recordsPath = path.join(app.getPath('userData'), 'records.json');
+            } catch (error) {
+                throw new Error('No userData path provided and Electron app is not available. Please provide userData path.');
+            }
         }
 
         if (!fs.existsSync(this.recordsPath)) {
@@ -40,11 +46,14 @@ class TimeRecorder {
     }
 
     /**
-     * Get today's date in YYYY-MM-DD format
+     * Get today's date in YYYY-MM-DD format using local timezone
      */
     getTodaysDate() {
         const today = new Date();
-        return today.toISOString().split('T')[0];
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
     }
 
     loadFile() {
@@ -222,7 +231,12 @@ class TimeRecorder {
         for (let i = 0; i < days; i++) {
             const date = new Date();
             date.setDate(date.getDate() - i);
-            const dateStr = date.toISOString().split('T')[0];
+            
+            // Use local timezone instead of UTC
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const dateStr = `${year}-${month}-${day}`;
 
             result.push({
                 date: dateStr,

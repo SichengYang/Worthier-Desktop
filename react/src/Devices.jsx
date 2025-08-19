@@ -8,24 +8,62 @@ export default function Devices() {
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
 	const [expandedIdx, setExpandedIdx] = useState(null);
+	const [isAnimated, setIsAnimated] = useState(false);
+
+	const fetchDevices = async () => {
+		setLoading(true);
+		setError(null);
+		try {
+			const result = await window.electronAPI.getDeviceList();
+			setDevices(result);
+		} catch (err) {
+			setError('Failed to fetch devices');
+		} finally {
+			setLoading(false);
+		}
+	};
 
 	useEffect(() => {
-		async function fetchDevices() {
-			try {
-				const result = await window.electronAPI.getDeviceList();
-				setDevices(result);
-			} catch (err) {
-				setError('Failed to fetch devices');
-			} finally {
-				setLoading(false);
-			}
-		}
 		fetchDevices();
+		
+		// Listen for device refresh events from main process
+		const cleanup = window.electronAPI.onDeviceRefresh(() => {
+			fetchDevices();
+		});
+		
+		// Trigger animation after component mounts
+		setTimeout(() => {
+			setIsAnimated(true);
+		}, 100);
+		
+		return cleanup;
 	}, []);
 
 		return (
-			<div className="devices-container">
-				<h3 className="devices-title">Devices</h3>
+			<div className={`devices-container ${isAnimated ? 'animated' : ''}`}>
+				<div className="devices-header">
+					<h3 className="devices-title">Devices</h3>
+					<button 
+						className="devices-refresh-btn" 
+						onClick={fetchDevices}
+						disabled={loading}
+						title="Refresh device list"
+					>
+						<svg 
+							width="20" 
+							height="20" 
+							viewBox="0 0 24 24" 
+							fill="none" 
+							stroke="currentColor" 
+							strokeWidth="2"
+							className={loading ? 'rotating' : ''}
+						>
+							<polyline points="23 4 23 10 17 10"></polyline>
+							<polyline points="1 20 1 14 7 14"></polyline>
+							<path d="m20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4-4.64 4.36A9 9 0 0 1 3.51 15"></path>
+						</svg>
+					</button>
+				</div>
 				{loading && <p className="devices-loading">Loading...</p>}
 				{error && <p className="devices-error">{error}</p>}
 				{!loading && !error && (
@@ -40,7 +78,7 @@ export default function Devices() {
 						 }
 						 const isExpanded = expandedIdx === idx;
 						 return (
-						 <li className="device-item" key={device.id || idx}>
+						 <li className={`device-item ${isAnimated ? 'animated' : ''}`} key={device.id || idx} style={{ animationDelay: `${idx * 100}ms` }}>
 								 <button
 									 className="device-menu-btn"
 									 onClick={() => setExpandedIdx(isExpanded ? null : idx)}

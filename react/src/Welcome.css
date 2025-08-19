@@ -59,9 +59,9 @@
 .welcome-chart-container {
     width: 100%;
     max-width: 800px;
-    flex: 1;
     display: flex;
     flex-direction: column;
+    height: 400px; /* Fixed height instead of flex: 1 */
 }
 
 .chart-title {
@@ -75,6 +75,7 @@
 .welcome-chart {
     flex: 1;
     min-height: 300px;
+    max-height: 350px; /* Add max-height constraint */
     position: relative;
     background: transparent;
     border-radius: 16px;
@@ -83,8 +84,15 @@
     border: 1px solid var(--border-color);
 }
 
+.welcome-chart .workinglog-chart-container {
+    width: 100%;
+    height: 100%;
+    min-height: 250px;
+    max-height: 300px; /* Add max-height constraint */
+}
+
 /* Light Theme */
-.theme-light {
+.app-theme-light {
     --primary-color: #4ade80;
     --secondary-color: #10b981;
     --text-color: #374151;
@@ -103,7 +111,7 @@
 }
 
 /* Dark Theme */
-.theme-dark {
+.app-theme-dark {
     --primary-color: #3b82f6;
     --secondary-color: #1d4ed8;
     --text-color: #f3f4f6;
@@ -122,7 +130,7 @@
 }
 
 /* Pink Theme */
-.theme-pink {
+.app-theme-pink {
     --primary-color: #ec4899;
     --secondary-color: #be185d;
     --text-color: #831843;

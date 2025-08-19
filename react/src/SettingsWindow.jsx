@@ -406,6 +406,12 @@ function SettingsWindow() {
                     <div className="theme-circles">
                         <button
                             type="button"
+                            className={`theme-circle${theme==='system' ? ' selected' : ''} system-theme`}
+                            onClick={() => changeTheme('system')}
+                            aria-label="System Theme"
+                        />
+                        <button
+                            type="button"
                             className={`theme-circle${theme==='light' ? ' selected' : ''} light-theme`}
                             onClick={() => changeTheme('light')}
                             aria-label="Light Theme"
@@ -421,12 +427,6 @@ function SettingsWindow() {
                             className={`theme-circle${theme==='pink' ? ' selected' : ''} pink-theme`}
                             onClick={() => changeTheme('pink')}
                             aria-label="Pink Theme"
-                        />
-                        <button
-                            type="button"
-                            className={`theme-circle${theme==='system' ? ' selected' : ''} system-theme`}
-                            onClick={() => changeTheme('system')}
-                            aria-label="System Theme"
                         />
                     </div>
                 </div>

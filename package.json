@@ -4,7 +4,7 @@
   "description": "Worthier Desktop Application",
   "main": "main.js",
   "scripts": {
-    "start": "npm run build:react && electron-forge start",
+    "start": "(pkill -f \"electron\" 2>/dev/null || true) && npm run build:react && electron-forge start",
     "build:react": "node build.js react",
     "test": "echo \"Error: no test specified\" && exit 1",
     "package": "electron-forge package",

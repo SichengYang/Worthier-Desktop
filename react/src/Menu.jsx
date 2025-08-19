@@ -13,7 +13,7 @@ function Menu({ setPage, currentPage }) {
                 className={`btn btn-secondary ${currentPage === 1 ? 'active' : ''}`} 
                 onClick={() => setPage(1)}
             >
-                Summary
+                Share
             </button>
             <button 
                 className={`btn btn-success ${currentPage === 2 ? 'active' : ''}`} 

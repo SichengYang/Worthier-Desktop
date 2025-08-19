@@ -9,6 +9,67 @@
   display: flex;
   flex-direction: column;
   min-height: 0;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.6s ease-out;
+}
+
+.devices-container.animated {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.devices-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.devices-refresh-btn {
+  background: none;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 8px;
+  cursor: pointer;
+  color: #4a5568;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  min-width: 36px;
+  height: 36px;
+}
+
+.devices-refresh-btn:hover {
+  background: #f7fafc;
+  border-color: #cbd5e1;
+  color: #2d3748;
+}
+
+.devices-refresh-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.devices-refresh-btn svg.rotating {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Improve icon rendering quality */
@@ -27,20 +88,23 @@
 .devices-title {
   font-size: 2rem;
   font-weight: 600;
-  margin-bottom: 24px;
+  margin: 0;
   color: #2d3748;
-  text-align: center;
 }
 
 .devices-loading {
   color: #718096;
   text-align: center;
+  opacity: 0;
+  animation: fadeInUp 0.4s ease-out 0.2s forwards;
 }
 
 .devices-error {
   color: #e53e3e;
   text-align: center;
   margin-bottom: 16px;
+  opacity: 0;
+  animation: fadeInUp 0.4s ease-out 0.2s forwards;
 }
 
 .devices-list {
@@ -76,6 +140,14 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
+  opacity: 0;
+  transform: translateY(15px) scale(0.95);
+  transition: all 0.5s ease-out;
+}
+
+.device-item.animated {
+  opacity: 1;
+  transform: translateY(0) scale(1);
 }
 
 .device-details-area {
@@ -104,4 +176,201 @@
 .device-status {
   font-size: 0.95rem;
   color: #38a169;
+}
+
+.device-details {
+  margin-top: 16px;
+  padding: 12px;
+  background: rgba(247, 250, 252, 0.8);
+  border-radius: 6px;
+  color: #4a5568;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.device-details div {
+  margin-bottom: 4px;
+}
+
+.device-details strong {
+  color: #2d3748;
+}
+
+.device-chart-section {
+  margin-top: 16px;
+  padding: 16px;
+  background: rgba(247, 250, 252, 0.8);
+  border-radius: 6px;
+}
+
+.device-chart-title {
+  color: #2d3748;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+  margin-top: 0;
+}
+
+/* Dark theme styles */
+.app-theme-dark .devices-container {
+  background: #2d3748;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.2);
+}
+
+.app-theme-dark .devices-title {
+  color: #e2e8f0;
+}
+
+.app-theme-dark .devices-refresh-btn {
+  border-color: #4a5568;
+  color: #e2e8f0;
+}
+
+.app-theme-dark .devices-refresh-btn:hover {
+  background: #4a5568;
+  border-color: #718096;
+}
+
+.app-theme-dark .devices-loading {
+  color: #a0aec0;
+}
+
+.app-theme-dark .devices-error {
+  color: #fc8181;
+}
+
+.app-theme-dark .devices-list {
+  scrollbar-color: #4a5568 #2d3748;
+}
+
+.app-theme-dark .devices-list::-webkit-scrollbar-thumb {
+  background: #4a5568;
+}
+
+.app-theme-dark .devices-list::-webkit-scrollbar-track {
+  background: #2d3748;
+}
+
+.app-theme-dark .device-item {
+  background: #4a5568;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.app-theme-dark .device-menu-btn {
+  color: #e2e8f0;
+}
+
+.app-theme-dark .device-menu-btn:hover {
+  background: rgba(226, 232, 240, 0.1) !important;
+}
+
+.app-theme-dark .device-name {
+  color: #90cdf4;
+}
+
+.app-theme-dark .device-type {
+  color: #cbd5e1;
+}
+
+.app-theme-dark .device-status {
+  color: #68d391;
+}
+
+.app-theme-dark .device-details {
+  color: #e2e8f0;
+  background: rgba(74, 85, 104, 0.8);
+}
+
+.app-theme-dark .device-details strong {
+  color: #f7fafc;
+}
+
+.app-theme-dark .device-chart-section {
+  background: rgba(74, 85, 104, 0.8);
+}
+
+.app-theme-dark .device-chart-title {
+  color: #e2e8f0;
+}
+
+/* Pink theme styles */
+.app-theme-pink .devices-container {
+  background: #fdf2f8;
+  box-shadow: 0 4px 24px rgba(236, 72, 153, 0.1);
+}
+
+.app-theme-pink .devices-title {
+  color: #be185d;
+}
+
+.app-theme-pink .devices-refresh-btn {
+  border-color: #f9a8d4;
+  color: #be185d;
+}
+
+.app-theme-pink .devices-refresh-btn:hover {
+  background: #fce7f3;
+  border-color: #ec4899;
+}
+
+.app-theme-pink .devices-loading {
+  color: #be185d;
+}
+
+.app-theme-pink .devices-error {
+  color: #dc2626;
+}
+
+.app-theme-pink .devices-list {
+  scrollbar-color: #f9a8d4 #fdf2f8;
+}
+
+.app-theme-pink .devices-list::-webkit-scrollbar-thumb {
+  background: #f9a8d4;
+}
+
+.app-theme-pink .devices-list::-webkit-scrollbar-track {
+  background: #fdf2f8;
+}
+
+.app-theme-pink .device-item {
+  background: #fce7f3;
+  box-shadow: 0 2px 8px rgba(236, 72, 153, 0.08);
+}
+
+.app-theme-pink .device-menu-btn {
+  color: #be185d;
+}
+
+.app-theme-pink .device-menu-btn:hover {
+  background: rgba(190, 24, 93, 0.1) !important;
+}
+
+.app-theme-pink .device-name {
+  color: #db2777;
+}
+
+.app-theme-pink .device-type {
+  color: #be185d;
+}
+
+.app-theme-pink .device-status {
+  color: #059669;
+}
+
+.app-theme-pink .device-details {
+  color: #be185d;
+  background: rgba(252, 231, 243, 0.8);
+}
+
+.app-theme-pink .device-details strong {
+  color: #9d174d;
+}
+
+.app-theme-pink .device-chart-section {
+  background: rgba(252, 231, 243, 0.8);
+}
+
+.app-theme-pink .device-chart-title {
+  color: #be185d;
 }

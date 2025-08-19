@@ -12,7 +12,6 @@ export const useTheme = () => {
 
 export const ThemeProvider = ({ children }) => {
     const [theme, setTheme] = useState('light');
-    const [actualTheme, setActualTheme] = useState('light'); // The resolved theme for styling
 
     useEffect(() => {
         // Load initial theme settings
@@ -21,12 +20,11 @@ export const ThemeProvider = ({ children }) => {
                 try {
                     const themeSettings = await window.electronAPI.getThemeSettings();
                     console.log('Loaded theme settings:', themeSettings);
-                    setTheme(themeSettings.theme || 'system');
-                    setActualTheme(themeSettings.resolvedTheme || 'light');
+                    // Use the resolved theme directly - no need for dual state
+                    setTheme(themeSettings.resolvedTheme || 'light');
                 } catch (error) {
                     console.error('Error loading theme settings:', error);
-                    setTheme('system');
-                    setActualTheme('light');
+                    setTheme('light');
                 }
             }
         };
@@ -37,7 +35,7 @@ export const ThemeProvider = ({ children }) => {
         if (window.electronAPI?.onThemeChanged) {
             const cleanup = window.electronAPI.onThemeChanged((event, newResolvedTheme) => {
                 console.log('Resolved theme changed from Electron:', newResolvedTheme);
-                setActualTheme(newResolvedTheme);
+                setTheme(newResolvedTheme);
             });
             return cleanup;
         }
@@ -45,20 +43,20 @@ export const ThemeProvider = ({ children }) => {
 
     const changeTheme = (newTheme) => {
         console.log('Changing theme to:', newTheme);
-        setTheme(newTheme);
         if (window.electronAPI?.setTheme) {
             window.electronAPI.setTheme(newTheme);
         }
         
-        // Update actualTheme immediately for immediate feedback
+        // For immediate feedback, if it's not system theme, set it directly
         if (newTheme !== 'system') {
-            setActualTheme(newTheme);
+            setTheme(newTheme);
         }
+        // For system theme, let the backend resolve and send back the actual theme
     };
 
     return (
         <ThemeContext.Provider value={{ theme, changeTheme }}>
-            <div className={`app-theme-${actualTheme}`} style={{ 
+            <div className={`app-theme-${theme}`} style={{ 
                 width: '100%', 
                 height: '100%', 
                 minHeight: '100vh',

@@ -1,4 +1,4 @@
-const { ipcMain, BrowserWindow, app } = require('electron');
+const { ipcMain, BrowserWindow, app, dialog } = require('electron');
 
 /**
  * Setup all IPC handlers for the application
@@ -123,6 +123,22 @@ function setupIpcHandlers({
     }
   });
 
+  // Get all records
+  ipcMain.handle('get-all-records', async (event) => {
+    try {    
+      if (!timeRecorder) {
+        console.log('⚠️ timeRecorder not initialized yet, returning empty object');
+        return {};
+      }
+      
+      const allRecords = timeRecorder.getAllRecords();
+      return allRecords || {};
+    } catch (error) {
+      console.error('❌ Main process: Error getting all records:', error);
+      return {};
+    }
+  });
+
   // Get login statistics (optional, for debugging)
   ipcMain.on('get-login-stats', async (event) => {
     const stats = await autoLogin.getLoginStats();
@@ -133,17 +149,29 @@ function setupIpcHandlers({
   ipcMain.on('set-theme', async (event, theme) => {
     if (['light', 'dark', 'pink', 'system'].includes(theme)) {
       settingsManager.saveTheme(theme);
-      // Send the updated theme to all renderer processes
-      mainWindow.webContents.send('theme-changed', theme);
-      console.log(`Theme changed and saved to: ${theme}`);
+      // Get the resolved theme (resolves 'system' to actual light/dark)
+      const resolvedTheme = settingsManager.loadTheme();
+      // Send the resolved theme to all renderer processes
+      mainWindow.webContents.send('theme-changed', resolvedTheme);
+      // Also send to tray window if it exists
+      if (trayWindow && trayWindow.window && !trayWindow.window.isDestroyed()) {
+        trayWindow.window.webContents.send('theme-changed', resolvedTheme);
+      }
+      console.log(`Theme changed and saved to: ${theme}, resolved to: ${resolvedTheme}`);
     }
   });
 
   ipcMain.on('apply-theme', async (event, theme) => {
     if (['light', 'dark', 'pink', 'system'].includes(theme)) {
-      // Send the updated theme to all renderer processes
-      mainWindow.webContents.send('theme-changed', theme);
-      console.log(`Theme changed to: ${theme}`);
+      // Get the resolved theme (resolves 'system' to actual light/dark)
+      const resolvedTheme = settingsManager.loadTheme();
+      // Send the resolved theme to all renderer processes
+      mainWindow.webContents.send('theme-changed', resolvedTheme);
+      // Also send to tray window if it exists
+      if (trayWindow && trayWindow.window && !trayWindow.window.isDestroyed()) {
+        trayWindow.window.webContents.send('theme-changed', resolvedTheme);
+      }
+      console.log(`Theme applied: ${theme}, resolved to: ${resolvedTheme}`);
     }
   });
 
@@ -543,6 +571,14 @@ function setupIpcHandlers({
       }
       
       trayWindow.hide();
+      
+      // Trigger device list refresh when opening main window
+      setTimeout(() => {
+        if (mainWindow && !mainWindow.isDestroyed()) {
+          mainWindow.webContents.send('device-refresh');
+        }
+      }, 200); // Small delay to ensure window is fully loaded
+      
       console.log('✅ Main window should now be visible and focused');
     } catch (error) {
       console.error('❌ Error opening main window from tray:', error);
@@ -562,6 +598,36 @@ function setupIpcHandlers({
     } catch (error) {
       console.error('Error getting device list:', error);
       return [];
+    }
+  });
+
+  // File dialog handlers
+  ipcMain.handle('show-save-dialog', async (event, options) => {
+    try {
+      const result = await dialog.showSaveDialog(mainWindow, {
+        title: 'Save Calendar Image',
+        defaultPath: options.defaultPath || 'calendar.png',
+        filters: [
+          { name: 'PNG Images', extensions: ['png'] },
+          { name: 'JPEG Images', extensions: ['jpg', 'jpeg'] },
+          { name: 'All Files', extensions: ['*'] }
+        ]
+      });
+      return result;
+    } catch (error) {
+      console.error('Error showing save dialog:', error);
+      return { canceled: true };
+    }
+  });
+
+  ipcMain.handle('write-file', async (event, filePath, buffer) => {
+    try {
+      const fs = require('fs');
+      fs.writeFileSync(filePath, Buffer.from(buffer));
+      return { success: true };
+    } catch (error) {
+      console.error('Error writing file:', error);
+      return { success: false, error: error.message };
     }
   });
 }
