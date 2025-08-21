@@ -1,4 +1,5 @@
 
+require('dotenv').config();
 const { spawnSync } = require('child_process');
 
 const args = process.argv.slice(2);
@@ -52,28 +53,49 @@ if (args[0] === 'react') {
   process.exit(0);
 }
 
-try {
-  // Run React build first
-  console.log('▶ Building React app...');
-  runCommand(npmCmd, ['run', 'build'], './react');
+async function buildElectron() {
+  try {
+    // Run React build first
+    console.log('▶ Building React app...');
+    runCommand(npmCmd, ['run', 'build'], './react');
 
-  // Build notification-react app
-  console.log('▶ Building notification-react app...');
-  runCommand(npmCmd, ['run', 'build'], './notification-react');
+    // Build notification-react app
+    console.log('▶ Building notification-react app...');
+    runCommand(npmCmd, ['run', 'build'], './notification-react');
 
-  // Build rest-react app
-  console.log('▶ Building rest-react app...');
-  runCommand(npmCmd, ['run', 'build'], './rest-react');
+    // Build rest-react app
+    console.log('▶ Building rest-react app...');
+    runCommand(npmCmd, ['run', 'build'], './rest-react');
 
-  const builder = require('electron-builder');
-  // Then run Electron build
-  builder.build({
-    config: require('./package.json').build
-  }).then(() => {
+    console.log('▶ Building Electron app...');
+    
+    const builder = require('electron-builder');
+    
+    // Build configuration
+    const config = {
+      ...require('./package.json').build,
+    };
+    
+    // Determine target based on command line argument
+    let target = undefined;
+    if (args.includes('--mac')) {
+      target = 'mac';
+    } else if (args.includes('--mas')) {
+      target = 'mas';
+    } else if (args.includes('--win')) {
+      target = 'win';
+    }
+
+    await builder.build({
+      config,
+      ...(target && { targets: builder.Platform.MAC.createTarget(target) })
+    });
+    
     console.log('✔ App built successfully.');
-  }).catch((error) => {
+  } catch (error) {
     console.error('✖ Build failed:', error);
-  });
-} catch (error) {
-  console.error('✖ Build failed:', error);
+    process.exit(1);
+  }
 }
+
+buildElectron();

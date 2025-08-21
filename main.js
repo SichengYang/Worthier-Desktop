@@ -10,6 +10,7 @@ const path = require("node:path");
 const getAutoLogin = require('./autologin');
 const NotificationHandlers = require('./notificationHandlers');
 const SettingsManager = require('./settingsManager');
+const StartAtLoginManager = require('./startAtLogin');
 const TrayWindow = require('./trayWindow');
 const RestWindow = require('./restWindow');
 const { setupIpcHandlers } = require('./ipcHandlers');
@@ -24,6 +25,7 @@ let tray;
 let autoLogin;
 let notificationHandlers;
 let settingsManager;
+let startAtLoginManager;
 let trayWindow;
 let restWindow;
 let singleInstanceManager;
@@ -85,6 +87,10 @@ app.whenReady().then(async () => {
   workingTime = settingsManager.getFocusTimeInMinutes(settings);
   extendedWorkingTime = settingsManager.getExtendedFocusTimeInMinutes(settings);
 
+  // Initialize start at login manager and sync settings
+  startAtLoginManager = new StartAtLoginManager(settingsManager);
+  await startAtLoginManager.initialize();
+
   // Set up system theme change listener
   nativeTheme.on('updated', () => {
     const currentThemeSettings = settingsManager.getThemeSettings();
@@ -119,9 +125,17 @@ app.whenReady().then(async () => {
   });
 
   const settingsPath = path.join(process.env.HOME, 'Library', 'Application Support', 'worthier-desktop', 'app-settings.json');
+  
+  // Check if app was opened at login
+  const wasOpenedAtLogin = startAtLoginManager.wasOpenedAtLogin();
+  console.log('App was opened at login:', wasOpenedAtLogin);
+  
   if (!fs.existsSync(settingsPath)) {
     // No settings file - show main window (UserGuide will appear)
-    mainWindow.show();
+    // But only if not opened at login (when opened at login, stay hidden)
+    if (!wasOpenedAtLogin) {
+      mainWindow.show();
+    }
   } else {
     // Settings file exists - setup is complete, create startup notification
     notificationHandlers.createStartUpNotification(); // Fire and forget - app can continue initializing while notification shows
@@ -145,6 +159,7 @@ app.whenReady().then(async () => {
     autoLogin,
     timeRecorder,
     settingsManager,
+    startAtLoginManager,
     notificationManager: notificationHandlers.getNotificationManager(),
     notificationWindow: notificationHandlers.getNotificationWindow(),
     notificationHandlers,

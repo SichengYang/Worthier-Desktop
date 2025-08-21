@@ -9,6 +9,7 @@ function setupIpcHandlers({
   autoLogin,
   timeRecorder,
   settingsManager,
+  startAtLoginManager,
   notificationManager,
   notificationWindow,
   restWindow,
@@ -182,36 +183,31 @@ function setupIpcHandlers({
 
   // Start at login settings handlers
   ipcMain.handle('get-start-at-login', async (event) => {
-    return {
-      enabled: settingsManager.getStartAtLogin(),
-      systemStatus: settingsManager.getSystemLoginItemStatus()
-    };
+    return startAtLoginManager.getStatus();
   });
 
   ipcMain.handle('set-start-at-login', async (event, enable) => {
     try {
-      const updatedSettings = settingsManager.setStartAtLogin(enable);
+      const result = await startAtLoginManager.setStartAtLogin(enable);
       console.log(`Start at login ${enable ? 'enabled' : 'disabled'}`);
-      return {
-        success: true,
-        enabled: updatedSettings.startAtLogin,
-        systemStatus: settingsManager.getSystemLoginItemStatus()
-      };
+      return result;
     } catch (error) {
       console.error('Error setting start at login:', error);
       return {
         success: false,
         error: error.message,
-        enabled: settingsManager.getStartAtLogin()
+        enabled: startAtLoginManager.getStatus().enabled
       };
     }
   });
 
   // Notification settings handlers
   ipcMain.handle('get-notification-settings', async (event) => {
-    const settings = notificationManager.getSettings();
+    const settings = await notificationManager.getSettings();
     const permissionStatus = notificationManager.getPermissionStatus();
-    return { ...settings, permissionStatus };
+    const result = { ...settings, permissionStatus };
+    console.log('IPC: get-notification-settings returning:', result);
+    return result;
   });
 
   // Check what permissions will be needed before updating settings

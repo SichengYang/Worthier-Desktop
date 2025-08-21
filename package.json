@@ -4,22 +4,92 @@
   "description": "Worthier Desktop Application",
   "main": "main.js",
   "scripts": {
-    "start": "(pkill -f \"electron\" 2>/dev/null || true) && npm run build:react && electron-forge start",
+    "start": "(pkill -f \"electron\" 2>/dev/null || true) && npm run build:react && electron .",
     "build:react": "node build.js react",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "package": "electron-forge package",
-    "make": "electron-forge make",
-    "build": "node build.js"
+    "build": "node build.js",
+    "build:mac": "npm run build:react && source .env && CSC_NAME=\"$DEVELOPER_ID_CSC_NAME\" npx electron-builder --mac",
+    "build:mac:notarized": "npm run build:react && source .env && APPLE_API_KEY=\"$APPLE_API_KEY\" APPLE_API_KEY_ID=\"$APPLE_API_KEY_ID\" APPLE_API_ISSUER=\"$APPLE_API_ISSUER\" APPLE_TEAM_ID=\"$APPLE_TEAM_ID\" CSC_NAME=\"$DEVELOPER_ID_CSC_NAME\" npx electron-builder --mac --config.mac.notarize=true",
+    "build:mas": "npm run build:react && source .env && CSC_NAME=\"$APPLE_DISTRIBUTION_CSC_NAME\" npx electron-builder --mac mas",
+    "build:mas:dev": "npm run build:react && source .env && CSC_NAME=\"$APPLE_DEVELOPMENT_CSC_NAME\" npx electron-builder --mac mas-dev",
+    "build:win": "npm run build:react && electron-builder --win",
+    "dist": "npm run build:react && electron-builder"
   },
   "build": {
     "appId": "com.worthier.app",
     "productName": "Worthier Desktop",
-    "icon": "icon.png",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "**/*",
+      "!react/src/**/*",
+      "!react/public/**/*",
+      "!notification-react/src/**/*",
+      "!rest-react/src/**/*",
+      "react/dist/**/*",
+      "notification-react/dist/**/*",
+      "rest-react/dist/**/*"
+    ],
     "mac": {
-      "identity": null
+      "category": "public.app-category.productivity",
+      "icon": "icon.icns",
+      "hardenedRuntime": true,
+      "gatekeeperAssess": true,
+      "entitlements": "entitlements.plist",
+      "entitlementsInherit": "entitlements.plist",
+      "notarize": false,
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "universal"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "universal"
+          ]
+        }
+      ]
+    },
+    "mas": {
+      "category": "public.app-category.productivity",
+      "hardenedRuntime": false,
+      "entitlements": "entitlements.mas.plist",
+      "entitlementsInherit": "entitlements.mas.inherit.plist",
+      "provisioningProfile": false,
+      "target": [
+        {
+          "target": "mas",
+          "arch": [
+            "universal"
+          ]
+        }
+      ]
+    },
+    "masDev": {
+      "category": "public.app-category.productivity",
+      "hardenedRuntime": false,
+      "entitlements": "entitlements.mas.inherit.plist",
+      "entitlementsInherit": "entitlements.mas.inherit.plist",
+      "provisioningProfile": false,
+      "target": [
+        {
+          "target": "mas-dev",
+          "arch": [
+            "universal"
+          ]
+        }
+      ]
     },
     "win": {
-      "target": "nsis"
+      "target": "nsis",
+      "icon": "icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
     }
   },
   "repository": {
@@ -36,16 +106,9 @@
   },
   "homepage": "https://github.com/SichengYang/Worthier-Desktop#readme",
   "devDependencies": {
-    "@electron-forge/cli": "^7.8.1",
-    "@electron-forge/maker-deb": "^7.8.1",
-    "@electron-forge/maker-rpm": "^7.8.1",
-    "@electron-forge/maker-squirrel": "^7.8.1",
-    "@electron-forge/maker-zip": "^7.8.1",
-    "@electron-forge/plugin-auto-unpack-natives": "^7.8.1",
-    "@electron-forge/plugin-fuses": "^7.8.1",
-    "@electron/fuses": "^1.8.0",
+    "@electron/notarize": "^3.0.2",
     "cross-env": "^7.0.3",
-    "dotenv": "^17.2.0",
+    "dotenv": "^17.2.1",
     "electron": "^37.2.0",
     "electron-builder": "^26.0.12"
   },

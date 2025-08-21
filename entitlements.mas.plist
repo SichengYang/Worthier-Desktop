@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- Required for Mac App Store -->
+    <key>com.apple.security.app-sandbox</key>
+    <true/>
+    
+    <!-- Network access -->
+    <key>com.apple.security.network.client</key>
+    <true/>
+    <key>com.apple.security.network.server</key>
+    <true/>
+    
+    <!-- File access (if needed) -->
+    <key>com.apple.security.files.user-selected.read-write</key>
+    <true/>
+    <key>com.apple.security.files.downloads.read-write</key>
+    <true/>
+    
+    <!-- Keychain access (if needed) -->
+    <key>com.apple.security.application-groups</key>
+    <array>
+        <string>group.com.worthier.app</string>
+    </array>
+    
+    <!-- Notifications (if needed) -->
+    <key>com.apple.security.temporary-exception.sbpl</key>
+    <string>(allow mach-lookup (global-name "com.apple.distributed_notifications@1v3"))</string>
+</dict>
+</plist>

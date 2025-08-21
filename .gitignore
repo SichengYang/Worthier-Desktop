@@ -140,6 +140,7 @@ vite.config.ts.timestamp-*
 
 # Cert
 *.pfx
+*.cer
 
 #MacOS
 .DS_Store
