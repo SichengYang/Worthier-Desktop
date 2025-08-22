@@ -8,16 +8,21 @@ function Welcome({ working, workingData }) {
 
     // Handle both array and object formats for workingData
     const getWorkingLog = (data) => {
-        // If data is an array (recentWorkingData), convert it to object format
+        // If data is an array (recentWorkingData), convert it to new nested format
         if (Array.isArray(data)) {
             const workingLog = {};
             data.forEach(record => {
-                workingLog[record.date] = {
-                    date: record.date,
+                // Parse date to get year, month, day
+                const [year, month, day] = record.date.split('-');
+                const monthNum = parseInt(month, 10);
+                const dayNum = parseInt(day, 10);
+                
+                // Create nested structure: workingLog[year][month][day]
+                if (!workingLog[year]) workingLog[year] = {};
+                if (!workingLog[year][monthNum]) workingLog[year][monthNum] = {};
+                workingLog[year][monthNum][dayNum] = {
                     workingMinutes: record.workingMinutes,
-                    extendedSessions: record.extendedSessions || 0,
-                    createdAt: record.createdAt,
-                    lastUpdated: record.lastUpdated || record.createdAt
+                    extendedSessions: record.extendedSessions || 0
                 };
             });
             return workingLog;

@@ -25,7 +25,15 @@ export default function WorkingLogChart({ workingLog }) {
       d.setDate(today.getDate() - 6 + i);
       return { key: getDateStr(d), label: getLabelStr(d) };
     });
-    const data = last7Dates.map(({ key }) => (workingLog[key]?.workingMinutes ?? 0));
+    const data = last7Dates.map(({ key }) => {
+      // Parse the date key (e.g., "2024-01-15") into year, month, day
+      const [year, month, day] = key.split('-');
+      const monthNum = parseInt(month, 10);
+      const dayNum = parseInt(day, 10);
+      
+      // Access the nested structure: workingLog[year][month][day]
+      return workingLog?.[year]?.[monthNum]?.[dayNum]?.workingMinutes ?? 0;
+    });
     const labels = last7Dates.map(({ label }) => label);
     
     // Theme-aware colors - theme is now always resolved (never "system")

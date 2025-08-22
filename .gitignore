@@ -81,6 +81,15 @@ out
 # Nuxt.js build / generate output
 .nuxt
 dist
+dist-webpack
+
+# Architecture-specific electron-builder configs (if generated)
+electron-builder-x64.json
+electron-builder-arm64.json
+electron-builder-x64-signed.json
+electron-builder-arm64-signed.json
+electron-builder-x64-notarized.json
+electron-builder-arm64-notarized.json
 
 # Gatsby files
 .cache/

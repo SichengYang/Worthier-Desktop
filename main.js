@@ -3,7 +3,7 @@ const {
   BrowserWindow,
   Tray,
   nativeTheme
-} = require("electron/main");
+} = require("electron");
 const fs = require('fs');
 const path = require("node:path");
 

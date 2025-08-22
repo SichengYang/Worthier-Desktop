@@ -6,13 +6,16 @@
   "scripts": {
     "start": "(pkill -f \"electron\" 2>/dev/null || true) && npm run build:react && electron .",
     "build:react": "node build.js react",
+    "build:webpack": "webpack --config webpack.config.js",
     "build": "node build.js",
-    "build:mac": "npm run build:react && source .env && CSC_NAME=\"$DEVELOPER_ID_CSC_NAME\" npx electron-builder --mac",
-    "build:mac:notarized": "npm run build:react && source .env && APPLE_API_KEY=\"$APPLE_API_KEY\" APPLE_API_KEY_ID=\"$APPLE_API_KEY_ID\" APPLE_API_ISSUER=\"$APPLE_API_ISSUER\" APPLE_TEAM_ID=\"$APPLE_TEAM_ID\" CSC_NAME=\"$DEVELOPER_ID_CSC_NAME\" npx electron-builder --mac --config.mac.notarize=true",
-    "build:mas": "npm run build:react && source .env && CSC_NAME=\"$APPLE_DISTRIBUTION_CSC_NAME\" npx electron-builder --mac mas",
-    "build:mas:dev": "npm run build:react && source .env && CSC_NAME=\"$APPLE_DEVELOPMENT_CSC_NAME\" npx electron-builder --mac mas-dev",
-    "build:win": "npm run build:react && electron-builder --win",
-    "dist": "npm run build:react && electron-builder"
+    "build:x64": "node build.js --x64",
+    "build:arm64": "node build.js --arm64",
+    "build:x64:signed": "node build.js --x64 --signed",
+    "build:arm64:signed": "node build.js --arm64 --signed",
+    "build:x64:notarized": "node build.js --x64 --notarized",
+    "build:arm64:notarized": "node build.js --arm64 --notarized",
+    "build:signed": "node build.js --signed",
+    "build:notarized": "node build.js --notarized"
   },
   "build": {
     "appId": "com.worthier.app",
@@ -42,13 +45,8 @@
         {
           "target": "dmg",
           "arch": [
-            "universal"
-          ]
-        },
-        {
-          "target": "zip",
-          "arch": [
-            "universal"
+            "x64",
+            "arm64"
           ]
         }
       ]
@@ -107,10 +105,13 @@
   "homepage": "https://github.com/SichengYang/Worthier-Desktop#readme",
   "devDependencies": {
     "@electron/notarize": "^3.0.2",
+    "copy-webpack-plugin": "^13.0.1",
     "cross-env": "^7.0.3",
     "dotenv": "^17.2.1",
     "electron": "^37.2.0",
-    "electron-builder": "^26.0.12"
+    "electron-builder": "^26.0.12",
+    "webpack": "^5.101.3",
+    "webpack-cli": "^6.0.1"
   },
   "dependencies": {
     "axios": "^1.11.0",

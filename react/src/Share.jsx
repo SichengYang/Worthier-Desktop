@@ -2,6 +2,34 @@ import React, { useState, useEffect, useRef } from 'react';
 import './Share.css';
 
 function Share({ workingData }) {
+    // Helper functions to work with the new nested data structure
+    const getRecordForDate = (dateKey) => {
+        if (!workingData) return null;
+        const [year, month, day] = dateKey.split('-');
+        const monthNum = parseInt(month, 10);
+        const dayNum = parseInt(day, 10);
+        return workingData?.[year]?.[monthNum]?.[dayNum] || null;
+    };
+
+    const getAllRecords = () => {
+        if (!workingData) return [];
+        const records = [];
+        Object.keys(workingData).forEach(year => {
+            Object.keys(workingData[year]).forEach(month => {
+                Object.keys(workingData[year][month]).forEach(day => {
+                    const monthStr = String(month).padStart(2, '0');
+                    const dayStr = String(day).padStart(2, '0');
+                    const dateKey = `${year}-${monthStr}-${dayStr}`;
+                    records.push({
+                        dateKey,
+                        ...workingData[year][month][day]
+                    });
+                });
+            });
+        });
+        return records;
+    };
+
     const [currentDate, setCurrentDate] = useState(new Date());
     const [allUsageDays, setAllUsageDays] = useState(new Set()); // Store ALL usage days
     const [totalUsageDays, setTotalUsageDays] = useState(0);
@@ -31,10 +59,10 @@ function Share({ workingData }) {
         // Process ALL records and store usage days
         const allDates = new Set();
         
-        Object.keys(workingData).forEach(dateKey => {
-            const record = workingData[dateKey];
+        const allRecords = getAllRecords();
+        allRecords.forEach(record => {
             if (record && record.workingMinutes > 0) {
-                const [year, month, day] = dateKey.split('-').map(Number);
+                const [year, month, day] = record.dateKey.split('-').map(Number);
                 const date = new Date(year, month - 1, day);
                 const dateString = date.toDateString();
                 allDates.add(dateString);
@@ -53,8 +81,8 @@ function Share({ workingData }) {
             
             // Calculate total hours for all months
             let totalMinutes = 0;
-            Object.keys(workingData || {}).forEach(dateKey => {
-                const record = workingData[dateKey];
+            const allRecords = getAllRecords();
+            allRecords.forEach(record => {
                 if (record && record.workingMinutes > 0) {
                     totalMinutes += record.workingMinutes;
                 }
@@ -72,9 +100,9 @@ function Share({ workingData }) {
             let monthTotalMinutes = 0;
             
             // Count active days and minutes for current month
-            Object.keys(workingData || {}).forEach(dateKey => {
-                if (dateKey.startsWith(monthPrefix)) {
-                    const record = workingData[dateKey];
+            const allRecords = getAllRecords();
+            allRecords.forEach(record => {
+                if (record.dateKey.startsWith(monthPrefix)) {
                     if (record && record.workingMinutes > 0) {
                         monthActiveDays++;
                         monthTotalMinutes += record.workingMinutes;
@@ -210,7 +238,7 @@ function Share({ workingData }) {
     const handleDayHover = (day, event) => {
         const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
         const dateKey = date.toISOString().split('T')[0];
-        const dayData = workingData[dateKey];
+        const dayData = getRecordForDate(dateKey);
         
         const workingMinutes = dayData ? dayData.workingMinutes : 0;
         const extendedSessions = dayData ? dayData.extendedSessions || 0 : 0;
