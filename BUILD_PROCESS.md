@@ -67,13 +67,13 @@ The architecture-specific builds use separate configuration files (`electron-bui
 2. **Asar Packaging** - Application files are packaged into a single asar archive
 3. **Smaller File Size** - Webpack optimization reduces bundle size
 4. **Better Performance** - Faster startup due to bundled files
-5. **Native Module Support** - Native modules (keytar, getmac) are properly unpacked
+5. **Native Module Support** - Native modules (keytar) are properly unpacked
 6. **DMG Only Distribution** - Clean distribution with only DMG files (no zip archives)
 
 ## Technical Details
 
 - **Webpack Targets**: `electron-main` for main process, `electron-preload` for preload scripts
-- **Externals**: Native modules (keytar, getmac) and Node.js built-ins are marked as external
+- **Externals**: Native modules (keytar) and Node.js built-ins are marked as external
 - **Asar Unpacking**: Native binaries (*.node, *.dll) are unpacked for proper execution
 - **Copy Operations**: Static assets (icons, certificates, React builds) are copied to the bundle
 - **Output Format**: Only DMG files are generated (zip archives removed for cleaner distribution)

@@ -1,6 +1,61 @@
 const TokenManager = require('./tokenManager');
 const DeviceInfoManager = require('./deviceInfoManager');
 
+/**
+ * Make an axios POST request with automatic token refresh on 401 responses
+ * @param {string} url - The URL to make the request to
+ * @param {Object} data - The data to send in the request body
+ * @param {Object} config - Axios request configuration
+ * @param {Object} context - Context containing retry information
+ * @returns {Promise<AxiosResponse>} The axios response
+ */
+async function axiosPostWithTokenRefresh(url, data, config = {}, context = {}) {
+    const axios = require('axios');
+    
+    try {
+        const response = await axios.post(url, data, config);
+        return response;
+    } catch (error) {
+        // If we get a 401 and haven't retried yet, try to refresh the token
+        if (error.response && error.response.status === 401 && context.retryCount !== 1) {
+            console.log('Received 401 response, attempting to refresh token...');
+            
+            try {
+                // Get current token data from token manager
+                const tokenManager = new TokenManager();
+                const currentTokenData = await tokenManager.getTokens();
+                
+                if (currentTokenData) {
+                    // Create a temporary AutoLogin instance to refresh token
+                    const tempAutoLogin = new AutoLogin();
+                    const refreshedTokenData = await tempAutoLogin.refreshToken(currentTokenData);
+                    
+                    if (refreshedTokenData && refreshedTokenData.accessToken) {
+                        console.log('Token refreshed successfully, retrying request...');
+                        
+                        // Update the request data with the new token
+                        const updatedData = { ...data };
+                        if (updatedData.token) {
+                            updatedData.token = refreshedTokenData.accessToken;
+                        }
+                        if (updatedData.accessToken) {
+                            updatedData.accessToken = refreshedTokenData.accessToken;
+                        }
+                        
+                        // Retry the request once with the new token
+                        return await axiosPostWithTokenRefresh(url, updatedData, config, { retryCount: 1 });
+                    }
+                }
+            } catch (refreshError) {
+                console.error('Failed to refresh token:', refreshError);
+            }
+        }
+        
+        // If refresh failed or it's not a 401, throw the original error
+        throw error;
+    }
+}
+
 class AutoLogin {
     constructor(mainWindow) {
         this.mainWindow = mainWindow;
@@ -23,7 +78,7 @@ class AutoLogin {
                 // Send accessToken, username, and email to server for validation
                 const axios = require('axios');
                 try {
-                    const response = await axios.post('https://login.worthier.app/quickLogin', {
+                    const response = await axiosPostWithTokenRefresh('https://login.worthier.app/quickLogin', {
                         token: tokenData.accessToken,
                         username: tokenData.user?.username,
                         email: tokenData.user?.email
@@ -57,7 +112,7 @@ class AutoLogin {
                             if (refreshResult) {
                                 // Retry validation with new token
                                 try {
-                                    const response = await axios.post('https://login.worthier.app/quickLogin', {
+                                    const response = await axiosPostWithTokenRefresh('https://login.worthier.app/quickLogin', {
                                         token: refreshResult.accessToken,
                                         username: refreshResult.user?.username,
                                         email: refreshResult.user?.email
@@ -149,7 +204,7 @@ class AutoLogin {
             const refreshPayload = {
                 id: tokenData.user.id,
                 refreshToken: refreshToken,
-                macAddress: this.deviceInfoManager.getDeviceInfo().macAddress
+                deviceId: this.deviceInfoManager.getDeviceInfo().deviceId
             };
             
             console.log('Sending refresh payload:', JSON.stringify(refreshPayload, null, 2));

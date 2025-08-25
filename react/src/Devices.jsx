@@ -97,9 +97,9 @@ export default function Devices() {
 									 {isExpanded && (
 										 <>
 											 <div className="device-details">
-												 <div><strong>MAC:</strong> {device.macAddress}</div>
+												 <div><strong>Device ID:</strong> {device.deviceId}</div>
 												 <div><strong>Platform:</strong> {device.platform} ({device.arch})</div>
-												 <div><strong>Login At:</strong> {device.loginAt ? new Date(device.loginAt).toLocaleString() : ''}</div>
+												 <div><strong>Last Updated:</strong> {device.lastUpdatedAt ? new Date(device.lastUpdatedAt).toLocaleString() : ''}</div>
 											 </div>
 											 {workingLog && Object.keys(workingLog).length > 0 && (
 												 <div className="device-chart-section">

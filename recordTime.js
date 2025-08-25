@@ -130,11 +130,11 @@ class TimeRecorder {
     /**
      * Save records to file
      */
-    saveRecords(records) {
-        let currentTime = new Date().toISOString();
+    saveRecords(records, time = null) {
+        let storeTime = time === null ? new Date().toISOString() : time;
         let writeJson = {
             records: records,
-            lastUpdatedAt: currentTime
+            lastUpdatedAt: storeTime
         };
         try {
             const dir = path.dirname(this.recordsPath);

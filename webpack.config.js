@@ -16,8 +16,7 @@ module.exports = [
       __filename: false
     },
     externals: {
-      'keytar': 'commonjs keytar',
-      'getmac': 'commonjs getmac'
+      'keytar': 'commonjs keytar'
     },
     plugins: [
       new CopyWebpackPlugin({
@@ -98,7 +97,6 @@ module.exports = [
     },
     externals: {
       'keytar': 'commonjs keytar',
-      'getmac': 'commonjs getmac',
       'axios': 'commonjs axios',
       'electron': 'commonjs electron'
     }

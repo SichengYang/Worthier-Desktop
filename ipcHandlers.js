@@ -504,8 +504,9 @@ function setupIpcHandlers({
 
   ipcMain.on('tray-take-break', async (event) => {
     if (getWorking()) {
-      // Reuse the existing break logic - same as current tray menu
-      mainWindow.webContents.send("break");
+      // Handle break state internally without sending message to main window
+      // This prevents the main window from potentially showing up
+      // mainWindow.webContents.send("break"); // Commented out to prevent main window activation
 
       // Cancel the timer process
       cancelTimerProcess(); // Fire and forget - tray action doesn't need to wait

@@ -30,7 +30,7 @@ async function debugServerRoutes() {
                 },
                 body: JSON.stringify({
                     sessionID: 'test-session-123',
-                    macAddress: '00:11:22:33:44:55',
+                    deviceId: 'test-device-id-12345',
                     platform: 'darwin',
                     arch: 'arm64',
                     deviceName: 'Test Device'

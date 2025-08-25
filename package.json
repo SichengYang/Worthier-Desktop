@@ -23,12 +23,21 @@
     "directories": {
       "output": "dist"
     },
+    "asar": true,
+    "compression": "maximum",
     "files": [
       "**/*",
       "!react/src/**/*",
       "!react/public/**/*",
+      "!react/node_modules/**/*",
       "!notification-react/src/**/*",
+      "!notification-react/node_modules/**/*", 
       "!rest-react/src/**/*",
+      "!rest-react/node_modules/**/*",
+      "!**/node_modules/**/*",
+      "!**/.git/**/*",
+      "!**/.DS_Store",
+      "!**/*.map",
       "react/dist/**/*",
       "notification-react/dist/**/*",
       "rest-react/dist/**/*"
@@ -41,6 +50,52 @@
       "entitlements": "entitlements.plist",
       "entitlementsInherit": "entitlements.plist",
       "notarize": false,
+      "minimumSystemVersion": "11.0",
+      "extendInfo": {
+        "CFBundleDocumentTypes": [
+          {
+            "CFBundleTypeName": "JSON Data",
+            "CFBundleTypeExtensions": ["json"],
+            "CFBundleTypeIconFile": "icon.icns",
+            "CFBundleTypeRole": "Editor",
+            "LSHandlerRank": "Alternate",
+            "CFBundleTypeMIMETypes": ["application/json"]
+          },
+          {
+            "CFBundleTypeName": "Text Files",
+            "CFBundleTypeExtensions": ["txt", "log", "csv"],
+            "CFBundleTypeIconFile": "icon.icns",
+            "CFBundleTypeRole": "Editor", 
+            "LSHandlerRank": "Alternate",
+            "CFBundleTypeMIMETypes": ["text/plain"]
+          },
+          {
+            "CFBundleTypeName": "Image Files",
+            "CFBundleTypeExtensions": ["png", "jpg", "jpeg"],
+            "CFBundleTypeIconFile": "icon.icns",
+            "CFBundleTypeRole": "Viewer",
+            "LSHandlerRank": "None",
+            "CFBundleTypeMIMETypes": ["image/png", "image/jpeg"]
+          },
+          {
+            "CFBundleTypeName": "All Files",
+            "CFBundleTypeOSTypes": ["****"],
+            "CFBundleTypeRole": "Editor",
+            "LSHandlerRank": "None"
+          }
+        ],
+        "CFBundleURLTypes": [
+          {
+            "CFBundleURLName": "Worthier Protocol",
+            "CFBundleURLSchemes": ["worthier"]
+          }
+        ],
+        "LSMinimumSystemVersion": "11.0",
+        "NSAppleEventsUsageDescription": "This app needs to control other applications to detect meetings and fullscreen mode.",
+        "NSDesktopFolderUsageDescription": "Access to Desktop folder for saving exported files.",
+        "NSDocumentsFolderUsageDescription": "Access to Documents folder for saving exported files.",
+        "NSDownloadsFolderUsageDescription": "Access to Downloads folder for saving exported files."
+      },
       "target": [
         {
           "target": "dmg",
@@ -118,7 +173,6 @@
     "bootstrap-icons": "^1.13.1",
     "chart.js": "^4.5.0",
     "electron-squirrel-startup": "^1.0.1",
-    "getmac": "^6.6.0",
     "keytar": "^7.9.0"
   }
 }

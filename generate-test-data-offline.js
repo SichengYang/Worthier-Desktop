@@ -86,11 +86,11 @@ function generateMultiMonthTestDataOffline() {
             // Use new nested structure: year -> month -> day
             const year = date.getFullYear().toString();
             const month = date.getMonth() + 1; // 1-12
-            const day = date.getDate(); // 1-31
+            const dayOfMonth = date.getDate(); // 1-31
             
             ensureYearMonthStructure(testData, year, month);
             
-            testData[year][month][day] = {
+            testData[year][month][dayOfMonth] = {
                 workingMinutes: workingMinutes,
                 extendedSessions: extendedSessions,
                 createdAt: baseTime.toISOString(),

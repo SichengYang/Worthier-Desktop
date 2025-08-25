@@ -1,6 +1,6 @@
-const getmac = require('getmac');
 const os = require('os');
 const { execSync } = require('child_process');
+const generateStableDeviceId = require('./generateDeviceID');
 
 class DeviceInfoManager {
     constructor() {
@@ -27,10 +27,10 @@ class DeviceInfoManager {
 
     getDeviceInfo() {
         try {
-            const macAddress = getmac.default();
+            const deviceId = generateStableDeviceId();
             const deviceName = this.getDeviceName();
             const deviceInfo = {
-                macAddress: macAddress,
+                deviceId: deviceId,
                 platform: process.platform,
                 arch: process.arch,
                 deviceName: deviceName,
@@ -40,7 +40,7 @@ class DeviceInfoManager {
             console.error('Error getting device info:', error);
             const deviceName = this.getDeviceName();
             return {
-                macAddress: 'unknown',
+                deviceId: 'unknown',
                 platform: process.platform,
                 arch: process.arch,
                 deviceName: deviceName,
@@ -104,7 +104,7 @@ class DeviceInfoManager {
 
         // Remove any existing pending upload for the same device to avoid duplicates
         this.pendingUploads = this.pendingUploads.filter(
-            upload => upload.deviceInfo.macAddress !== deviceInfo.macAddress
+            upload => upload.deviceInfo.deviceId !== deviceInfo.deviceId
         );
 
         this.pendingUploads.push(uploadData);
