@@ -1,4 +1,5 @@
 const getTimeRecorder = require('./recordTime');
+const uploadWorkLog = require('./uploadWorkingLog');
 
 const minutes = parseInt(process.argv[2], 10) || 60;
 const userDataPath = process.argv[3]; // Get userData path from main process
@@ -12,6 +13,7 @@ console.log(`Using userData path: ${userDataPath}`);
 
 const timeout = setTimeout(async () => {
   process.send({ type: 'break-time' });
+  uploadWorkLog();
 }, minutes * 60 * 1000);
 
 const recordEveryMinute = setInterval(async () => {
@@ -30,7 +32,8 @@ process.on('message', async (msg) => {
     timeRecorder.addMinutes(1);
     clearTimeout(timeout);
     clearInterval(recordEveryMinute);
-    
+    uploadWorkLog();
+
     console.log('Timer canceled.');
     process.exit(0); // clean exit
   }
@@ -39,6 +42,7 @@ process.on('message', async (msg) => {
     isRunning = false;
     clearTimeout(timeout);
     clearInterval(recordEveryMinute);
+    uploadWorkLog();
 
     console.log('Timer auto-canceled due to no response.');
     process.exit(0); // clean exit
