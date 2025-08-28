@@ -17,6 +17,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
   loginWithGoogle: () => ipcRenderer.send('login-google'),
   loginWithApple: () => ipcRenderer.send('login-apple'),
   getCurrentUser: () => ipcRenderer.invoke('get-current-user'),
+  
+  // Feedback functionality
+  submitFeedback: (feedbackData) => ipcRenderer.invoke('submit-feedback', feedbackData),
 
   onLoginSuccess: (callback) => {
     ipcRenderer.on('login-success', callback);

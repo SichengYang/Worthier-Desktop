@@ -1,4 +1,5 @@
 const { ipcMain, BrowserWindow, app, dialog } = require('electron');
+const axios = require('axios');
 
 /**
  * Setup all IPC handlers for the application
@@ -37,6 +38,41 @@ function setupIpcHandlers({
   ipcMain.on("minimize-window", async () => {
     if (mainWindow) {
       mainWindow.minimize();
+    }
+  });
+
+  // Feedback submission handler
+  ipcMain.handle('submit-feedback', async (event, feedbackData) => {
+    try {
+      console.log('📝 Submitting feedback:', feedbackData);
+      
+      const response = await axios.post('https://login.worthier.app/feedback', {
+        feedback: feedbackData.feedback,
+        email: feedbackData.email || null,
+        timestamp: new Date().toISOString(),
+        userAgent: process.platform,
+        appVersion: app.getVersion()
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+          'User-Agent': `Worthier-Desktop/${app.getVersion()}`
+        },
+        timeout: 10000 // 10 second timeout
+      });
+
+      console.log('✅ Feedback submitted successfully:', response.status);
+      return { success: true, message: 'Feedback submitted successfully!' };
+      
+    } catch (error) {
+      console.error('❌ Error submitting feedback:', error.message);
+      
+      if (error.code === 'ENOTFOUND' || error.code === 'ECONNREFUSED') {
+        return { success: false, message: 'Network error. Please check your internet connection and try again.' };
+      } else if (error.response) {
+        return { success: false, message: `Server error: ${error.response.status}. Please try again later.` };
+      } else {
+        return { success: false, message: 'Failed to submit feedback. Please try again later.' };
+      }
     }
   });
 

@@ -4,7 +4,7 @@ import './FeedbackWindow.css';
 
 function FeedbackWindow() {
     const editorRef = useRef(null);
-    const [files, setFiles] = useState([]);
+    const [email, setEmail] = useState('');
     const [color, setColor] = useState('#222');
 
     useEffect(() => {
@@ -34,8 +34,8 @@ function FeedbackWindow() {
         return () => clearInterval(autoSaveInterval);
     }, []);
 
-    const handleFileChange = (e) => {
-        setFiles(Array.from(e.target.files));
+    const handleEmailChange = (e) => {
+        setEmail(e.target.value);
     };
 
     const handleToolbar = (command, value = null) => {
@@ -49,18 +49,56 @@ function FeedbackWindow() {
         handleToolbar('foreColor', e.target.value);
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         const feedback = editorRef.current.innerHTML;
-        // Handle feedback and files submission logic here
-        alert('Feedback submitted!');
+        const contactEmail = email.trim();
         
-        // Clear saved content after submission
-        localStorage.removeItem('feedbackContent');
-        if (editorRef.current) {
-            editorRef.current.innerHTML = '';
+        // Basic validation
+        if (!feedback || feedback.trim() === '' || feedback === '<div><br></div>' || feedback === '<br>') {
+            alert('Please enter your feedback before submitting.');
+            return;
         }
-        setFiles([]);
+
+        try {
+            // Show loading state
+            const submitButton = e.target.querySelector('.submit-btn');
+            const originalText = submitButton.textContent;
+            submitButton.textContent = 'Submitting...';
+            submitButton.disabled = true;
+
+            // Submit feedback via IPC
+            const result = await window.electronAPI.submitFeedback({
+                feedback: feedback,
+                email: contactEmail || null
+            });
+
+            if (result.success) {
+                alert('Thank you! Your feedback has been submitted successfully.');
+                
+                // Clear saved content after successful submission
+                localStorage.removeItem('feedbackContent');
+                if (editorRef.current) {
+                    editorRef.current.innerHTML = '';
+                }
+                setEmail('');
+            } else {
+                alert(`Failed to submit feedback: ${result.message}`);
+            }
+
+            // Reset button state
+            submitButton.textContent = originalText;
+            submitButton.disabled = false;
+
+        } catch (error) {
+            console.error('Error submitting feedback:', error);
+            alert('An unexpected error occurred. Please try again later.');
+            
+            // Reset button state
+            const submitButton = e.target.querySelector('.submit-btn');
+            submitButton.textContent = 'Submit';
+            submitButton.disabled = false;
+        }
     };
 
     const handleClearContent = () => {
@@ -69,7 +107,7 @@ function FeedbackWindow() {
             if (editorRef.current) {
                 editorRef.current.innerHTML = '';
             }
-            setFiles([]);
+            setEmail('');
         }
     };
 
@@ -92,23 +130,34 @@ function FeedbackWindow() {
                         contentEditable
                         suppressContentEditableWarning={true}
                         placeholder="Type your feedback here..."
-                        style={{ minHeight: '120px', border: '1px solid #ccc', borderRadius: '6px', padding: '12px', background: '#fff', marginBottom: '18px' }}
+                        style={{ minHeight: '120px', border: '1px solid #ccc', borderRadius: '6px', padding: '12px', background: '#fff', marginBottom: '12px' }}
                     ></div>
-                    <div className="file-upload-section">
-                        <label htmlFor="feedback-files">Attach files:</label>
+                    
+                    <div className="email-section">
+                        <label htmlFor="contact-email">Contact Email (optional):</label>
                         <input
-                            id="feedback-files"
-                            type="file"
-                            multiple
-                            onChange={handleFileChange}
+                            id="contact-email"
+                            type="email"
+                            value={email}
+                            onChange={handleEmailChange}
+                            placeholder="your.email@example.com"
+                            className="email-input"
+                            style={{ 
+                                width: 'calc(100% - 24px)', 
+                                maxWidth: '400px',
+                                padding: '8px 12px', 
+                                border: '1px solid #ccc', 
+                                borderRadius: '6px', 
+                                marginBottom: '8px',
+                                fontSize: '14px',
+                                boxSizing: 'border-box'
+                            }}
                         />
-                        {files.length > 0 && (
-                            <ul className="file-list">
-                                {files.map((file, idx) => (
-                                    <li key={idx}>{file.name}</li>
-                                ))}
-                            </ul>
-                        )}
+                        <div className="privacy-note">
+                            <small style={{ color: '#666', fontStyle: 'italic' }}>
+                                📝 Your feedback is anonymous without providing an email address.
+                            </small>
+                        </div>
                     </div>
                 </div>
                 <div className="feedback-actions">
