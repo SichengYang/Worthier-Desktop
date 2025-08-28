@@ -8,6 +8,10 @@ A beautiful, cross-platform productivity timer application built with Electron a
   <em>Transform your work routine with smart timing and healthy breaks</em>
 </div>
 
+## 📥 Download
+
+[Download Worthier Desktop](https://drive.google.com/file/d/1qTfnEjK622AhK0ylVcWIf_ZwYOAmnWJh/view?usp=sharing)
+
 ## ✨ Key Features
 
 ### � **Beautiful Main Interface**
