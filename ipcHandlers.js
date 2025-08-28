@@ -40,7 +40,7 @@ function setupIpcHandlers({
     }
   });
 
-  // Authentication handlers
+    // Authentication handlers
   ipcMain.on('login-microsoft', async (event) => {
     const { startLogin } = require('./login');
     const windowUrl = 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize?' +
@@ -50,19 +50,19 @@ function setupIpcHandlers({
       '&scope=openid%20profile%20email' +
       '&response_mode=form_post';
     const callbackUrl = 'https://login.worthier.app/microsoft';
-    startLogin(mainWindow, windowUrl, callbackUrl);
+    startLogin(mainWindow, windowUrl, callbackUrl, app.getPath('userData'));
   });
 
   ipcMain.on('login-google', async (event) => {
     const { startLogin } = require('./login');
-    const windowUrl = 'https://accounts.google.com/o/oauth2/v2/auth' +
+    const windowUrl = 'https://accounts.google.com/o/oauth2/v2.0/auth' +
       '?client_id=899665986783-tf93v1oi9tt140vrt0ib1lbplra4lka8.apps.googleusercontent.com' +
       '&response_type=code' +
       '&redirect_uri=https://login.worthier.app/google' +
       '&scope=openid%20profile%20email' +
       '&response_mode=form_post';
     const callbackUrl = 'https://login.worthier.app/google';
-    startLogin(mainWindow, windowUrl, callbackUrl);
+    startLogin(mainWindow, windowUrl, callbackUrl, app.getPath('userData'));
   });
 
   ipcMain.on('login-apple', async (event) => {
@@ -75,7 +75,7 @@ function setupIpcHandlers({
       '&response_mode=form_post';
     const callbackUrl = 'https://login.worthier.app/apple';
 
-    startLogin(mainWindow, windowUrl, callbackUrl);
+    startLogin(mainWindow, windowUrl, callbackUrl, app.getPath('userData'));
   });
 
   // Handle logout
@@ -590,7 +590,7 @@ function setupIpcHandlers({
 
   ipcMain.handle('get-device-list', async (event) => {
     try {
-      const devices = await getDeviceList();
+      const devices = await getDeviceList(app.getPath('userData'));
       return devices;
     } catch (error) {
       console.error('Error getting device list:', error);

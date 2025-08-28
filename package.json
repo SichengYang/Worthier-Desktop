@@ -4,18 +4,12 @@
   "description": "Worthier Desktop Application",
   "main": "main.js",
   "scripts": {
+    "build:react": "node build.js",
     "start": "(pkill -f \"electron\" 2>/dev/null || true) && npm run build:react && electron .",
-    "build:react": "node build.js react",
-    "build:webpack": "webpack --config webpack.config.js",
-    "build": "node build.js",
-    "build:x64": "node build.js --x64",
-    "build:arm64": "node build.js --arm64",
-    "build:x64:signed": "node build.js --x64 --signed",
-    "build:arm64:signed": "node build.js --arm64 --signed",
-    "build:x64:notarized": "node build.js --x64 --notarized",
-    "build:arm64:notarized": "node build.js --arm64 --notarized",
-    "build:signed": "node build.js --signed",
-    "build:notarized": "node build.js --notarized"
+    "build:mac": "npm run build:react && electron-builder --mac",
+    "build:mac:notarized": "npm run build:react && set -a && source .env && set +a && DEBUG=electron-builder* npx electron-builder --config electron-builder-signed.json --publish=never",
+    "build:mas": "npm run build:react && electron-builder --mas",
+    "build:mas:dev": "npm run build:react && electron-builder --mas-dev"
   },
   "build": {
     "appId": "com.worthier.app",
@@ -31,10 +25,9 @@
       "!react/public/**/*",
       "!react/node_modules/**/*",
       "!notification-react/src/**/*",
-      "!notification-react/node_modules/**/*", 
+      "!notification-react/node_modules/**/*",
       "!rest-react/src/**/*",
       "!rest-react/node_modules/**/*",
-      "!**/node_modules/**/*",
       "!**/.git/**/*",
       "!**/.DS_Store",
       "!**/*.map",
@@ -45,41 +38,56 @@
     "mac": {
       "category": "public.app-category.productivity",
       "icon": "icon.icns",
-      "hardenedRuntime": true,
-      "gatekeeperAssess": true,
-      "entitlements": "entitlements.plist",
-      "entitlementsInherit": "entitlements.plist",
-      "notarize": false,
+      "identity": null,
       "minimumSystemVersion": "11.0",
       "extendInfo": {
         "CFBundleDocumentTypes": [
           {
             "CFBundleTypeName": "JSON Data",
-            "CFBundleTypeExtensions": ["json"],
+            "CFBundleTypeExtensions": [
+              "json"
+            ],
             "CFBundleTypeIconFile": "icon.icns",
             "CFBundleTypeRole": "Editor",
             "LSHandlerRank": "Alternate",
-            "CFBundleTypeMIMETypes": ["application/json"]
+            "CFBundleTypeMIMETypes": [
+              "application/json"
+            ]
           },
           {
             "CFBundleTypeName": "Text Files",
-            "CFBundleTypeExtensions": ["txt", "log", "csv"],
+            "CFBundleTypeExtensions": [
+              "txt",
+              "log",
+              "csv"
+            ],
             "CFBundleTypeIconFile": "icon.icns",
-            "CFBundleTypeRole": "Editor", 
+            "CFBundleTypeRole": "Editor",
             "LSHandlerRank": "Alternate",
-            "CFBundleTypeMIMETypes": ["text/plain"]
+            "CFBundleTypeMIMETypes": [
+              "text/plain"
+            ]
           },
           {
             "CFBundleTypeName": "Image Files",
-            "CFBundleTypeExtensions": ["png", "jpg", "jpeg"],
+            "CFBundleTypeExtensions": [
+              "png",
+              "jpg",
+              "jpeg"
+            ],
             "CFBundleTypeIconFile": "icon.icns",
             "CFBundleTypeRole": "Viewer",
             "LSHandlerRank": "None",
-            "CFBundleTypeMIMETypes": ["image/png", "image/jpeg"]
+            "CFBundleTypeMIMETypes": [
+              "image/png",
+              "image/jpeg"
+            ]
           },
           {
             "CFBundleTypeName": "All Files",
-            "CFBundleTypeOSTypes": ["****"],
+            "CFBundleTypeOSTypes": [
+              "****"
+            ],
             "CFBundleTypeRole": "Editor",
             "LSHandlerRank": "None"
           }
@@ -87,7 +95,9 @@
         "CFBundleURLTypes": [
           {
             "CFBundleURLName": "Worthier Protocol",
-            "CFBundleURLSchemes": ["worthier"]
+            "CFBundleURLSchemes": [
+              "worthier"
+            ]
           }
         ],
         "LSMinimumSystemVersion": "11.0",
@@ -100,8 +110,7 @@
         {
           "target": "dmg",
           "arch": [
-            "x64",
-            "arm64"
+            "universal"
           ]
         }
       ]
@@ -160,13 +169,11 @@
   "homepage": "https://github.com/SichengYang/Worthier-Desktop#readme",
   "devDependencies": {
     "@electron/notarize": "^3.0.2",
-    "copy-webpack-plugin": "^13.0.1",
+    "@electron/rebuild": "^4.0.1",
     "cross-env": "^7.0.3",
     "dotenv": "^17.2.1",
     "electron": "^37.2.0",
-    "electron-builder": "^26.0.12",
-    "webpack": "^5.101.3",
-    "webpack-cli": "^6.0.1"
+    "electron-builder": "^26.0.12"
   },
   "dependencies": {
     "axios": "^1.11.0",

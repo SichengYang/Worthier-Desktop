@@ -2,7 +2,12 @@ const { BrowserWindow } = require('electron');
 const { randomUUID } = require('crypto');
 const DeviceInfoManager = require('./deviceInfoManager');
 
-async function startLogin(mainWindow, windowUrl, callbackUrl) {
+async function startLogin(mainWindow, windowUrl, callbackUrl, userDataPath = null) {
+  // Get userDataPath from app if not provided
+  if (!userDataPath) {
+    const { app } = require('electron');
+    userDataPath = app.getPath('userData');
+  }
   let windowClosed = false;
 
   // Generate a unique session ID for polling
@@ -102,7 +107,7 @@ async function startLogin(mainWindow, windowUrl, callbackUrl) {
           // Auto-login feature: Save tokens securely for quick login next time
           try {
             const TokenManager = require('./tokenManager');
-            const tokenManager = new TokenManager();
+            const tokenManager = new TokenManager(userDataPath);
 
             // Store the login data securely with encryption
             await tokenManager.storeTokens({

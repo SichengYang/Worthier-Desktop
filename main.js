@@ -112,7 +112,7 @@ app.whenReady().then(async () => {
   timeRecorder = getTimeRecorder(); // Remove mainWindow parameter, let TimeRecorder use app.getPath('userData')
 
   // create instances that requires mainWindow
-  autoLogin = getAutoLogin(mainWindow);
+  autoLogin = getAutoLogin(mainWindow, app.getPath('userData'));
   notificationHandlers = new NotificationHandlers({
     mainWindow,
     restWindow,

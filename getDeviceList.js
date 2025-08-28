@@ -19,8 +19,9 @@ async function axiosPostWithTokenRefresh(url, data, config = {}, context = {}) {
             console.log('Received 401 response, attempting to refresh token...');
             
             try {
-                // Get fresh token data
-                const autoLogin = getAutoLogin();
+                // Get fresh token data - use userDataPath from context
+                const userDataPath = context.userDataPath || process.env.USER_DATA_PATH || require('os').homedir() + '/.worthier-desktop';
+                const autoLogin = getAutoLogin(null, userDataPath);
                 const currentTokenData = await autoLogin.hasValidTokens();
                 
                 if (currentTokenData) {
@@ -51,10 +52,11 @@ async function axiosPostWithTokenRefresh(url, data, config = {}, context = {}) {
 
 /**
  * Fetches the device list for the current user using auto login credentials.
+ * @param {string} [userDataPath] - Optional userData path for token storage
  * @returns {Promise<Object>} - JSON object containing devices or error info
  */
-async function getDeviceList() {
-    const autoLogin = getAutoLogin();
+async function getDeviceList(userDataPath = null) {
+    const autoLogin = getAutoLogin(null, userDataPath);
     const userInfo = await autoLogin.getUserInfo();
     const tokenData = await autoLogin.hasValidTokens();
 

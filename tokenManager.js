@@ -1,12 +1,14 @@
-const { app } = require('electron');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 const keytar = require('keytar');
 
 class TokenManager {
-  constructor() {
-    this.tokenFile = path.join(app.getPath('userData'), 'tokens.json');
+  constructor(userDataPath) {
+    if (!userDataPath) {
+      throw new Error('TokenManager requires userDataPath parameter');
+    }
+    this.tokenFile = path.join(userDataPath, 'tokens.json');
     this.serviceName = 'Worthier-Desktop';
     this.keyName = 'encryption-key';
     this.encryptionKey = null; // Will be loaded asynchronously

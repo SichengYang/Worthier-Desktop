@@ -1,6 +1,6 @@
 const os = require('os');
 const { execSync } = require('child_process');
-const generateStableDeviceId = require('./generateDeviceID');
+const generateStableDeviceId = require('./generateDeviceId');
 
 class DeviceInfoManager {
     constructor() {

@@ -18,8 +18,9 @@ async function fetchWithTokenRefresh(url, options, context = {}) {
 		console.log('Received 401 response, attempting to refresh token...');
 		
 		try {
-			// Get current token data
-			const autoLogin = getAutoLogin();
+			// Get current token data - use userDataPath from context if available
+			const userDataPath = context.userDataPath || process.env.USER_DATA_PATH || require('os').homedir() + '/.worthier-desktop';
+			const autoLogin = getAutoLogin(null, userDataPath);
 			const currentTokenData = await autoLogin.hasValidTokens();
 			
 			if (currentTokenData) {
@@ -235,8 +236,8 @@ async function sendCompressedRequest(url, payload, timeout = 10000) {
  * @param {string} [options.userDataPath] - Optional userData path for records
  * @returns {Promise<Object>} Upload result
  */
-async function uploadWorkLog() {
-	const autoLogin = getAutoLogin();
+async function uploadWorkLog(userDataPath = null) {
+	const autoLogin = getAutoLogin(null, userDataPath);
 	let userInfo = await autoLogin.getUserInfo();
 	if (userInfo) {
 		let tokenData = await autoLogin.hasValidTokens();
@@ -245,7 +246,7 @@ async function uploadWorkLog() {
 			throw new Error('No valid access token found');
 		}
 
-		const timeRecorder = getTimeRecorder();
+		const timeRecorder = getTimeRecorder(userDataPath);
 		const deviceInfoManager = new DeviceInfoManager();
 		const deviceInfo = deviceInfoManager.getDeviceInfo();
 		

@@ -21,13 +21,16 @@ async function axiosPostWithTokenRefresh(url, data, config = {}, context = {}) {
             console.log('Received 401 response, attempting to refresh token...');
             
             try {
+                // Get userDataPath - this should be passed from main process or obtained somehow
+                const userDataPath = process.env.USER_DATA_PATH || require('os').homedir() + '/.worthier-desktop';
+                
                 // Get current token data from token manager
-                const tokenManager = new TokenManager();
+                const tokenManager = new TokenManager(userDataPath);
                 const currentTokenData = await tokenManager.getTokens();
                 
                 if (currentTokenData) {
                     // Create a temporary AutoLogin instance to refresh token
-                    const tempAutoLogin = new AutoLogin();
+                    const tempAutoLogin = new AutoLogin(null, userDataPath);
                     const refreshedTokenData = await tempAutoLogin.refreshToken(currentTokenData);
                     
                     if (refreshedTokenData && refreshedTokenData.accessToken) {
@@ -57,9 +60,10 @@ async function axiosPostWithTokenRefresh(url, data, config = {}, context = {}) {
 }
 
 class AutoLogin {
-    constructor(mainWindow) {
+    constructor(mainWindow, userDataPath) {
         this.mainWindow = mainWindow;
-        this.tokenManager = new TokenManager();
+        this.userDataPath = userDataPath;
+        this.tokenManager = new TokenManager(userDataPath);
         this.deviceInfoManager = new DeviceInfoManager();
     }
 
@@ -313,9 +317,13 @@ class AutoLogin {
 }
 
 let autoLoginInstance = null;
-function getAutoLogin(mainWindow = null) {
+function getAutoLogin(mainWindow = null, userDataPath = null) {
     if (!autoLoginInstance) {
-        autoLoginInstance = new AutoLogin(mainWindow);
+        if (!userDataPath) {
+            // Try to get userDataPath from environment or use fallback
+            userDataPath = process.env.USER_DATA_PATH || require('os').homedir() + '/.worthier-desktop';
+        }
+        autoLoginInstance = new AutoLogin(mainWindow, userDataPath);
     }
     return autoLoginInstance;
 }

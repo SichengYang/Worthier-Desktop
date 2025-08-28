@@ -1,0 +1,45 @@
+{
+  "appId": "com.worthier.app",
+  "productName": "Worthier Desktop",
+  "directories": {
+    "output": "dist"
+  },
+  "asar": true,
+  "compression": "maximum",
+  "files": [
+    "**/*",
+    "!react/src/**/*",
+    "!react/public/**/*",
+    "!react/node_modules/**/*",
+    "!notification-react/src/**/*",
+    "!notification-react/node_modules/**/*",
+    "!rest-react/src/**/*",
+    "!rest-react/node_modules/**/*",
+    "!**/.git/**/*",
+    "!**/.DS_Store",
+    "!**/*.map",
+    "!.venv/**/*",
+    "react/dist/**/*",
+    "notification-react/dist/**/*",
+    "rest-react/dist/**/*"
+  ],
+  "mac": {
+    "category": "public.app-category.productivity",
+    "icon": "icon.icns",
+    "hardenedRuntime": true,
+    "gatekeeperAssess": true,
+    "entitlements": "entitlements.plist",
+    "entitlementsInherit": "entitlements.plist",
+    "provisioningProfile": "/Users/sichengyang/Library/MobileDevice/Provisioning Profiles/Worthier_APP_Profile.provisionprofile",
+    "notarize": true,
+    "minimumSystemVersion": "11.0",
+    "target": [
+      {
+        "target": "dmg",
+        "arch": [
+          "universal"
+        ]
+      }
+    ]
+  }
+}

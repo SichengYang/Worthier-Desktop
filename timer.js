@@ -13,7 +13,7 @@ console.log(`Using userData path: ${userDataPath}`);
 
 const timeout = setTimeout(async () => {
   process.send({ type: 'break-time' });
-  uploadWorkLog();
+  uploadWorkLog(userDataPath);
 }, minutes * 60 * 1000);
 
 const recordEveryMinute = setInterval(async () => {
@@ -32,7 +32,7 @@ process.on('message', async (msg) => {
     timeRecorder.addMinutes(1);
     clearTimeout(timeout);
     clearInterval(recordEveryMinute);
-    uploadWorkLog();
+    uploadWorkLog(userDataPath);
 
     console.log('Timer canceled.');
     process.exit(0); // clean exit
@@ -42,7 +42,7 @@ process.on('message', async (msg) => {
     isRunning = false;
     clearTimeout(timeout);
     clearInterval(recordEveryMinute);
-    uploadWorkLog();
+    uploadWorkLog(userDataPath);
 
     console.log('Timer auto-canceled due to no response.');
     process.exit(0); // clean exit
