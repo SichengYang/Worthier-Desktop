@@ -11,7 +11,7 @@ function Title() {
 
     const handleMinimize = () => {
         window.electronAPI?.minimizeWindow(); // safely call minimize
-    }
+    };
 
     const displayTitle = isLoggedIn && userInfo 
         ? `Worthier - Welcome, ${userInfo.username || userInfo.name || 'User'}!`
@@ -20,10 +20,10 @@ function Title() {
     return (
         <div className="titlebar">
             <div className="window-controls">
-                <button className="window-control close" onClick={handleClose}>
+                <button className="window-control close" onClick={handleClose} title="Close">
                     <span className="control-icon"></span>
                 </button>
-                <button className="window-control minimize" onClick={handleMinimize}>
+                <button className="window-control minimize" onClick={handleMinimize} title="Minimize">
                     <span className="control-icon"></span>
                 </button>
             </div>

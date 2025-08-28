@@ -1,52 +1,200 @@
-# Worthier Desktop
+# 🎯 Worthier Desktop - Work Healthier, Focus Better
 
-A cross-platform productivity timer application built with Electron and React that helps you focus and maintain productive work sessions.
+A beautiful, cross-platform productivity timer application built with Electron and React that helps you maintain healthy work habits and maximize focus.
 
-![Worthier Desktop](icon.png)
+<div align="center">
+  <img src="icon.png" alt="Worthier Desktop" width="120" height="120">
+  <br />
+  <em>Transform your work routine with smart timing and healthy breaks</em>
+</div>
 
-**Worthier Desktop** - Work Healthier, Focus Better, Achieve More.
+## ✨ Key Features
 
-## Features
+### � **Beautiful Main Interface**
+Clean, intuitive design that keeps you focused without distractions.
 
-### 🎯 **Core Productivity Features**
-- **Pomodoro Timer**: Customizable focus sessions with configurable work and break intervals
-- **System Tray Integration**: Quick access to timer controls from your system tray
-- **Smart Notifications**: React-powered notification system with customizable settings
-- **Background Operation**: Continues running in the background when window is closed
+<img src="image/Home.png" alt="Worthier Main Interface" width="600">
 
-### 👤 **User Management**
-- **Multi-Provider Authentication**: Login with Microsoft, Google, or Apple accounts
-- **Auto-Login**: Secure token management with automatic login on app startup
-- **Profile Management**: Personalized user profiles and settings sync
+- **Smart Timer Display**: Clear visual feedback on your current work session
+- **Elegant Mac-Style Controls**: Native window controls with traffic light buttons
+- **Real-time Progress**: See your productivity at a glance
+- **Minimal Distraction**: Clean interface that stays out of your way
 
-### 🎨 **Customization**
-- **Multiple Themes**: Light, dark, and pink themes with system theme detection
-- **Flexible Timer Settings**: Configure focus time, break time, and extension periods in minutes or hours
-- **Smart Notification Controls**: 
-  - Disable notifications during fullscreen mode (presentations, games)
-  - Disable notifications during meetings (detects video conferencing software)
+### 🔐 **Seamless Authentication**
+Multiple login options for secure, personalized experience.
 
-### 🔧 **Advanced Features**
-- **Cross-Platform**: Native support for macOS, Windows, and Linux
-- **Single Instance**: Prevents multiple app instances from running simultaneously
-- **Secure Storage**: Encrypted token storage using the system keychain
-- **Permission Management**: Granular control over system permissions
-- **User Guide**: First-time user onboarding experience
+<img src="image/Login.png" alt="Authentication Options" width="600">
 
-## Screenshots
+- **Multi-Provider Support**: Login with Microsoft, Google, or Apple
+- **Secure Token Management**: Encrypted credential storage
+- **Auto-Login**: Remember your preferences across sessions
+- **Privacy First**: Your data stays local and secure
 
-### Main Interface
-The clean, modern interface shows your current timer status and provides easy access to all features.
+### ⚙️ **Comprehensive Settings**
+Customize every aspect to fit your workflow perfectly.
 
-### Settings Panel
-Comprehensive settings allow you to customize:
-- Timer durations (focus, break, extension times)
-- Notification preferences
-- Theme selection
-- Privacy controls
+<img src="image/Settings.png" alt="Settings Panel" width="600">
 
-### System Tray Menu
-Quick access to essential controls directly from your system tray.
+- **Flexible Timer Configuration**: Set focus, break, and extension times
+- **Theme Selection**: Light, dark, and pink themes
+- **Smart Notifications**: Disable during presentations or meetings
+- **Privacy Controls**: Full control over permissions and data
+
+### 📱 **Multi-Device Management**
+Track and manage all your connected devices effortlessly.
+
+<img src="image/Devices.png" alt="Device Management" width="600">
+
+- **Device Overview**: See all your connected devices at a glance
+- **Cross-Platform Sync**: Seamless experience across macOS, Windows, and Linux
+- **Device-Specific Settings**: Customize behavior for each device
+- **Real-time Status**: Monitor activity across all your devices
+
+### 🚀 **Quick System Tray Access**
+Stay productive without interrupting your workflow.
+
+<img src="image/Tray.png" alt="System Tray Menu" width="400">
+
+- **Always Accessible**: Quick access from your system tray
+- **Instant Timer Control**: Start, pause, or stop sessions instantly
+- **Background Operation**: Continues working when window is closed
+- **Native Integration**: Feels like a natural part of your system
+
+### 🤝 **Easy Sharing & Collaboration**
+Share your productivity insights and connect with others.
+
+<img src="image/Share.png" alt="Sharing Features" width="600">
+
+- **Progress Sharing**: Share your productivity achievements
+- **Export Data**: Export your work logs and statistics
+- **Social Features**: Connect with colleagues and friends
+- **Motivational Feedback**: Celebrate your productivity milestones
+
+## 🎨 **Design Philosophy**
+
+Worthier Desktop is built with a focus on:
+- **Simplicity**: Clean, uncluttered interface
+- **Native Feel**: Platform-specific optimizations
+- **Health First**: Encourages healthy work habits
+- **Privacy**: Your data belongs to you
+
+## � **Technology Stack**
+
+- **Frontend**: React 19 with modern hooks
+- **Backend**: Electron 37 with Node.js
+- **Build Tools**: Vite for fast development
+- **UI Framework**: Bootstrap 5 with custom styling
+- **Cross-Platform**: Native support for macOS, Windows, Linux
+
+## 📋 **Quick Start**
+
+### Prerequisites
+- Node.js 18+ 
+- npm or yarn
+- Git
+
+### Installation
+```bash
+# Clone the repository
+git clone https://github.com/SichengYang/Worthier-Desktop.git
+cd Worthier-Desktop
+
+# Install dependencies
+npm install
+
+# Install React dependencies
+cd react && npm install && cd ..
+cd notification-react && npm install && cd ..
+
+# Build and start
+npm run build
+npm start
+```
+
+## 🚀 **Features Overview**
+
+| Feature | Description | Status |
+|---------|-------------|---------|
+| 🎯 **Pomodoro Timer** | Customizable focus sessions | ✅ Available |
+| 🔔 **Smart Notifications** | Context-aware notifications | ✅ Available |
+| 🎨 **Multiple Themes** | Light, dark, and pink themes | ✅ Available |
+| 👤 **Multi-Auth** | Microsoft, Google, Apple login | ✅ Available |
+| 📱 **Cross-Platform** | macOS, Windows, Linux support | ✅ Available |
+| 🔒 **Secure Storage** | Encrypted credential storage | ✅ Available |
+| 📊 **Progress Tracking** | Detailed productivity analytics | ✅ Available |
+| 🤝 **Data Sharing** | Export and share capabilities | ✅ Available |
+
+## 🎯 **Use Cases**
+
+### 👩‍💻 **For Developers**
+- Focus sessions during coding
+- Break reminders to prevent burnout
+- Multi-device synchronization
+
+### 📚 **For Students**
+- Study session management
+- Exam preparation timing
+- Healthy study habits
+
+### 🏢 **For Professionals**
+- Meeting-aware notifications
+- Presentation mode support
+- Cross-team productivity sharing
+
+### 🏠 **For Remote Workers**
+- Home office productivity
+- Work-life balance maintenance
+- Distraction management
+
+## 🛡️ **Privacy & Security**
+
+- **Local-First**: All data stored locally on your device
+- **Encrypted Storage**: Credentials encrypted with system keychain
+- **No Tracking**: Zero analytics or user tracking
+- **Minimal Permissions**: Only requests necessary system access
+- **Open Source**: Full transparency in code and practices
+
+## 🤝 **Contributing**
+
+We welcome contributions! Here's how to get started:
+
+1. **Fork** the repository
+2. **Create** a feature branch (`git checkout -b feature/amazing-feature`)
+3. **Commit** your changes (`git commit -m 'Add amazing feature'`)
+4. **Push** to the branch (`git push origin feature/amazing-feature`)
+5. **Open** a Pull Request
+
+### Development Guidelines
+- Follow ESLint configurations
+- Test on multiple platforms
+- Update documentation for new features
+- Maintain backwards compatibility
+
+## 📞 **Support & Community**
+
+- 🐛 **Bug Reports**: [GitHub Issues](https://github.com/SichengYang/Worthier-Desktop/issues)
+- 💬 **Discussions**: [GitHub Discussions](https://github.com/SichengYang/Worthier-Desktop/discussions)
+- 📧 **Contact**: [Project Maintainer](mailto:sicheng@worthier.app)
+
+## 📄 **License**
+
+This project is licensed under the ISC License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 **Acknowledgments**
+
+Special thanks to:
+- The Electron team for the amazing framework
+- React community for continuous innovation
+- Bootstrap team for excellent UI components
+- All contributors and users who make Worthier better
+
+---
+
+<div align="center">
+  <strong>Made with ❤️ for productive, healthy work</strong>
+  <br>
+  <em>Start your journey to better work habits today!</em>
+</div>
 
 ## Technology Stack
 
